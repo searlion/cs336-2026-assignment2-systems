@@ -18,11 +18,12 @@ class FlashAttentionPytorch(torch.autograd.Function):
         LogSumExp = torch.empty(Q.shape[:-1])
         for i in range(0, Q_tq.shape[-3]):
             Q_i = Q_tq[..., i, :, :]
-            O_i0 = torch.zeros((tile_size, Q_tq.shape[-1]))
+            bq_dim = Q_i.shape[-2]
+            O_i0 = torch.zeros((bq_dim, Q_tq.shape[-1]))
             O_ip = O_i0
-            l_i0 = torch.zeros((tile_size, 1))
+            l_i0 = torch.zeros((bq_dim, 1))
             l_ip = l_i0
-            m_i0 = torch.full((tile_size, 1), -torch.inf)
+            m_i0 = torch.full((bq_dim, 1), -torch.inf)
             m_ip = m_i0
             for j in range(0, K_tk.shape[-3]):
                 K_j = K_tk[..., j, :, :]
