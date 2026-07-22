@@ -31,8 +31,9 @@ class FlashAttentionPytorch(torch.autograd.Function):
                 S_ij = einops.einsum(Q_i, K_j, "... Bq d, ... Bk d -> ... Bq Bk")/math.sqrt(Q_i.shape[-1])
                 m_ij = torch.maximum(m_ip, torch.amax(S_ij, dim=-1, keepdim=True))
                 P_tilde_ij = torch.exp(S_ij - m_ij)
-                l_ij = torch.exp(m_ip - m_ij) * l_ip + torch.sum(P_tilde_ij, dim=-1, keepdim=True)
-                O_ij = torch.exp(m_ip - m_ij) * O_ip + einops.einsum(P_tilde_ij, V_j, "... Bq Bk, ... Bk d -> ... Bq d")
+                mip_mij_diff = torch.exp(m_ip - m_ij)
+                l_ij = mip_mij_diff * l_ip + torch.sum(P_tilde_ij, dim=-1, keepdim=True)
+                O_ij = mip_mij_diff * O_ip + einops.einsum(P_tilde_ij, V_j, "... Bq Bk, ... Bk d -> ... Bq d")
                 l_ip = l_ij
                 m_ip = m_ij
                 O_ip = O_ij
