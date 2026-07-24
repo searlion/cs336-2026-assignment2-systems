@@ -177,6 +177,6 @@ class FlashAttentionTriton(torch.autograd.Function):
         return O
 
     @staticmethod
-    def backward():
+    def backward(ctx, dO):
         raise NotImplementedError
     

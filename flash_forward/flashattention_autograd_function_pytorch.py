@@ -4,9 +4,6 @@ import math
 
 class FlashAttentionPytorch(torch.autograd.Function):
 
-    def __init__(self):
-        self.tile_size = 16
-
     @staticmethod
     def forward(ctx, Q, K, V, is_causal=False):
         tile_size = 16
@@ -14,16 +11,16 @@ class FlashAttentionPytorch(torch.autograd.Function):
         Q_tq = einops.rearrange(Q, "... (Tq Bq) d -> ... Tq Bq d", Bq=tile_size)
         K_tk = einops.rearrange(K, "... (Tk Bk) d -> ... Tk Bk d", Bk=tile_size)
         V_tk = einops.rearrange(V, "... (Tk Bv) d -> ... Tk Bv d", Bv=tile_size)
-        Output = torch.empty(Q.shape)
-        LogSumExp = torch.empty(Q.shape[:-1])
+        Output = torch.empty_like(Q)
+        LogSumExp = torch.empty(Q.shape[:-1], device=Q.device, dtype=Q.dtype)
         for i in range(0, Q_tq.shape[-3]):
             Q_i = Q_tq[..., i, :, :]
             bq_dim = Q_i.shape[-2]
-            O_i0 = torch.zeros((bq_dim, Q_tq.shape[-1]))
+            O_i0 = torch.zeros((bq_dim, Q_tq.shape[-1]), device=Q.device, dtype=Q.dtype)
             O_ip = O_i0
-            l_i0 = torch.zeros((bq_dim, 1))
+            l_i0 = torch.zeros((bq_dim, 1), device=Q.device, dtype=Q.dtype)
             l_ip = l_i0
-            m_i0 = torch.full((bq_dim, 1), -torch.inf)
+            m_i0 = torch.full((bq_dim, 1), -torch.inf, device=Q.device, dtype=Q.dtype)
             m_ip = m_i0
             for j in range(0, K_tk.shape[-3]):
                 K_j = K_tk[..., j, :, :]
@@ -48,9 +45,22 @@ class FlashAttentionPytorch(torch.autograd.Function):
         # ctx.save_for_backward(L)
         # P = torch.softmax(S, dim=-1)
         # O = einops.einsum(P, V, "... Nq Nk, ... Nk d -> ... Nq d")
-        ctx.save_for_backward(LogSumExp)
+        ctx.save_for_backward(Q, K, V, Output, LogSumExp)
+        ctx.is_causal = is_causal
         return Output
 
     @staticmethod
-    def backward():
-        raise NotImplementedError
+    def backward(ctx, dO):
+        Q, K, V, O, L = ctx.saved_tensors
+        is_causal = ctx.is_causal
+        d = Q.shape[-1]
+        S = einops.einsum(Q, K, "... Bq d, ... Bk d -> ... Bq Bk") / math.sqrt(d)
+        L_i = einops.rearrange(L, "... Bq -> ... Bq 1")
+        P_ij = torch.exp(S - L_i)
+        dV = einops.einsum(P_ij, dO, "... Bq Bk, ... Bq d -> ... Bk d")
+        dP = einops.einsum(dO, V, "... Bq d, ... Bk d -> ... Bq Bk")
+        D = torch.sum(O * dO, dim=-1, keepdim=True)
+        d_Sij = P_ij * (dP - D)
+        dQ = einops.einsum(d_Sij, K, "... Bq Bk, ... Bk d -> ... Bq d")/math.sqrt(d)
+        dK = einops.einsum(d_Sij, Q, "... Bq Bk, ... Bq d -> ... Bk d")/math.sqrt(d)
+        return dQ, dK, dV, None
