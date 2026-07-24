@@ -126,10 +126,10 @@ def flash_fwd_kernel(
         l_ij = mip_mik_diff * l_acc + tl.sum(P_tilde_ij, axis=1, keep_dims=True)
         # Cast P_tilde_ij to bf16 AFTER softmax, i.e. the line just before this comment
         P_tilde_ij.to(V_j.type.element_ty)
-        O_ij = mip_mik_diff * O_acc + tl.dot(P_tilde_ij, V_j)
+        O_acc = mip_mik_diff * O_acc
+        O_acc = tl.dot(P_tilde_ij, V_j, acc=O_acc)
         l_acc = l_ij
         m_acc = m_ij
-        O_acc = O_ij
         K_block_ptr = K_block_ptr.advance((K_TILE_SIZE, 0))
         V_block_ptr = V_block_ptr.advance((K_TILE_SIZE,0))
     O_i = O_acc / l_acc
