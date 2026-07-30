@@ -17,11 +17,16 @@ class OptimizerStateSharding(Optimizer):
 
 
     def step(self, closure=None, **kwargs):
+        # If self.wrapped_optimizer is None, this rank owns no parameters, so there is nothing for this rank to compute.
+        # Since no optimizer state exists, no update to apply. Skipping is right.
         if self.wrapped_optimizers is not None:
             self.wrapped_optimizers.step(closure, **kwargs)
+        # The following broadcast is done after backward pass, and updating of parameters using local optimizers has been completed.
+        # Hence, no_grad suppresses the recording of the broadcast operation in the graph. There's no need for autograd to track the write because
+        # the write isnt part of any computation you will ever differentiate.
         with torch.no_grad():
             for param_group in self.param_groups:
-                for param in self.param_groups[0]["params"]:
+                for param in param_group["params"]:
                     dist.broadcast(tensor=param,src=self.ownership[id(param)], async_op=False)
 
     def add_param_group(self, param_group: dict[str, Any]):
