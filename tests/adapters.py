@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import torch
 from flash_forward import flashattention_autograd_function_pytorch, flashattention_autograd_function_triton
-from distributed_training import naive_ddp, naive_ddp_overlap, naive_ddp_flattened
+from distributed_training import naive_ddp, naive_ddp_overlap, naive_ddp_flattened, optimizer_state_sharding
 
 
 def get_flashattention_autograd_function_pytorch() -> type:
@@ -133,4 +133,5 @@ def get_sharded_optimizer(params, optimizer_cls: type[torch.optim.Optimizer], **
     Returns:
         Instance of sharded optimizer.
     """
-    raise NotImplementedError
+    optimizer = optimizer_state_sharding.OptimizerStateSharding(params, optimizer_cls, **kwargs)
+    return optimizer
