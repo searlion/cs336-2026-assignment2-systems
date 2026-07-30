@@ -102,6 +102,7 @@ def _test_DistributedDataParallel(rank: int, world_size: int, model_class: type[
         non_parallel_outputs = non_parallel_model(non_parallel_data)
         non_parallel_loss = loss_fn(non_parallel_outputs, non_parallel_labels)
         non_parallel_loss.backward()
+        print("NON PARALLEL:", rank, non_parallel_model.fc1.weight.grad[0, :3])
         non_parallel_optimizer.step()
 
         # At this point, the parameters of non-parallel model should differ
@@ -129,7 +130,9 @@ def _test_DistributedDataParallel(rank: int, world_size: int, model_class: type[
         # Run student-written code that needs to execute after the backward pass,
         # but before the optimizer step (e.g., to wait for all DDP ranks to sync gradients)
         ddp_on_after_backward(ddp_model, ddp_optimizer)
-
+        for name, weights in ddp_model.named_parameters():
+            print(name)
+        print("AFTER:", dist.get_rank(), ddp_model.module.fc1.weight.grad[0, :3])
         ddp_optimizer.step()
 
         # At this point, the non-parallel model should exactly match the parameters of the DDP model
