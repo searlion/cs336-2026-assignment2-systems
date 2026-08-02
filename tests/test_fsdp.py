@@ -160,6 +160,7 @@ def _test_fsdp_correctness(rank: int, world_size: int, compute_dtype):
         local_labels = all_labels[offset : offset + local_bs]
         fsdp_out = fsdp_model(local_input)
         fsdp_loss = loss_fn(fsdp_out[:, -1, :].float(), local_labels)
+        torch.autograd.set_detect_anomaly(True, check_nan=False)
         fsdp_loss.backward()
 
         fsdp_on_after_backward(fsdp_model, fsdp_optimizer)
