@@ -67,7 +67,8 @@ class FSDP(nn.Module):
     def free_full_tensor(self, mods: nn.Module, args: Any = None, output: Any = None) -> None:
         metadata_record = self.metadata_record[mods]
         _free_storage(metadata_record.gathered_full_tensor)
-        delattr(mods, metadata_record.owner_attribute_name)        
+        if metadata_record.owner_attribute_name in mods.__dict__:
+            delattr(mods, metadata_record.owner_attribute_name)
 
     def reduce_scatter_grad(self, tensor: torch.Tensor, metadata_record : Record) -> None:
         ## 1. Take the full gradient off the tensor it was handed.
@@ -90,6 +91,11 @@ class FSDP(nn.Module):
         out = out.to(shard.dtype)
         shard.grad = out if shard.grad is None else shard.grad.add_(out)
         _free_storage(metadata_record.gathered_full_tensor)
+        # Drop the stale `weight` attribute the backward pre-hook re-installed; it now
+        # points at storage of size 0.
+        owner = metadata_record.owner_module
+        if metadata_record.owner_attribute_name in owner.__dict__:
+            delattr(owner, metadata_record.owner_attribute_name)
 
     def __init__(self, module: nn.Module, compute_dtype: torch.dtype | None = None):
         super().__init__()
@@ -134,6 +140,10 @@ class FSDP(nn.Module):
                 mods.register_forward_hook(self.free_full_tensor)
                 mods.register_full_backward_pre_hook(self.all_gather_full_tensor)
 
+        # Parameters FSDP sharded; everything else is replicated and needs DDP-style
+        # gradient averaging in finish_gradient_synchronization().
+        self._sharded_param_ids = {id(rec.owner_module.weight_shard) for rec in self.metadata_record.values()}
+
         after_delete = sum(p.numel() for p in self.module.parameters())
         if self.rank == 0 and self._debug:
             print(f"memory savings: {before_delete} vs {after_delete}")
@@ -159,4 +169,19 @@ class FSDP(nn.Module):
         return out
 
     def finish_gradient_synchronization(self):
-        pass        
+        """Average the gradients of the *replicated* (non-sharded) parameters.
+
+        Sharded parameters already had their gradients averaged by the reduce-scatter
+        in `reduce_scatter_grad`. Replicated parameters (RMSNorm weights, biases, ...)
+        are identical on every rank, but each rank only saw its own slice of the batch,
+        so their gradients are per-rank partial results and must be all-reduced with a
+        mean, exactly like DDP does.
+        """
+        handles = []
+        for p in self.module.parameters():
+            if id(p) in self._sharded_param_ids or p.grad is None:
+                continue
+            p.grad.div_(self.world_size)
+            handles.append(dist.all_reduce(p.grad, op=dist.ReduceOp.SUM, async_op=True))
+        for handle in handles:
+            handle.wait()
