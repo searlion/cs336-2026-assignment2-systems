@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FSDP scratch",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "distributed_training._scratch_fsdp",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "subProcess": true,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "",
+        "PYTHONUNBUFFERED": "1",
+        "debug": "True"
+      }
+    }
+  ]
+}

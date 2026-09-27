@@ -1,8 +1,19 @@
 from __future__ import annotations
 
+import os
+
 import torch
 from flash_forward import flashattention_autograd_function_pytorch, flashattention_autograd_function_triton
 from distributed_training import naive_ddp, naive_ddp_overlap, naive_ddp_flattened, optimizer_state_sharding, FSDP
+from distributed_training import FSDP_asynchronous, FSDP_dtensor
+
+# Selects which FSDP implementation the tests exercise. Defaults to the
+# hand-rolled one; set FSDP_IMPL=dtensor or FSDP_IMPL=async to test the others.
+_FSDP_IMPLS = {
+    "manual": FSDP,
+    "dtensor": FSDP_dtensor,
+    "async": FSDP_asynchronous,
+}
 
 
 def get_flashattention_autograd_function_pytorch() -> type:
@@ -85,7 +96,8 @@ def get_fsdp(module: torch.nn.Module, compute_dtype: torch.dtype | None = None) 
         Instance of an FSDP class.
     """
     # For example: return FSDP(module, compute_dtype=compute_dtype)
-    fsdp = FSDP.FSDP(module=module, compute_dtype=compute_dtype)
+    impl = _FSDP_IMPLS[os.environ.get("FSDP_IMPL", "manual")]
+    fsdp = impl.FSDP(module=module, compute_dtype=compute_dtype)
     return fsdp
 
 
