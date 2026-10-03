@@ -15,7 +15,12 @@ ALL=(kernels/v0_baseline kernels/v1_tiles kernels/v3_causal_skip kernels/v4_exp2
 # Round 0: the baseline next to SDPA.
 $NSYS "${NSYS_ARGS[@]}" -o results/nsys/round0 $PY profile_driver.py kernels/v0_baseline --N 4096 --causal 0
 
-# Every version, non-causal then causal, on one timeline.
+# Round 0's counters: the baseline on its own, and SDPA on its own for the warp-state comparison.
+$NCU "${NCU_ARGS[@]}" -o results/ncu/v0_N4096_nc $PY profile_driver.py kernels/v0_baseline --N 4096 --causal 0 --iters 1 --sdpa 0
+$NCU "${NCU_ARGS[@]}" --nvtx --nvtx-include "sdpa N=4096 causal=False/" -o results/ncu/sdpa_N4096_nc \
+    $PY profile_driver.py kernels/v0_baseline --N 4096 --causal 0 --iters 1
+
+# Every version except v2 (whose kernel is v1's), non-causal then causal, on one timeline.
 $NSYS "${NSYS_ARGS[@]}" -o results/nsys/all_versions \
     $PY compare_driver.py --N 4096 --causal 0 1 --iters 2 "${ALL[@]}"
 
@@ -26,3 +31,13 @@ $NCU "${NCU_ARGS[@]}" -o results/ncu/rounds_causal $PY compare_driver.py --N 409
 # Too many warps for the tile: 64x32 with 8 warps instead of 4.
 $NCU --set full -f -o results/ncu/v1_8warps --nvtx --nvtx-include "ours N=4096 causal=False/" --launch-count 1 \
     $PY profile_driver.py kernels/v1_tiles --config 64,32,8,3 --iters 1 --sdpa 0
+
+# The final profile: the final kernel with the configurations the harness's autotuner picks at
+# N = 4096 (64x128 tiles with 2 stages for both masks; 64x32 with 4 stages is its other choice
+# for causal), next to SDPA.
+$NCU "${NCU_ARGS[@]}" -o results/ncu/final_noncausal \
+    $PY profile_driver.py kernels/v5_final --N 4096 --causal 0 --config 64,128,4,2 --iters 1
+$NCU "${NCU_ARGS[@]}" -o results/ncu/final_causal \
+    $PY profile_driver.py kernels/v5_final --N 4096 --causal 1 --config 64,128,4,2 --iters 1
+$NCU "${NCU_ARGS[@]}" -o results/ncu/final_causal_64x32x4x4 \
+    $PY profile_driver.py kernels/v5_final --N 4096 --causal 1 --config 64,32,4,4 --iters 1 --sdpa 0

@@ -1,0 +1,9 @@
+N = 512, B = 4, H = 8, D = 64, bf16; medians over 7 rounds (ms); lead = median over rounds of sdpa/ours - 1
+causal = False
+  do_bench (flush before every call)   sdpa 0.0635   ours (64, 32, 4, 4) 0.0451 (lead +40.9%)   ours (64, 32, 4, 3) 0.0461 (lead +37.8%)
+  do_bench_cudagraph (no flush)        sdpa 0.0451   ours (64, 32, 4, 4) 0.0400 (lead +12.8%)   ours (64, 32, 4, 3) 0.0397 (lead +13.7%)
+  flush costs ours (64, 32, 4, 4) +13%  flush costs ours (64, 32, 4, 3) +16%; flush costs sdpa +41%
+causal = True
+  do_bench (flush before every call)   sdpa 0.0553   ours (64, 32, 4, 4) 0.0399 (lead +38.5%)   ours (64, 32, 4, 3) 0.0420 (lead +31.7%)
+  do_bench_cudagraph (no flush)        sdpa 0.0317   ours (64, 32, 4, 4) 0.0282 (lead +12.4%)   ours (64, 32, 4, 3) 0.0282 (lead +12.3%)
+  flush costs ours (64, 32, 4, 4) +42%  flush costs ours (64, 32, 4, 3) +49%; flush costs sdpa +75%

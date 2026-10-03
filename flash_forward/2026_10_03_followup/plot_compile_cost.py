@@ -1,6 +1,7 @@
 # plot_compile_cost.py
 #   python plot_compile_cost.py results/compile_cost.json images/autotune_cost.png
 import json
+import statistics
 import sys
 
 import matplotlib
@@ -24,8 +25,10 @@ def first(cache):
 
 
 def new_n():
-    # A new sequence length re-runs the benchmarks but reuses the compiled kernels.
-    return [next(r for r in runs if r["configs"] == k and r["cache"] == "cold")["calls"][1]["first_call_s"] for k in ks]
+    # A new sequence length re-runs the benchmarks but reuses the compiled kernels: the median of
+    # the three new lengths (N = 2048, 1024 and 512), as in the article's table.
+    return [statistics.median(c["first_call_s"] for c in next(r for r in runs if r["configs"] == k and r["cache"] == "cold")["calls"][1:4])
+            for k in ks]
 
 
 series = [("first call, empty Triton cache", first("cold")),

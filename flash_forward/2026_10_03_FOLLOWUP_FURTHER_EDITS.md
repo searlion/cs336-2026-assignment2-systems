@@ -19,6 +19,29 @@ This document has three parts:
 
 Line numbers refer to `2026_10_03_FOLLOWUP.md` as of commit `f3a3430`.
 
+**Status: applied.** These edits are now in `2026_10_03_FOLLOWUP.md`, and three independent reviewers then checked the whole article against the evidence, including experiments of their own, until each was satisfied. Where the article differs from the plan below:
+
+- **Harness tables.** They use the ten-run data with two refinements. Each time comes from whichever printed column is finer (ms for long kernels, TFLOP/s for short ones). A version's own table (v1's, the final kernel's) shows SDPA as measured in that version's runs, so its "% of SDPA" agrees with its two TFLOP/s columns. The headline causal baseline is 6.38 ms, not 6.36.
+- **E11** was not applied. Across the bf16, D = 64 sweep, the difference from the formula is exactly the `P` buffer; the 1 KB scratch belongs only to E14's case.
+- **E14's cause changed.** Triton puts the warps on the key axis at fp32, D = 128 because the 64-row query tile is shorter than the head dimension, not because of TF32. bf16 at D = 128 gets the same layout.
+- **E27** keeps the sweep's "within about 5%" next to the sweep table and reports the re-timing separately. The v5 comment now says "within 1% … in that sweep".
+- **E36, N = 512.** These numbers were re-measured on a warm GPU (`10_small_n/flush_effect_warm.txt`). The lead is 41% and 49% under `do_bench`, and 13% and 12% without the flush (`do_bench_cudagraph`). The 30%/35% and 7%/12% above came from a run that timed our kernel first, on a cold GPU.
+- **E36, power cap.** The explanation that the harness spends less time at the power cap was dropped: the harness does run at the cap.
+- **E28.** The final profile was re-captured at 64 × 128 × 4 × 2 (`2026_10_03_followup/results/ncu/final_*.ncu-rep`), and both screenshots were retaken from it (92.2%, SDPA 89.1%).
+- **Round 0.** A new figure shows the GPU clock in a cold and a warm capture (`images/nsys_clock_cold_warm.png`).
+- **Corrections found while editing and reviewing:**
+  - Nsight Compute's default lock is `boost`.
+  - `FSETP.GEU` goes from 44 to 4, not to 0.
+  - The 16 × 16 heatmap cell needs 1 stage as well as 1 warp.
+  - The spilling 128 × 64, 1-warp configuration runs at 5.3 TFLOP/s, not 2.9.
+  - The budget formula holds for 2 to 5 stages.
+  - The LSU figures use the elapsed-cycles denominator.
+  - The roofline's L1 and DRAM dots moved left.
+  - A device-to-device copy runs at 414–427 GB/s, read plus write.
+  - Not every 256-key tile spills.
+  - About twenty wording fixes.
+- **New evidence:** `03_harness_repeats/clock_ramp.py`, `10_small_n/flush_effect_warm.py`, `13_smaller/plot_cold_capture.py` and `14_review_checks/`.
+
 ---
 
 ## 1. Verdicts

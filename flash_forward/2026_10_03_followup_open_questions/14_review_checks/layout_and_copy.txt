@@ -1,0 +1,16 @@
+== warpsPerCTA of the first tl.dot's #mma layout
+bfloat16  D= 64 tile  64x32  warps  4 stages 3: warpsPerCTA [4, 1] (query axis), shared 24576 B, Q_TILE >= D
+float32   D= 64 tile  64x32  warps  4 stages 3: warpsPerCTA [4, 1] (query axis), shared 49152 B, Q_TILE >= D
+bfloat16  D=128 tile  64x32  warps  4 stages 3: warpsPerCTA [1, 4] (key axis), shared 53248 B, Q_TILE < D
+float16   D=128 tile  64x32  warps  4 stages 3: warpsPerCTA [1, 4] (key axis), shared 53248 B, Q_TILE < D
+float32   D=128 tile  64x32  warps  4 stages 2: warpsPerCTA [1, 4] (key axis), shared 74752 B, Q_TILE < D
+bfloat16  D=128 tile 128x32  warps  4 stages 3: warpsPerCTA [4, 1] (query axis), shared 65536 B, Q_TILE >= D
+bfloat16  D= 32 tile  32x32  warps  2 stages 3: warpsPerCTA [2, 1] (query axis), shared 10240 B, Q_TILE >= D
+bfloat16  D= 64 tile  32x32  warps  2 stages 3: warpsPerCTA [1, 2] (key axis), shared 22528 B, Q_TILE < D
+bfloat16  D= 16 tile  16x16  warps  4 stages 3: warpsPerCTA [4, 1] (query axis), shared 2560 B, Q_TILE >= D
+bfloat16  D= 64 tile  16x16  warps  4 stages 3: warpsPerCTA [1, 4] (key axis), shared 10752 B, Q_TILE < D
+bfloat16  D= 64 tile  64x32  warps  8 stages 3: warpsPerCTA [8, 1] (query axis), shared 24576 B, Q_TILE >= D
+
+== device-to-device copy (bytes read + bytes written)
+  256 MiB buffer: 1.258 ms, 427 GB/s = 397 GiB/s
+ 1024 MiB buffer: 5.185 ms, 414 GB/s = 386 GiB/s

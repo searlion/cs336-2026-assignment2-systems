@@ -56,9 +56,9 @@ def _attend_key_tiles(
 
 
 # From the second sweep (after tile-skipping and exp2), chosen so that every benchmark shape
-# is within 1% of its best configuration: 64x32 tiles with 3, 4 or 5 stages for short
-# sequences, 64x128 with 2 stages for long non-causal ones, and 64x32 with 2 stages, the
-# only one that fits in 99 KB of shared memory for fp32 inputs at D = 128.
+# is within 1% of its best configuration in that sweep: 64x32 tiles with 3, 4 or 5 stages
+# for short sequences, 64x128 with 2 stages for long non-causal ones, and 64x32 with 2
+# stages, the only one that fits in 99 KB of shared memory for fp32 inputs at D = 128.
 AUTOTUNE_CONFIGS = [
     triton.Config({"Q_TILE_SIZE": bq, "K_TILE_SIZE": bk}, num_warps=nw, num_stages=ns)
     for bq, bk, nw, ns in [(64, 32, 4, 3), (64, 32, 4, 4), (64, 32, 4, 5), (64, 128, 4, 2), (64, 32, 4, 2)]

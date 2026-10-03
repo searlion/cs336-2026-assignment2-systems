@@ -4,12 +4,14 @@
 #
 #   python profile_driver.py kernels/v0_baseline --N 4096 --causal 0
 #   python profile_driver.py kernels/v1_tiles --N 4096 --config 128,64,4,3
+#   python profile_driver.py kernels/v5_final --N 4096 --config 64,128,4,2
 import argparse
 import sys
 import time
 
 import torch
 import torch.nn.functional as F
+import triton
 
 parser = argparse.ArgumentParser()
 parser.add_argument("kernel_dir")
@@ -21,12 +23,18 @@ parser.add_argument("--config", default=None, help="Q_TILE,K_TILE,num_warps,num_
 args = parser.parse_args()
 
 sys.path.insert(0, args.kernel_dir)
+import flashattention_autograd_function_triton as kernel_module  # noqa: E402
 from flashattention_autograd_function_triton import FlashAttentionTriton  # noqa: E402
 
 if args.config:
     bq, bk, nw, ns = (int(x) for x in args.config.split(","))
-    FlashAttentionTriton.Q_TILE_SIZE, FlashAttentionTriton.K_TILE_SIZE = bq, bk
-    FlashAttentionTriton.NUM_WARPS, FlashAttentionTriton.NUM_STAGES = nw, ns
+    if hasattr(kernel_module.flash_fwd_kernel, "configs"):
+        # An autotuned version: an autotuner with a single configuration uses it without timing.
+        kernel_module.flash_fwd_kernel.configs = [
+            triton.Config({"Q_TILE_SIZE": bq, "K_TILE_SIZE": bk}, num_warps=nw, num_stages=ns)]
+    else:
+        FlashAttentionTriton.Q_TILE_SIZE, FlashAttentionTriton.K_TILE_SIZE = bq, bk
+        FlashAttentionTriton.NUM_WARPS, FlashAttentionTriton.NUM_STAGES = nw, ns
 
 B, H, D = 4, 8, 64  # the harness shape
 causal = bool(args.causal)

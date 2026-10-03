@@ -42,7 +42,7 @@ ROWS = [
     ("tensor ops (G)", lambda d: d["sm__ops_path_tensor_src_bf16_dst_fp32_sparsity_off.sum"] / 1e9, "{:.1f}"),
     ("tensor TOP/s", lambda d: d["sm__ops_path_tensor_src_bf16_dst_fp32_sparsity_off.sum.per_second"] / 1e12, "{:.1f}"),
     ("tensor % of peak", lambda d: d["sm__ops_path_tensor_src_bf16_dst_fp32_sparsity_off.sum.pct_of_peak_sustained_elapsed"], "{:.1f}"),
-    ("LSU pipe (%)", lambda d: d["sm__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active"], "{:.1f}"),
+    ("LSU pipe (%)", lambda d: d["sm__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_elapsed"], "{:.1f}"),
     ("issue slots busy (%)", lambda d: d["sm__inst_issued.avg.pct_of_peak_sustained_elapsed"], "{:.1f}"),
     ("instructions (M)", lambda d: d["smsp__inst_executed.sum"] / 1e6, "{:.0f}"),
     ("registers/thread", lambda d: d["launch__registers_per_thread"], "{:.0f}"),
