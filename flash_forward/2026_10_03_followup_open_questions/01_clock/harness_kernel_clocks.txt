@@ -1,0 +1,12 @@
+87119 clock samples, 'GPC Clock Frequency [MHz]'
+kernel                                         grid launches   clock MHz (median of per-launch means)     p10-p90 ms median
+vectorized_elementwise_kernel         (65536, 1, 1)     6612                                     2707  2624-2713      0.539
+flash_fwd_kernel                        (16, 32, 1)     2186                                     2697  2679-2710      0.135
+flash_fwd_kernel                        (32, 32, 1)     1602                                     2676  2655-2695      0.309
+flash_fwd_kernel                         (8, 32, 1)     1000                                     2713  2700-2715      0.043
+flash_fwd_kernel                        (64, 32, 1)      790                                     2609  2575-2652      1.140
+SDPA flash_fwd_kernel                     (8, 4, 8)      380                                     2708  2704-2713      0.135
+SDPA flash_fwd_kernel                    (16, 4, 8)      260                                     2698  2697-2699      0.340
+SDPA flash_fwd_kernel                     (4, 4, 8)      224                                     2711  2707-2714      0.058
+SDPA flash_fwd_kernel                    (32, 4, 8)      131                                     2640  2608-2698      1.153
+                                        (336, 1, 1)        5                                     2670  2570-2703      0.020

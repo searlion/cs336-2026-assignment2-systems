@@ -1,0 +1,141 @@
+round,N,causal,variant,natural_smem,launch_smem,regs,ms,tflops
+0,4096,False,4 stages,32768,32768,127,2.2016,62.43
+0,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1248,64.68
+0,4096,False,3 stages,24576,24576,127,2.1417,64.17
+0,4096,False,2 stages,16384,16384,137,2.1742,63.21
+0,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.1786,63.09
+0,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.1786,63.09
+0,4096,False,5 stages,40960,40960,127,2.2047,62.34
+1,4096,False,2 stages,16384,16384,137,2.2221,61.85
+1,4096,False,5 stages,40960,40960,127,2.2415,61.31
+1,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2088,62.22
+1,4096,False,3 stages,24576,24576,127,2.1391,64.25
+1,4096,False,4 stages,32768,32768,127,2.1647,63.49
+1,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2088,62.22
+1,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1636,63.52
+2,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2221,61.85
+2,4096,False,3 stages,24576,24576,127,2.1647,63.49
+2,4096,False,5 stages,40960,40960,127,2.2139,62.08
+2,4096,False,4 stages,32768,32768,127,2.1922,62.69
+2,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.1975,62.54
+2,4096,False,2 stages,16384,16384,137,2.2042,62.35
+2,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1862,62.87
+3,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2067,62.28
+3,4096,False,5 stages,40960,40960,127,2.2406,61.34
+3,4096,False,4 stages,32768,32768,127,2.1873,62.83
+3,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1730,63.25
+3,4096,False,2 stages,16384,16384,137,2.1975,62.54
+3,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2149,62.05
+3,4096,False,3 stages,24576,24576,127,2.1570,63.72
+4,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.1955,62.60
+4,4096,False,2 stages,16384,16384,137,2.1965,62.57
+4,4096,False,3 stages,24576,24576,127,2.1540,63.81
+4,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1755,63.18
+4,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.1985,62.51
+4,4096,False,4 stages,32768,32768,127,2.1874,62.83
+4,4096,False,5 stages,40960,40960,127,2.2394,61.37
+5,4096,False,5 stages,40960,40960,127,2.2146,62.06
+5,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1627,63.55
+5,4096,False,2 stages,16384,16384,137,2.2117,62.14
+5,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2221,61.85
+5,4096,False,4 stages,32768,32768,127,2.1882,62.81
+5,4096,False,3 stages,24576,24576,127,2.1632,63.54
+5,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2088,62.22
+6,4096,False,2 stages,16384,16384,137,2.1947,62.62
+6,4096,False,3 stages,24576,24576,127,2.1698,63.34
+6,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1985,62.51
+6,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2088,62.22
+6,4096,False,5 stages,40960,40960,127,2.2446,61.23
+6,4096,False,4 stages,32768,32768,127,2.1883,62.81
+6,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2048,62.34
+7,4096,False,4 stages,32768,32768,127,2.1693,63.36
+7,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2057,62.31
+7,4096,False,5 stages,40960,40960,127,2.2149,62.05
+7,4096,False,2 stages,16384,16384,137,2.2099,62.19
+7,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2200,61.91
+7,4096,False,3 stages,24576,24576,127,2.1765,63.15
+7,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1617,63.58
+8,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2159,62.02
+8,4096,False,3 stages,24576,24576,127,2.1658,63.46
+8,4096,False,4 stages,32768,32768,127,2.1883,62.81
+8,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1744,63.21
+8,4096,False,2 stages,16384,16384,137,2.2088,62.22
+8,4096,False,5 stages,40960,40960,127,2.2436,61.26
+8,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.2068,62.28
+9,4096,False,3 stages,24576,24576,127,2.1699,63.34
+9,4096,False,"3 stages, padded to 5-stage smem",24576,40960,127,2.1955,62.60
+9,4096,False,"4 stages, padded to 5-stage smem",32768,40960,127,2.2217,61.86
+9,4096,False,5 stages,40960,40960,127,2.2405,61.34
+9,4096,False,4 stages,32768,32768,127,2.1873,62.84
+9,4096,False,2 stages,16384,16384,137,2.1971,62.56
+9,4096,False,"3 stages, padded to 4-stage smem",24576,32768,127,2.1719,63.28
+0,512,False,4 stages,32768,32768,127,0.0461,46.60
+0,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0451,47.66
+0,512,False,3 stages,24576,24576,127,0.0464,46.28
+0,512,False,2 stages,16384,16384,137,0.0614,34.95
+0,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+0,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0563,38.13
+0,512,False,5 stages,40960,40960,127,0.0512,41.94
+1,512,False,2 stages,16384,16384,137,0.0614,34.95
+1,512,False,5 stages,40960,40960,127,0.0522,41.12
+1,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0553,38.84
+1,512,False,3 stages,24576,24576,127,0.0461,46.60
+1,512,False,4 stages,32768,32768,127,0.0453,47.44
+1,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+1,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0459,46.80
+2,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0553,38.84
+2,512,False,3 stages,24576,24576,127,0.0461,46.60
+2,512,False,5 stages,40960,40960,127,0.0522,41.12
+2,512,False,4 stages,32768,32768,127,0.0461,46.60
+2,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+2,512,False,2 stages,16384,16384,137,0.0614,34.95
+2,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0460,46.67
+3,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0553,38.84
+3,512,False,5 stages,40960,40960,127,0.0521,41.21
+3,512,False,4 stages,32768,32768,127,0.0451,47.66
+3,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0460,46.67
+3,512,False,2 stages,16384,16384,137,0.0614,34.95
+3,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+3,512,False,3 stages,24576,24576,127,0.0468,45.90
+4,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+4,512,False,2 stages,16384,16384,137,0.0614,34.95
+4,512,False,3 stages,24576,24576,127,0.0468,45.87
+4,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0451,47.66
+4,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0553,38.84
+4,512,False,4 stages,32768,32768,127,0.0461,46.60
+4,512,False,5 stages,40960,40960,127,0.0508,42.27
+5,512,False,5 stages,40960,40960,127,0.0522,41.12
+5,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0459,46.75
+5,512,False,2 stages,16384,16384,137,0.0614,34.95
+5,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+5,512,False,4 stages,32768,32768,127,0.0451,47.66
+5,512,False,3 stages,24576,24576,127,0.0461,46.60
+5,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0563,38.13
+6,512,False,2 stages,16384,16384,137,0.0614,34.95
+6,512,False,3 stages,24576,24576,127,0.0461,46.60
+6,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0461,46.60
+6,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+6,512,False,5 stages,40960,40960,127,0.0522,41.12
+6,512,False,4 stages,32768,32768,127,0.0451,47.66
+6,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0561,38.26
+7,512,False,4 stages,32768,32768,127,0.0461,46.60
+7,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0563,38.14
+7,512,False,5 stages,40960,40960,127,0.0522,41.12
+7,512,False,2 stages,16384,16384,137,0.0614,34.95
+7,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+7,512,False,3 stages,24576,24576,127,0.0461,46.60
+7,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0451,47.66
+8,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.63
+8,512,False,3 stages,24576,24576,127,0.0467,45.96
+8,512,False,4 stages,32768,32768,127,0.0451,47.66
+8,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0451,47.66
+8,512,False,2 stages,16384,16384,137,0.0614,34.95
+8,512,False,5 stages,40960,40960,127,0.0522,41.12
+8,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0553,38.84
+9,512,False,3 stages,24576,24576,127,0.0468,45.90
+9,512,False,"3 stages, padded to 5-stage smem",24576,40960,127,0.0563,38.13
+9,512,False,"4 stages, padded to 5-stage smem",32768,40960,127,0.0492,43.69
+9,512,False,5 stages,40960,40960,127,0.0502,42.80
+9,512,False,4 stages,32768,32768,127,0.0451,47.66
+9,512,False,2 stages,16384,16384,137,0.0614,34.95
+9,512,False,"3 stages, padded to 4-stage smem",24576,32768,127,0.0451,47.66

@@ -1,0 +1,11 @@
+metadata.shared = 107520
+80 IR dumps; 5 contain allocation.offset; using the first: TritonTensorMemoryAllocationPass (triton-tensor-memory-allocation) ('builtin.module' operation) //----- //
+module ttg.shared = 107520
+  offset      0  ttg.local_alloc              tensor<64x128xf32, #blocked> -> memdesc<64x128xf32, #shared, #smem>
+  offset  32768  ttg.local_alloc              memdesc<2x32x128xf32, #shared, #smem, mutable>
+  offset  65536  ttg.local_alloc              memdesc<2x32x128xf32, #shared1, #smem, mutable>
+  offset  98304  ttg.slice                    tensor<64x32xf32, #mma> -> tensor<64xf32, #ttg.slice<{dim = 1, parent = #mma}>
+  offset  98304  ttg.local_alloc              tensor<64x32xf32, #mma> -> memdesc<64x32xf32, #shared, #smem>
+  offset 106496  ttg.slice                    tensor<64x32xf32, #mma> -> tensor<64xf32, #ttg.slice<{dim = 1, parent = #mma}>
+  offset      0  ttg.convert_layout           tensor<64x128xf32, #mma> -> tensor<64x128xf32, #blocked>
+  offset      0  ttg.convert_layout           tensor<64xf32, #linear1> -> tensor<64xf32, #blocked1>

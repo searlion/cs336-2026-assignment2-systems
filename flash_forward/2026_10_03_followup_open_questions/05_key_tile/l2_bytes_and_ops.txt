@@ -1,0 +1,18 @@
+rounds_noncausal.ncu-rep     flash_fwd_kernel                         L2->L1 8.606712 Gbyte   tensor ops 206,158,430,208
+rounds_noncausal.ncu-rep     flash_fwd_kernel                         L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+rounds_noncausal.ncu-rep     flash_fwd_kernel                         L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+rounds_noncausal.ncu-rep     flash_fwd_kernel                         L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+rounds_noncausal.ncu-rep     flash_fwd_kernel                         L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+rounds_noncausal.ncu-rep     void pytorch_flash::flash_fwd_kernel<Fla L2->L1 1.350173 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x32x4x3 causal=False                   L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x32x4x2 causal=False                   L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x64x4x3 causal=False                   L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x64x4x2 causal=False                   L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x128x4x2 causal=False                  L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x128x4x3 causal=False                  L2->L1 2.164261 Gbyte   tensor ops 137,438,953,472
+v4_key_tiles.ncu-rep         64x32x4x3 causal=True                    L2->L1 1.107296 Gbyte   tensor ops 69,793,218,560
+v4_key_tiles.ncu-rep         64x32x4x2 causal=True                    L2->L1 1.107296 Gbyte   tensor ops 69,793,218,560
+v4_key_tiles.ncu-rep         64x64x4x3 causal=True                    L2->L1 1.107296 Gbyte   tensor ops 69,793,218,560
+v4_key_tiles.ncu-rep         64x64x4x2 causal=True                    L2->L1 1.107296 Gbyte   tensor ops 69,793,218,560
+v4_key_tiles.ncu-rep         64x128x4x2 causal=True                   L2->L1 1.124073 Gbyte   tensor ops 70,866,960,384
+v4_key_tiles.ncu-rep         64x128x4x3 causal=True                   L2->L1 1.124073 Gbyte   tensor ops 70,866,960,384

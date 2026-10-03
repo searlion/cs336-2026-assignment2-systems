@@ -1,0 +1,42 @@
+triton 3.6.0, torch 2.11.0+cu130, NVIDIA GeForce RTX 4070 SUPER
+
+PASS  warpsPerCTA for (16, 16, 4, 3) is [1, 4]
+      got [1, 4]
+PASS  warpsPerCTA for (64, 32, 8, 3) is [8, 1]
+      got [8, 1]
+PASS  warpsPerCTA for (32, 32, 2, 3) is [1, 2]
+      got [1, 2]
+PASS  warpsPerCTA for (64, 32, 4, 3) is [4, 1]
+      got [4, 1]
+PASS  warpsPerCTA for (128, 128, 4, 2) is [4, 1]
+      got [4, 1]
+PASS  warpsPerCTA for (128, 64, 8, 3) is [8, 1]
+      got [8, 1]
+PASS  num_stages=2: K and V buffers are 1x32x64
+      buffers ['1', '1']
+PASS  num_stages=2: shared memory 16384 == formula 16384
+      
+PASS  Q tile is a ttg.local_alloc (shared memory), read with ttg.local_load in the loop
+      ttg.local_alloc %Q_i_53 : (tensor<64x64xbf16, #blocked>)
+PASS  num_stages=3: K and V buffers are 2x32x64
+      buffers ['2', '2']
+PASS  num_stages=3: shared memory 24576 == formula 24576
+      
+PASS  num_stages=4: K and V buffers are 3x32x64
+      buffers ['3', '3']
+PASS  num_stages=4: shared memory 32768 == formula 32768
+      
+PASS  num_stages=5: K and V buffers are 4x32x64
+      buffers ['4', '4']
+PASS  num_stages=5: shared memory 40960 == formula 40960
+      
+PASS  tl.exp (v3) lowers to mul.f32 by 0f3FB8AA3B + ex2.approx.f32 (non-ftz)
+      v3 PTX: 40 ex2.approx.f32, 0 ex2.approx.ftz.f32
+PASS  tl.math.exp2 (v4) lowers to ex2.approx.ftz.f32
+      v4 PTX: 0 ex2.approx.f32, 40 ex2.approx.ftz.f32
+PASS  P for (64, 32, 4, 3) goes straight to the dot operand
+      ttg.convert_layout %P_ij_153 : tensor<64x32xbf16, #mma> -> tensor<64x32xbf16, #ttg.dot_op
+PASS  P for (16, 16, 4, 3) goes through shared memory
+      ttg.local_alloc %P_ij_146 : (tensor<16x16xbf16, #mma>)
+
+19/19 checks pass

@@ -1,0 +1,8 @@
+N=  512 causal=False ours (64, 32, 4, 4)    A do_bench 0.0479 ms   B no flush 0.0420 ms   C flush, wait, then time 0.0604 ms
+N=  512 causal=False sdpa                   A do_bench 0.0625 ms   B no flush 0.0451 ms   C flush, wait, then time 0.0665 ms
+N=  512 causal=True  ours (64, 32, 4, 4)    A do_bench 0.0410 ms   B no flush 0.0287 ms   C flush, wait, then time 0.0573 ms
+N=  512 causal=True  sdpa                   A do_bench 0.0553 ms   B no flush 0.0322 ms   C flush, wait, then time 0.0583 ms
+N= 4096 causal=False ours (64, 128, 4, 2)   A do_bench 1.9712 ms   B no flush 1.9743 ms   C flush, wait, then time 1.9589 ms
+N= 4096 causal=False sdpa                   A do_bench 2.0152 ms   B no flush 2.0200 ms   C flush, wait, then time 2.0086 ms
+N= 4096 causal=True  ours (64, 32, 4, 4)    A do_bench 1.0772 ms   B no flush 1.1039 ms   C flush, wait, then time 1.0833 ms
+N= 4096 causal=True  sdpa                   A do_bench 1.1244 ms   B no flush 1.1059 ms   C flush, wait, then time 1.1203 ms

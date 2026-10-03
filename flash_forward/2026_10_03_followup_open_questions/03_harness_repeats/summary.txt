@@ -1,0 +1,105 @@
+runs per version: {'v0_baseline': 10, 'v1_tiles': 10, 'v2_autotune': 10, 'v3_causal_skip': 10, 'v4_exp2': 10, 'v5_final': 10}
+
+== ms: median [min-max] over runs, and spread (max/min - 1)
+N=  512 causal=False
+   v0_baseline     0.1142 [0.1136-0.1148]  spread  1.1%
+   v1_tiles        0.0491 [0.0491-0.0519]  spread  5.6%
+   v2_autotune     0.0481 [0.0450-0.0481]  spread  7.0%
+   v3_causal_skip  0.0491 [0.0484-0.0491]  spread  1.6%
+   v4_exp2         0.0481 [0.0481-0.0502]  spread  4.2%
+   v5_final        0.0448 [0.0440-0.0467]  spread  6.1%
+   sdpa (all runs) 0.0653 [0.0624-0.0665]  spread  6.5%  (n=60)
+N= 1024 causal=False
+   v0_baseline     0.3861 [0.3852-0.3869]  spread  0.5%
+   v1_tiles        0.1494 [0.1494-0.1494]  spread  0.0%
+   v2_autotune     0.1504 [0.1499-0.1504]  spread  0.4%
+   v3_causal_skip  0.1473 [0.1468-0.1473]  spread  0.3%
+   v4_exp2         0.1444 [0.1444-0.1451]  spread  0.5%
+   v5_final        0.1436 [0.1434-0.1441]  spread  0.5%
+   sdpa (all runs) 0.1515 [0.1494-0.1526]  spread  2.1%  (n=60)
+N= 2048 causal=False
+   v0_baseline     1.5374 [1.5004-1.5618]  spread  4.1%
+   v1_tiles        0.5335 [0.5327-0.5369]  spread  0.8%
+   v2_autotune     0.5369 [0.5352-0.5394]  spread  0.8%
+   v3_causal_skip  0.5230 [0.5230-0.5262]  spread  0.6%
+   v4_exp2         0.5144 [0.5136-0.5175]  spread  0.8%
+   v5_final        0.5068 [0.5068-0.5075]  spread  0.1%
+   sdpa (all runs) 0.5377 [0.5344-0.5386]  spread  0.8%  (n=60)
+N= 4096 causal=False
+   v0_baseline     6.3925 [6.1909-6.6396]  spread  7.2%
+   v1_tiles        2.1210 [2.0919-2.3334]  spread 11.5%
+   v2_autotune     2.1292 [2.1144-2.3295]  spread 10.2%
+   v3_causal_skip  2.0575 [2.0392-2.0951]  spread  2.7%
+   v4_exp2         2.0271 [2.0064-2.2239]  spread 10.8%
+   v5_final        1.9536 [1.9495-1.9606]  spread  0.6%
+   sdpa (all runs) 2.0093 [1.9948-2.2275]  spread 11.7%  (n=60)
+N=  512 causal=True 
+   v0_baseline     0.1130 [0.1063-0.1142]  spread  7.4%
+   v1_tiles        0.0497 [0.0471-0.0521]  spread 10.7%
+   v2_autotune     0.0461 [0.0461-0.0461]  spread  0.0%
+   v3_causal_skip  0.0381 [0.0369-0.0429]  spread 16.4%
+   v4_exp2         0.0400 [0.0369-0.0451]  spread 22.3%
+   v5_final        0.0368 [0.0358-0.0419]  spread 17.2%
+   sdpa (all runs) 0.0553 [0.0532-0.0562]  spread  5.8%  (n=60)
+N= 1024 causal=True 
+   v0_baseline     0.3835 [0.3835-0.3869]  spread  0.9%
+   v1_tiles        0.1528 [0.1528-0.1528]  spread  0.0%
+   v2_autotune     0.1534 [0.1528-0.1534]  spread  0.4%
+   v3_causal_skip  0.0952 [0.0944-0.0963]  spread  2.0%
+   v4_exp2         0.0912 [0.0912-0.0942]  spread  3.3%
+   v5_final        0.0912 [0.0902-0.0922]  spread  2.1%
+   sdpa (all runs) 0.1200 [0.1167-0.1220]  spread  4.5%  (n=60)
+N= 2048 causal=True 
+   v0_baseline     1.5339 [1.5339-1.5477]  spread  0.9%
+   v1_tiles        0.5454 [0.5437-0.5454]  spread  0.3%
+   v2_autotune     0.5454 [0.5454-0.5471]  spread  0.3%
+   v3_causal_skip  0.3030 [0.3019-0.3041]  spread  0.7%
+   v4_exp2         0.2947 [0.2942-0.2957]  spread  0.5%
+   v5_final        0.2937 [0.2927-0.2947]  spread  0.7%
+   sdpa (all runs) 0.3297 [0.3279-0.3317]  spread  1.2%  (n=60)
+N= 4096 causal=True 
+   v0_baseline     6.3629 [6.1909-6.4830]  spread  4.7%
+   v1_tiles        2.1610 [2.1475-2.3454]  spread  9.2%
+   v2_autotune     2.1542 [2.1341-2.3778]  spread 11.4%
+   v3_causal_skip  1.1004 [1.0908-1.1066]  spread  1.4%
+   v4_exp2         1.0822 [1.0704-1.0908]  spread  1.9%
+   v5_final        1.0763 [1.0687-1.0788]  spread  0.9%
+   sdpa (all runs) 1.1174 [1.1084-1.1377]  spread  2.6%  (n=60)
+
+== % of SDPA, paired within each run (100 * sdpa_ms / ours_ms): median [min-max], runs faster than SDPA
+N=  512 causal=False  v1 133 [125-135] (10/10)  v2 131 [130-141] (10/10)  v3 133 [129-136] (10/10)  v4 136 [130-136] (10/10)  v5 141 [135-144] (10/10)
+N= 1024 causal=False  v1 101 [101-101] (10/10)  v2 101 [100-101] (8/10)  v3 103 [101-104] (10/10)  v4 105 [104-105] (10/10)  v5 105 [104-106] (10/10)
+N= 2048 causal=False  v1 100 [100-101] (9/10)  v2 100 [100-100] (9/10)  v3 102 [102-103] (10/10)  v4 104 [103-104] (10/10)  v5 106 [106-106] (10/10)
+N= 4096 causal=False  v1 95 [90-105] (1/10)  v2 95 [93-96] (0/10)  v3 97 [95-99] (0/10)  v4 99 [90-100] (1/10)  v5 103 [103-104] (10/10)
+N=  512 causal=True   v1 112 [106-119] (10/10)  v2 120 [117-122] (10/10)  v3 146 [129-152] (10/10)  v4 138 [123-152] (10/10)  v5 149 [132-155] (10/10)
+N= 1024 causal=True   v1 79 [77-79] (0/10)  v2 79 [77-79] (0/10)  v3 126 [123-127] (10/10)  v4 131 [126-133] (10/10)  v5 132 [129-133] (10/10)
+N= 2048 causal=True   v1 60 [60-61] (0/10)  v2 61 [60-61] (0/10)  v3 109 [108-109] (10/10)  v4 112 [111-112] (10/10)  v5 112 [112-113] (10/10)
+N= 4096 causal=True   v1 52 [47-52] (0/10)  v2 52 [47-53] (0/10)  v3 102 [100-102] (10/10)  v4 103 [102-104] (10/10)  v5 104 [103-105] (10/10)
+
+== consecutive versions, paired by run index: median [min-max] of new/old - 1 (negative = faster)
+N=  512 causal=False  v0->v1 -57.0 [-57.2--54.6]% (10/10 faster)  v1->v2 -2.0 [-13.2--2.0]% (10/10 faster)  v1->v3 +0.0 [-5.3-+0.0]% (3/10 faster)  v3->v4 -2.0 [-2.0-+2.1]% (9/10 faster)  v4->v5 -6.9 [-11.6--3.0]% (10/10 faster)
+N= 1024 causal=False  v0->v1 -61.3 [-61.4--61.2]% (10/10 faster)  v1->v2 +0.7 [+0.3-+0.7]% (0/10 faster)  v1->v3 -1.4 [-1.7--1.4]% (10/10 faster)  v3->v4 -2.0 [-2.0--1.2]% (10/10 faster)  v4->v5 -0.5 [-1.2--0.2]% (10/10 faster)
+N= 2048 causal=False  v0->v1 -65.2 [-65.8--64.5]% (10/10 faster)  v1->v2 +0.7 [+0.2-+1.1]% (0/10 faster)  v1->v3 -1.9 [-2.6--1.4]% (10/10 faster)  v3->v4 -1.7 [-2.4--1.1]% (10/10 faster)  v4->v5 -1.3 [-2.1--1.2]% (10/10 faster)
+N= 4096 causal=False  v0->v1 -66.7 [-68.3--63.2]% (10/10 faster)  v1->v2 +0.9 [-9.1-+10.0]% (4/10 faster)  v1->v3 -2.9 [-11.4--0.5]% (10/10 faster)  v3->v4 -1.2 [-4.0-+8.1]% (7/10 faster)  v4->v5 -3.7 [-11.8--2.6]% (10/10 faster)
+N=  512 causal=True   v0->v1 -55.9 [-58.8--52.8]% (10/10 faster)  v1->v2 -7.3 [-11.6--2.1]% (10/10 faster)  v1->v3 -20.2 [-29.2--13.0]% (10/10 faster)  v3->v4 +3.9 [-5.2-+18.9]% (2/10 faster)  v4->v5 -6.2 [-20.7--0.7]% (10/10 faster)
+N= 1024 causal=True   v0->v1 -60.1 [-60.5--60.1]% (10/10 faster)  v1->v2 +0.4 [+0.0-+0.4]% (0/10 faster)  v1->v3 -37.7 [-38.2--37.0]% (10/10 faster)  v3->v4 -4.0 [-5.3--1.1]% (10/10 faster)  v4->v5 -0.4 [-4.0-+1.1]% (5/10 faster)
+N= 2048 causal=True   v0->v1 -64.4 [-64.8--64.4]% (10/10 faster)  v1->v2 +0.0 [+0.0-+0.6]% (0/10 faster)  v1->v3 -44.4 [-44.6--44.2]% (10/10 faster)  v3->v4 -2.7 [-3.1--2.1]% (10/10 faster)  v4->v5 -0.3 [-0.9-+0.2]% (9/10 faster)
+N= 4096 causal=True   v0->v1 -65.9 [-66.9--63.3]% (10/10 faster)  v1->v2 -0.2 [-7.6-+1.7]% (5/10 faster)  v1->v3 -49.1 [-53.1--48.8]% (10/10 faster)  v3->v4 -1.7 [-2.4--0.8]% (10/10 faster)  v4->v5 -0.8 [-1.4-+0.6]% (9/10 faster)
+
+== autotuner choices (Q_TILE, K_TILE, num_warps, num_stages): count over runs
+v2_autotune  N=  512 causal=False (64, 16, 4, 5): 9, (64, 32, 4, 4): 1
+v2_autotune  N= 1024 causal=False (64, 32, 4, 3): 10
+v2_autotune  N= 2048 causal=False (64, 32, 4, 3): 10
+v2_autotune  N= 4096 causal=False (64, 32, 4, 3): 8, (64, 32, 4, 4): 2
+v2_autotune  N=  512 causal=True  (64, 32, 4, 4): 10
+v2_autotune  N= 1024 causal=True  (64, 32, 4, 3): 7, (64, 32, 4, 2): 3
+v2_autotune  N= 2048 causal=True  (64, 32, 4, 2): 10
+v2_autotune  N= 4096 causal=True  (64, 32, 4, 2): 8, (64, 32, 4, 3): 1, (64, 16, 4, 5): 1
+v5_final     N=  512 causal=False (64, 32, 4, 4): 6, (64, 32, 4, 5): 4
+v5_final     N= 1024 causal=False (64, 128, 4, 2): 10
+v5_final     N= 2048 causal=False (64, 128, 4, 2): 10
+v5_final     N= 4096 causal=False (64, 128, 4, 2): 10
+v5_final     N=  512 causal=True  (64, 32, 4, 4): 8, (64, 32, 4, 5): 1, (64, 32, 4, 3): 1
+v5_final     N= 1024 causal=True  (64, 32, 4, 4): 10
+v5_final     N= 2048 causal=True  (64, 32, 4, 4): 10
+v5_final     N= 4096 causal=True  (64, 32, 4, 4): 6, (64, 128, 4, 2): 4

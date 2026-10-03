@@ -1,0 +1,24 @@
+17:47:55 start tensor_pipe
+17:48:54 end tensor_pipe (exit 0)
+17:48:54 start nonsquare
+18:01:35 end nonsquare (exit 0)
+18:01:35 start key_tile
+18:02:38 end key_tile (exit 0)
+18:02:38 start autotune_noise
+18:07:15 end autotune_noise (exit 0)
+18:07:15 start pcast
+18:07:22 end pcast (exit 0)
+18:07:22 start shortlist
+18:08:32 end shortlist (exit 0)
+18:08:32 start smaller
+18:11:10 end smaller (exit 0)
+18:11:10 start clock
+18:13:11 end clock (exit 0)
+18:13:11 start harness_clock_nsys
+18:14:21 end harness_clock_nsys (exit 0)
+18:14:21 start small_n
+18:14:28 end small_n (exit 0)
+18:14:28 start compiler
+18:14:31 end compiler (exit 0)
+18:14:31 start smem
+18:14:35 end smem (exit 0)

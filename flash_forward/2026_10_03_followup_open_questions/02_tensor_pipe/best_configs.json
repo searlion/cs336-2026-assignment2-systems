@@ -1,0 +1,84 @@
+{
+ "bf16_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   32,
+   8,
+   4
+  ],
+  "ms": 15.3354,
+  "tflops": 71.7,
+  "max_abs_err_vs_fp32_matmul": 7.915496826171875e-05,
+  "ref_abs_max": 5.132655620574951
+ },
+ "fp16_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   32,
+   8,
+   4
+  ],
+  "ms": 15.6997,
+  "tflops": 70.0,
+  "max_abs_err_vs_fp32_matmul": 9.1552734375e-05,
+  "ref_abs_max": 5.1365790367126465
+ },
+ "fp16_in_fp16_acc": {
+  "config": [
+   128,
+   256,
+   64,
+   8,
+   3
+  ],
+  "ms": 10.0219,
+  "tflops": 109.7,
+  "max_abs_err_vs_fp32_matmul": 0.0605015754699707,
+  "ref_abs_max": 5.1365790367126465
+ },
+ "tf32_in_fp32_acc": {
+  "config": [
+   128,
+   256,
+   32,
+   8,
+   3
+  ],
+  "ms": 31.501,
+  "tflops": 34.9,
+  "max_abs_err_vs_fp32_matmul": 0.003991603851318359,
+  "ref_abs_max": 5.136712074279785
+ },
+ "int8_in_int32_acc": {
+  "config": [
+   128,
+   128,
+   64,
+   4,
+   3
+  ],
+  "ms": 6.2474,
+  "tflops": 176.0,
+  "max_abs_err_vs_fp32_matmul": 0.0,
+  "ref_abs_max": 4720.0
+ },
+ "fp8e4m3_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   64,
+   4,
+   3
+  ],
+  "ms": 8.8842,
+  "tflops": 123.8,
+  "max_abs_err_vs_fp32_matmul": 0.03277587890625,
+  "ref_abs_max": 5.082466125488281
+ },
+ "cublas_bf16": {
+  "ms": 15.5187,
+  "tflops": 70.9
+ }
+}

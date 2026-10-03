@@ -1,0 +1,47 @@
+
+== v0_nc: 584 SASS instructions, 859022 stall samples, barrier 216698 (25.2% of samples); HMMA executed 5.03e+07
+    address   executed per HMMA barrier samples  share  source line
+     282f50   3.28e+04   0.0007             273   0.1%  flashattention_autograd_function_triton.py:70  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     2835f0   8.39e+06   0.1667           20576   9.5%  flashattention_autograd_function_triton.py:70  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     2838c0   8.39e+06   0.1667           40961  18.9%  standard.py:191  return core.reduce(input, axis, _elementwise_max, keep_dims=keep_dims)
+     283910   8.39e+06   0.1667           25159  11.6%  standard.py:191  return core.reduce(input, axis, _elementwise_max, keep_dims=keep_dims)
+     2839a0   8.39e+06   0.1667           17636   8.1%  standard.py:293  return core.reduce(input, axis, _sum_combine, keep_dims=keep_dims)
+     283c30   8.39e+06   0.1667           23122  10.7%  standard.py:293  return core.reduce(input, axis, _sum_combine, keep_dims=keep_dims)
+     283dc0   8.39e+06   0.1667           22650  10.5%  standard.py:293  return core.reduce(input, axis, _sum_combine, keep_dims=keep_dims)
+     283e60   8.39e+06   0.1667           20004   9.2%  flashattention_autograd_function_triton.py:88  P_ij = P_ij.to(V_j.dtype)
+     283f70   8.39e+06   0.1667           19170   8.8%  flashattention_autograd_function_triton.py:88  P_ij = P_ij.to(V_j.dtype)
+     2840e0   8.39e+06   0.1667           27105  12.5%  flashattention_autograd_function_triton.py:71  V_j = tl.load(V_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     284870   3.28e+04   0.0007              11   0.0%  flashattention_autograd_function_triton.py:67  for j in range(tl.cdiv(N_KEYS, K_TILE_SIZE)):
+     284a60   3.28e+04   0.0007              31   0.0%  flashattention_autograd_function_triton.py:97  tl.store(O_block_ptr, O_i, boundary_check=(0, 1))
+
+== v1_nc: 976 SASS instructions, 295698 stall samples, barrier 50354 (17.0% of samples); HMMA executed 3.36e+07
+    address   executed per HMMA barrier samples  share  source line
+     286120   8.19e+03   0.0002              85   0.2%  flashattention_autograd_function_triton.py:70  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     2868d0   1.05e+06   0.0312           28069  55.7%  flashattention_autograd_function_triton.py:70  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     287950   1.05e+06   0.0312           22053  43.8%  flashattention_autograd_function_triton.py:70  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     288900   8.19e+03   0.0002              83   0.2%  flashattention_autograd_function_triton.py:67  for j in range(tl.cdiv(N_KEYS, K_TILE_SIZE)):
+     288a80   8.19e+03   0.0002               3   0.0%  flashattention_autograd_function_triton.py:97  tl.store(O_block_ptr, O_i, boundary_check=(0, 1))
+     2891b0   8.19e+03   0.0002              39   0.1%  flashattention_autograd_function_triton.py:100  tl.store(L_block_ptr, L_i, boundary_check=(0,))
+     2891d0   8.19e+03   0.0002              22   0.0%  flashattention_autograd_function_triton.py:100  tl.store(L_block_ptr, L_i, boundary_check=(0,))
+
+== v5_nc: 1352 SASS instructions, 286961 stall samples, barrier 55326 (19.3% of samples); HMMA executed 3.36e+07
+    address   executed per HMMA barrier samples  share  source line
+     296be0   8.19e+03   0.0002              79   0.1%  flashattention_autograd_function_triton.py:27  K_j = tl.load(K_block_ptr)
+     297170   1.05e+06   0.0312           25792  46.6%  flashattention_autograd_function_triton.py:27  K_j = tl.load(K_block_ptr)
+     297e10   1.05e+06   0.0312           29282  52.9%  flashattention_autograd_function_triton.py:27  K_j = tl.load(K_block_ptr)
+     298250   8.19e+03   0.0002              61   0.1%  flashattention_autograd_function_triton.py:22  for k_start in range(start, stop, K_TILE_SIZE):
+     298750   8.19e+03   0.0002              13   0.0%  flashattention_autograd_function_triton.py:24  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     298eb0          0   0.0000               0   0.0%  flashattention_autograd_function_triton.py:24  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     299ab0          0   0.0000               0   0.0%  flashattention_autograd_function_triton.py:24  K_j = tl.load(K_block_ptr, boundary_check=(0, 1), padding_option=zero"
+     29a4e0   8.19e+03   0.0002              11   0.0%  flashattention_autograd_function_triton.py:22  for k_start in range(start, stop, K_TILE_SIZE):
+     29adc0   8.19e+03   0.0002               9   0.0%  flashattention_autograd_function_triton.py:153  tl.store(O_block_ptr, O_i, boundary_check=(0, 1))
+     29b320   8.19e+03   0.0002              54   0.1%  flashattention_autograd_function_triton.py:157  tl.store(L_block_ptr, L_i, boundary_check=(0,))
+     29b340   8.19e+03   0.0002              25   0.0%  flashattention_autograd_function_triton.py:157  tl.store(L_block_ptr, L_i, boundary_check=(0,))
+
+== sdpa_nc: 3944 SASS instructions, 282885 stall samples, barrier 15964 (5.6% of samples); HMMA executed 3.36e+07
+    address   executed per HMMA barrier samples  share  source line
+     2b9ef0    4.1e+03   0.0001              49   0.3%  (no line info)
+     2badf0    4.1e+03   0.0001             286   1.8%  (no line info)
+     2c03c0   1.27e+05   0.0038           10893  68.2%  (no line info)
+     2c1070   1.27e+05   0.0038            4383  27.5%  (no line info)
+     2c7b80    4.1e+03   0.0001             353   2.2%  (no line info)

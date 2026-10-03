@@ -1,0 +1,150 @@
+bf16_in_fp32_acc (128, 128, 32, 4, 4): 15.348 ms 71.6 TFLOP/s
+bf16_in_fp32_acc (128, 128, 32, 8, 4): 15.335 ms 71.7 TFLOP/s
+bf16_in_fp32_acc (128, 128, 64, 8, 3): 16.137 ms 68.1 TFLOP/s
+bf16_in_fp32_acc (128, 256, 32, 8, 3): 15.755 ms 69.8 TFLOP/s
+bf16_in_fp32_acc (256, 128, 32, 8, 3): 16.137 ms 68.1 TFLOP/s
+bf16_in_fp32_acc (128, 128, 64, 4, 3): 16.048 ms 68.5 TFLOP/s
+bf16_in_fp32_acc (128, 256, 64, 8, 3): 15.753 ms 69.8 TFLOP/s
+bf16_in_fp32_acc (128, 128, 128, 8, 3): OutOfResources
+bf16_in_fp32_acc (64, 128, 32, 4, 4): 15.702 ms 70.0 TFLOP/s
+bf16_in_fp32_acc (128, 64, 64, 4, 4): 17.280 ms 63.6 TFLOP/s
+bf16_in_fp32_acc {'config': (128, 128, 32, 8, 4), 'ms': 15.3354, 'tflops': 71.7, 'max_abs_err_vs_fp32_matmul': 7.915496826171875e-05, 'ref_abs_max': 5.132655620574951}
+fp16_in_fp32_acc (128, 128, 32, 4, 4): 15.755 ms 69.8 TFLOP/s
+fp16_in_fp32_acc (128, 128, 32, 8, 4): 15.700 ms 70.0 TFLOP/s
+fp16_in_fp32_acc (128, 128, 64, 8, 3): 16.463 ms 66.8 TFLOP/s
+fp16_in_fp32_acc (128, 256, 32, 8, 3): 16.282 ms 67.5 TFLOP/s
+fp16_in_fp32_acc (256, 128, 32, 8, 3): 16.349 ms 67.3 TFLOP/s
+fp16_in_fp32_acc (128, 128, 64, 4, 3): 16.252 ms 67.7 TFLOP/s
+fp16_in_fp32_acc (128, 256, 64, 8, 3): 15.851 ms 69.4 TFLOP/s
+fp16_in_fp32_acc (128, 128, 128, 8, 3): OutOfResources
+fp16_in_fp32_acc (64, 128, 32, 4, 4): 16.056 ms 68.5 TFLOP/s
+fp16_in_fp32_acc (128, 64, 64, 4, 4): 17.517 ms 62.8 TFLOP/s
+fp16_in_fp32_acc {'config': (128, 128, 32, 8, 4), 'ms': 15.6997, 'tflops': 70.0, 'max_abs_err_vs_fp32_matmul': 9.1552734375e-05, 'ref_abs_max': 5.1365790367126465}
+fp16_in_fp16_acc (128, 128, 32, 4, 4): 10.563 ms 104.1 TFLOP/s
+fp16_in_fp16_acc (128, 128, 32, 8, 4): 10.851 ms 101.3 TFLOP/s
+fp16_in_fp16_acc (128, 128, 64, 8, 3): 10.507 ms 104.6 TFLOP/s
+fp16_in_fp16_acc (128, 256, 32, 8, 3): 10.319 ms 106.6 TFLOP/s
+fp16_in_fp16_acc (256, 128, 32, 8, 3): 11.421 ms 96.3 TFLOP/s
+fp16_in_fp16_acc (128, 128, 64, 4, 3): 10.262 ms 107.1 TFLOP/s
+fp16_in_fp16_acc (128, 256, 64, 8, 3): 10.022 ms 109.7 TFLOP/s
+fp16_in_fp16_acc (128, 128, 128, 8, 3): OutOfResources
+fp16_in_fp16_acc (64, 128, 32, 4, 4): 13.089 ms 84.0 TFLOP/s
+fp16_in_fp16_acc (128, 64, 64, 4, 4): 11.967 ms 91.9 TFLOP/s
+fp16_in_fp16_acc {'config': (128, 256, 64, 8, 3), 'ms': 10.0219, 'tflops': 109.7, 'max_abs_err_vs_fp32_matmul': 0.0605015754699707, 'ref_abs_max': 5.1365790367126465}
+tf32_in_fp32_acc (128, 128, 32, 4, 4): 32.328 ms 34.0 TFLOP/s
+tf32_in_fp32_acc (128, 128, 32, 8, 4): 33.720 ms 32.6 TFLOP/s
+tf32_in_fp32_acc (128, 128, 64, 8, 3): OutOfResources
+tf32_in_fp32_acc (128, 256, 32, 8, 3): 31.501 ms 34.9 TFLOP/s
+tf32_in_fp32_acc (256, 128, 32, 8, 3): 31.644 ms 34.7 TFLOP/s
+tf32_in_fp32_acc (128, 128, 64, 4, 3): OutOfResources
+tf32_in_fp32_acc (128, 256, 64, 8, 3): OutOfResources
+tf32_in_fp32_acc (128, 128, 128, 8, 3): OutOfResources
+tf32_in_fp32_acc (64, 128, 32, 4, 4): 34.824 ms 31.6 TFLOP/s
+tf32_in_fp32_acc (128, 64, 64, 4, 4): OutOfResources
+tf32_in_fp32_acc {'config': (128, 256, 32, 8, 3), 'ms': 31.501, 'tflops': 34.9, 'max_abs_err_vs_fp32_matmul': 0.003991603851318359, 'ref_abs_max': 5.136712074279785}
+int8_in_int32_acc (128, 128, 32, 4, 4): 6.908 ms 159.2 TFLOP/s
+int8_in_int32_acc (128, 128, 32, 8, 4): 7.885 ms 139.4 TFLOP/s
+int8_in_int32_acc (128, 128, 64, 8, 3): 7.364 ms 149.3 TFLOP/s
+int8_in_int32_acc (128, 256, 32, 8, 3): 7.119 ms 154.5 TFLOP/s
+int8_in_int32_acc (256, 128, 32, 8, 3): 7.386 ms 148.9 TFLOP/s
+int8_in_int32_acc (128, 128, 64, 4, 3): 6.247 ms 176.0 TFLOP/s
+int8_in_int32_acc (128, 256, 64, 8, 3): 6.407 ms 171.6 TFLOP/s
+int8_in_int32_acc (128, 128, 128, 8, 3): 6.975 ms 157.6 TFLOP/s
+int8_in_int32_acc (64, 128, 32, 4, 4): 7.913 ms 138.9 TFLOP/s
+int8_in_int32_acc (128, 64, 64, 4, 4): 7.491 ms 146.8 TFLOP/s
+int8_in_int32_acc {'config': (128, 128, 64, 4, 3), 'ms': 6.2474, 'tflops': 176.0, 'max_abs_err_vs_fp32_matmul': 0.0, 'ref_abs_max': 4720.0}
+fp8e4m3_in_fp32_acc (128, 128, 32, 4, 4): 9.286 ms 118.4 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 128, 32, 8, 4): 9.983 ms 110.1 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 128, 64, 8, 3): 10.101 ms 108.9 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 256, 32, 8, 3): 10.128 ms 108.6 TFLOP/s
+fp8e4m3_in_fp32_acc (256, 128, 32, 8, 3): 10.397 ms 105.8 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 128, 64, 4, 3): 8.884 ms 123.8 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 256, 64, 8, 3): 9.303 ms 118.2 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 128, 128, 8, 3): 9.539 ms 115.3 TFLOP/s
+fp8e4m3_in_fp32_acc (64, 128, 32, 4, 4): 9.724 ms 113.1 TFLOP/s
+fp8e4m3_in_fp32_acc (128, 64, 64, 4, 4): 9.390 ms 117.1 TFLOP/s
+fp8e4m3_in_fp32_acc {'config': (128, 128, 64, 4, 3), 'ms': 8.8842, 'tflops': 123.8, 'max_abs_err_vs_fp32_matmul': 0.03277587890625, 'ref_abs_max': 5.082466125488281}
+{
+ "bf16_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   32,
+   8,
+   4
+  ],
+  "ms": 15.3354,
+  "tflops": 71.7,
+  "max_abs_err_vs_fp32_matmul": 7.915496826171875e-05,
+  "ref_abs_max": 5.132655620574951
+ },
+ "fp16_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   32,
+   8,
+   4
+  ],
+  "ms": 15.6997,
+  "tflops": 70.0,
+  "max_abs_err_vs_fp32_matmul": 9.1552734375e-05,
+  "ref_abs_max": 5.1365790367126465
+ },
+ "fp16_in_fp16_acc": {
+  "config": [
+   128,
+   256,
+   64,
+   8,
+   3
+  ],
+  "ms": 10.0219,
+  "tflops": 109.7,
+  "max_abs_err_vs_fp32_matmul": 0.0605015754699707,
+  "ref_abs_max": 5.1365790367126465
+ },
+ "tf32_in_fp32_acc": {
+  "config": [
+   128,
+   256,
+   32,
+   8,
+   3
+  ],
+  "ms": 31.501,
+  "tflops": 34.9,
+  "max_abs_err_vs_fp32_matmul": 0.003991603851318359,
+  "ref_abs_max": 5.136712074279785
+ },
+ "int8_in_int32_acc": {
+  "config": [
+   128,
+   128,
+   64,
+   4,
+   3
+  ],
+  "ms": 6.2474,
+  "tflops": 176.0,
+  "max_abs_err_vs_fp32_matmul": 0.0,
+  "ref_abs_max": 4720.0
+ },
+ "fp8e4m3_in_fp32_acc": {
+  "config": [
+   128,
+   128,
+   64,
+   4,
+   3
+  ],
+  "ms": 8.8842,
+  "tflops": 123.8,
+  "max_abs_err_vs_fp32_matmul": 0.03277587890625,
+  "ref_abs_max": 5.082466125488281
+ },
+ "cublas_bf16": {
+  "ms": 15.5187,
+  "tflops": 70.9
+ }
+}

@@ -1,0 +1,17 @@
+mean |error| (x1e-5), averaged over 3 seeds; [max |error| (x1e-3), worst seed]
+N=1024 causal=False: floor (bf16 rounding of the exact output) 5.750 [0.977]
+   v4: sum fp32 P, cast, multiply     bf16 out 8.742 [1.100]   fp32 out 6.035 [0.501]   bf16 out != bf16(exact): 39.9% of elements
+   cast first, sum the bf16 P         bf16 out 8.733 [1.200]   fp32 out 6.018 [0.489]   bf16 out != bf16(exact): 39.9% of elements
+   no cast: fp32 P, V upcast, TF32    bf16 out 5.966 [1.048]   fp32 out 1.560 [0.221]   bf16 out != bf16(exact): 13.2% of elements
+N=1024 causal=True: floor (bf16 rounding of the exact output) 10.657 [7.807]
+   v4: sum fp32 P, cast, multiply     bf16 out 15.405 [7.974]   fp32 out 10.039 [3.876]   bf16 out != bf16(exact): 38.5% of elements
+   cast first, sum the bf16 P         bf16 out 15.350 [8.517]   fp32 out 9.915 [3.554]   bf16 out != bf16(exact): 38.4% of elements
+   no cast: fp32 P, V upcast, TF32    bf16 out 11.015 [8.055]   fp32 out 2.600 [1.470]   bf16 out != bf16(exact): 12.8% of elements
+N=4096 causal=False: floor (bf16 rounding of the exact output) 2.882 [0.937]
+   v4: sum fp32 P, cast, multiply     bf16 out 4.509 [1.016]   fp32 out 3.196 [0.259]   bf16 out != bf16(exact): 41.1% of elements
+   cast first, sum the bf16 P         bf16 out 4.507 [1.016]   fp32 out 3.193 [0.261]   bf16 out != bf16(exact): 41.1% of elements
+   no cast: fp32 P, V upcast, TF32    bf16 out 2.996 [0.937]   fp32 out 0.828 [0.122]   bf16 out != bf16(exact): 13.4% of elements
+N=4096 causal=True: floor (bf16 rounding of the exact output) 5.535 [7.773]
+   v4: sum fp32 P, cast, multiply     bf16 out 8.295 [8.191]   fp32 out 5.631 [3.342]   bf16 out != bf16(exact): 40.2% of elements
+   cast first, sum the bf16 P         bf16 out 8.280 [8.474]   fp32 out 5.596 [3.746]   bf16 out != bf16(exact): 40.1% of elements
+   no cast: fp32 P, V upcast, TF32    bf16 out 5.735 [7.773]   fp32 out 1.455 [1.117]   bf16 out != bf16(exact): 13.2% of elements

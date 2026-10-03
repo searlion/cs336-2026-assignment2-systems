@@ -1,0 +1,7 @@
+kernel                       API call                call start  kernel start  start->start  end->start  duration
+flash_fwd_kernel             cuLaunchKernelEx           0.000ms       0.103ms       0.103ms     0.065ms   5.811ms
+SDPA flash_fwd_kernel        cudaLaunchKernel_v7000     0.135ms       5.914ms       5.779ms     5.769ms   1.968ms
+flash_fwd_kernel             cuLaunchKernelEx           0.217ms       7.883ms       7.666ms     7.660ms   6.471ms
+SDPA flash_fwd_kernel        cudaLaunchKernel_v7000     0.254ms      14.355ms      14.101ms    14.096ms   1.972ms
+flash_fwd_kernel             cuLaunchKernelEx           0.309ms      16.327ms      16.019ms    16.014ms   5.817ms
+SDPA flash_fwd_kernel        cudaLaunchKernel_v7000     0.341ms      22.145ms      21.804ms    21.800ms   1.968ms

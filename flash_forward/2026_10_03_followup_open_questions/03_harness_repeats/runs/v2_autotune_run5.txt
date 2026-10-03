@@ -1,0 +1,73 @@
+     N  causal   ours ms   sdpa ms  ours TF/s  sdpa TF/s  % sdpa
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (512, 512, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.58s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None;
+   512   False     0.048     0.062       44.6       34.4    130%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (512, 512, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.43s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None;
+   512    True     0.046     0.056       23.3       19.1    122%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (1024, 1024, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.44s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None;
+  1024   False     0.151     0.153       57.1       56.3    101%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (1024, 1024, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.45s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None;
+  1024    True     0.154     0.121       28.0       35.5     79%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (2048, 2048, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.50s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None;
+  2048   False     0.538     0.539       63.9       63.8    100%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (2048, 2048, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.47s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None;
+  2048    True     0.546     0.332       31.5       51.8     61%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (4096, 4096, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.54s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None;
+  4096   False     2.128     2.033       64.6       67.6     96%
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None
+Autotuning kernel flash_fwd_kernel with config Q_TILE_SIZE: 64, K_TILE_SIZE: 16, num_warps: 4, num_ctas: 1, num_stages: 5, maxnreg: None
+Triton autotuning for function flash_fwd_kernel,
+with key as (4096, 4096, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32'),
+finished after 0.55s,
+best config selected: Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None;
+  4096    True     2.133     1.118       32.2       61.5     52%

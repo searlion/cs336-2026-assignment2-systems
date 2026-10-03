@@ -1,0 +1,5 @@
+kernel, N = 4096            config (regs, smem B) launches clock MHz      ms harness TF/s peak at clock % of it
+final (v5) non-causal             255 regs, 40960       53      2609   1.996         68.8          74.8   92.0%
+SDPA non-causal                                 -       52      2624   2.058         66.7          75.2   88.6%
+final (v5) causal                 128 regs, 32768       83      2609   1.101         62.1          74.8   83.0%
+SDPA causal                                     -       79      2684   1.130         60.9          76.9   79.1%

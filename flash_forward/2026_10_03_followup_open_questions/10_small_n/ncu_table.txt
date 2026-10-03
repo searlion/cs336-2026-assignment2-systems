@@ -1,0 +1,21 @@
+                                              flash_fwd_kernel  void pytorch_flash::flash_fwd_
+duration (ms)                                            0.045                           0.051
+SM clock (GHz)                                            2.49                            2.50
+tensor ops (G)                                             2.1                             2.1
+tensor TOP/s                                              48.1                            42.3
+tensor % of peak                                          67.3                            58.9
+LSU pipe (%)                                              24.1                            11.5
+issue slots busy (%)                                      19.5                            12.9
+instructions (M)                                             5                               4
+registers/thread                                           128                             255
+shared mem/block (KB)                                     32.8                            49.2
+theoretical occupancy (%)                                 25.0                            16.7
+achieved occupancy (%)                                    21.7                            14.5
+L2->L1 bytes (GB)                                         0.04                            0.02
+L2 hit rate (%)                                           83.4                            77.4
+DRAM bytes (MB)                                              6                               8
+shared st+ld wavefronts (M)                                  2                               1
+warp cycles / issued inst                                11.86                           10.43
+top stalls (cycles per issued instruction):
+  flash_fwd_kernel                math_pipe_throttle 5.55, barrier 1.53, long_scoreboard 1.36, wait 1.20
+  void pytorch_flash::flash_fwd_  math_pipe_throttle 5.51, long_scoreboard 1.60, wait 1.02, selected 1.00

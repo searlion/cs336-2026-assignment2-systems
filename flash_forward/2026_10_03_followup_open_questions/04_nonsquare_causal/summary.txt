@@ -1,0 +1,22 @@
+SDPA is_causal=True against the two conventions (max |error|):
+  (1, 200, 96, 64): vs top-left 8.9e-16, vs bottom-right 2.9e+00
+  (1, 96, 200, 64): vs top-left 8.9e-16, vs bottom-right 2.8e+00
+  (1, 37, 53, 32): vs top-left 5.6e-16, vs bottom-right 2.8e+00
+  (1, 53, 37, 32): vs top-left 5.6e-16, vs bottom-right 2.8e+00
+  (2, 64, 128, 16): vs top-left 0.0e+00, vs bottom-right 2.7e+00
+  (2, 128, 64, 16): vs top-left 0.0e+00, vs bottom-right 2.7e+00
+  (1, 1, 77, 64): vs top-left 0.0e+00, vs bottom-right 2.8e+00
+  (1, 77, 1, 64): vs top-left 0.0e+00, vs bottom-right 0.0e+00
+  (1, 130, 257, 64): vs top-left 8.9e-16, vs bottom-right 2.7e+00
+  (1, 257, 130, 64): vs top-left 8.9e-16, vs bottom-right 3.0e+00
+  (1, 333, 1000, 64): vs top-left 8.9e-16, vs bottom-right 2.8e+00
+  (1, 1000, 333, 64): vs top-left 9.4e-16, vs bottom-right 2.6e+00
+  (1, 200, 96, 128): vs top-left 1.5e-15, vs bottom-right 3.5e+00
+  (1, 96, 200, 128): vs top-left 1.5e-15, vs bottom-right 3.5e+00
+v0_baseline: 248/248 cases pass
+v1_tiles: 248/248 cases pass
+v2_autotune: 248/248 cases pass
+v3_causal_skip: 668/668 cases pass
+v4_exp2: 668/668 cases pass
+v5_final: 668/668 cases pass
+0 failures

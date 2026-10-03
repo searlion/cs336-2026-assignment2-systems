@@ -1,0 +1,11 @@
+kernel                     path (ops>0)   ops % peak  pipe % pipe_v2 % hmma pipe % imma pipe % hmma inst % pipe/ops peak ops/clk/SM clock GHz   TOP/s
+matmul_kernel              bf16_dst_fp32        97.6    48.8      48.8        48.8         0.0        24.4     0.50             512      2.52    70.4
+matmul_kernel              fp16_dst_fp32        97.5    48.7      48.7        48.7         0.0        24.4     0.50             512      2.52    70.4
+matmul_kernel              fp16_dst_fp16        84.1    84.1      84.1        84.1         0.0        42.0     1.00            1024      2.52   121.4
+matmul_kernel              tf32_dst_fp32        93.0    46.5      46.5        46.5         0.0        23.3     0.50             256      2.52    33.6
+matmul_kernel              int8                 64.0    64.0      64.0         0.0        64.0         0.0     1.00            2048      2.52   184.9
+matmul_kernel              fp8                  44.0    44.0      44.0        44.0         0.0        22.0     1.00            2048      2.52   127.1
+flash_fwd_kernel           bf16_dst_fp32        45.5    22.8      22.8        22.8         0.0        11.4     0.50             512      2.52    32.9
+flash_fwd_kernel           bf16_dst_fp32        87.5    43.8      43.8        43.8         0.0        21.9     0.50             512      2.52    63.2
+flash_fwd_kernel           bf16_dst_fp32        92.3    46.1      46.1        46.1         0.0        23.1     0.50             512      2.51    66.4
+void pytorch_flash::flash_ bf16_dst_fp32        89.2    44.6      44.6        44.6         0.0        22.3     0.50             512      2.51    64.2

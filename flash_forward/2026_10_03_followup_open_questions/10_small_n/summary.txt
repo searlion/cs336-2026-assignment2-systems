@@ -1,0 +1,34 @@
+== flash_fwd_kernel
+   kernel flash_fwd_kernel
+   duration 0.0447 ms (under Nsight Compute), grid (8, 32, 1), block (128, 1, 1)
+   registers/thread                   128
+   dynamic shared KB/block            32.77
+   static shared KB/block             0
+   blocks/SM limit (registers)        4
+   blocks/SM limit (shared memory)    3
+   blocks/SM limit (warps)            12
+   waves per SM                       1.52
+   theoretical occupancy %            25
+   achieved occupancy %               21.69
+   SM active cycles (avg)             9.96e+04
+   elapsed cycles (avg)               1.114e+05
+   tensor % of peak (elapsed)         67.25
+   tensor ops                         2.147e+09
+   SMs busy (active / elapsed cycles) 89.4%
+== void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits
+   kernel void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits<64, 128, 128, 4, 0, 0, cutlas
+   duration 0.0508 ms (under Nsight Compute), grid (4, 4, 8), block (128, 1, 1)
+   registers/thread                   255
+   dynamic shared KB/block            49.15
+   static shared KB/block             0
+   blocks/SM limit (registers)        2
+   blocks/SM limit (shared memory)    2
+   blocks/SM limit (warps)            12
+   waves per SM                       1.14
+   theoretical occupancy %            16.67
+   achieved occupancy %               14.46
+   SM active cycles (avg)             9.897e+04
+   elapsed cycles (avg)               1.272e+05
+   tensor % of peak (elapsed)         58.9
+   tensor ops                         2.147e+09
+   SMs busy (active / elapsed cycles) 77.8%

@@ -1,0 +1,11 @@
+executed instructions: 263.9 M (64x32x4x3) -> 171.2 M (64x128x4x2)
+rescale O_acc (line 49)                                    -25.2 M   27.2% of the drop
+K/V loads: async copies and their barriers (27, 28)        -20.2 M   21.8% of the drop
+loop bookkeeping (22)                                      -19.4 M   20.9% of the drop
+row max, sum, alpha, m, l (42, 45, 46, tl.max/tl.sum)      -23.6 M   25.5% of the drop
+Q re-read from shared memory (109)                          -3.1 M    3.3% of the drop
+Q K^T dot (30)                                              -2.1 M    2.3% of the drop
+exp2 (44), per score                                         0.0 M   -0.0% of the drop
+P cast (48), per score                                       0.0 M   -0.0% of the drop
+P V dot (50)                                                 0.0 M   -0.0% of the drop
+everything else                                              0.8 M   -0.9%
