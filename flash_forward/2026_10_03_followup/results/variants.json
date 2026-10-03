@@ -1,0 +1,146 @@
+[
+ {
+  "variant": "v4 (P cast to bf16 after the row sum)",
+  "N": 1024,
+  "causal": false,
+  "ms": 0.1556,
+  "tflops": 55.2,
+  "max_err": 0.0008783051129352959,
+  "mean_err": 8.876837647447439e-05
+ },
+ {
+  "variant": "v4 (P cast to bf16 after the row sum)",
+  "N": 1024,
+  "causal": true,
+  "ms": 0.0922,
+  "tflops": 46.6,
+  "max_err": 0.004818025346784438,
+  "mean_err": 0.00015467175796641467
+ },
+ {
+  "variant": "v4 (P cast to bf16 after the row sum)",
+  "N": 4096,
+  "causal": false,
+  "ms": 2.0246,
+  "tflops": 67.9,
+  "max_err": 0.000459716855895298,
+  "mean_err": 4.519082166839243e-05
+ },
+ {
+  "variant": "v4 (P cast to bf16 after the row sum)",
+  "N": 4096,
+  "causal": true,
+  "ms": 1.0788,
+  "tflops": 63.7,
+  "max_err": 0.005384717726934385,
+  "mean_err": 8.245412277601198e-05
+ },
+ {
+  "variant": "no P cast: fp32 P, V upcast, TF32 dot",
+  "N": 1024,
+  "causal": false,
+  "ms": 0.2041,
+  "tflops": 42.1,
+  "max_err": 0.0008783051129352959,
+  "mean_err": 6.135535651940044e-05
+ },
+ {
+  "variant": "no P cast: fp32 P, V upcast, TF32 dot",
+  "N": 1024,
+  "causal": true,
+  "ms": 0.1265,
+  "tflops": 34.0,
+  "max_err": 0.004100801238899443,
+  "mean_err": 0.00011024565780806456
+ },
+ {
+  "variant": "no P cast: fp32 P, V upcast, TF32 dot",
+  "N": 4096,
+  "causal": false,
+  "ms": 2.8861,
+  "tflops": 47.6,
+  "max_err": 0.000459716855895298,
+  "mean_err": 3.0114345974757818e-05
+ },
+ {
+  "variant": "no P cast: fp32 P, V upcast, TF32 dot",
+  "N": 4096,
+  "causal": true,
+  "ms": 1.542,
+  "tflops": 44.6,
+  "max_err": 0.005161188816300122,
+  "mean_err": 5.661164392684643e-05
+ },
+ {
+  "variant": "P cast before the row sum",
+  "N": 1024,
+  "causal": false,
+  "ms": 0.1485,
+  "tflops": 57.9,
+  "max_err": 0.0008783051129352959,
+  "mean_err": 8.862955406635506e-05
+ },
+ {
+  "variant": "P cast before the row sum",
+  "N": 1024,
+  "causal": true,
+  "ms": 0.0952,
+  "tflops": 45.1,
+  "max_err": 0.0049204249619554385,
+  "mean_err": 0.00015412315236247871
+ },
+ {
+  "variant": "P cast before the row sum",
+  "N": 4096,
+  "causal": false,
+  "ms": 2.0573,
+  "tflops": 66.8,
+  "max_err": 0.000459716855895298,
+  "mean_err": 4.518326808557916e-05
+ },
+ {
+  "variant": "P cast before the row sum",
+  "N": 4096,
+  "causal": true,
+  "ms": 1.1121,
+  "tflops": 61.8,
+  "max_err": 0.005161188816300122,
+  "mean_err": 8.224935112206293e-05
+ },
+ {
+  "variant": "reverse query-tile order",
+  "N": 1024,
+  "causal": false,
+  "ms": 0.1454,
+  "tflops": 59.1,
+  "max_err": 0.0008783051129352959,
+  "mean_err": 8.876837647447439e-05
+ },
+ {
+  "variant": "reverse query-tile order",
+  "N": 1024,
+  "causal": true,
+  "ms": 0.0911,
+  "tflops": 47.1,
+  "max_err": 0.004818025346784438,
+  "mean_err": 0.00015467175796641467
+ },
+ {
+  "variant": "reverse query-tile order",
+  "N": 4096,
+  "causal": false,
+  "ms": 1.9779,
+  "tflops": 69.5,
+  "max_err": 0.000459716855895298,
+  "mean_err": 4.519082166839243e-05
+ },
+ {
+  "variant": "reverse query-tile order",
+  "N": 4096,
+  "causal": true,
+  "ms": 1.0721,
+  "tflops": 64.1,
+  "max_err": 0.005384717726934385,
+  "mean_err": 8.245412277601198e-05
+ }
+]

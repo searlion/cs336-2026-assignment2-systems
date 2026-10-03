@@ -1,19 +1,3 @@
-I wanted to learn kernel optimisation by starting with Triton. While I was able to follow basic tutorials like [vector addition](https://triton-lang.org/main/getting-started/tutorials/01-vector-add.html), the learning curve increased sharply when I moved towards more complex algorithms like [Flash Attention 2](https://triton-lang.org/main/getting-started/tutorials/06-fused-attention.html).
-
-After some exploration of various tutorials, I settled on following [Stanford CS336 assignment 2](https://github.com/stanford-cs336/assignment2-systems/blob/main/cs336_assignment2_systems.pdf) which provides the implementation of Flash Attention 2 (FA2) as an assignment. I liked it for the following reasons:
-* It began by asking for a PyTorch implementation of FA2, which helped to solidify my understanding of FA2 before introducing complexities associated with Triton.
-* It made assumptions to simplify the implementation of FA2 to help me build up my understanding of basic concepts in Triton first. These assumptions included (i) inputs of shape `(batch, seq, d)` with no head dimension; (ii) tile sizes of at least 16x16, which I hard-coded to 16x16; and (iii) sequence lengths and head dimensions that are powers of 2 and at least 16, so out-of-bounds accesses could be ignored.
-
-Future articles will relax these assumptions. 
-
-I also retained some of the mistakes I made when implementing FA2, along with explanations of these mistakes and their corrections, because I learnt the most from mistakes.
-
-All numbers in this series are from a single RTX 4070 Super (Ada, `sm_89`, 12 GB, roughly 100 KB of shared memory per SM) under Linux. 
-
-This article assumes familiarity with PyTorch and [Einops](https://dev.to/lewis_won/plain-guide-to-einops-3gpd), and no prior experience with Triton. This article was written with the assistance of AI.
-
-If you spot any mistakes in this article, please let me know. I have also written articles on [online softmax](https://dev.to/lewis_won/online-softmax-by-hand-4h13) and [FlashAttention by hand](https://dev.to/lewis_won/flashattention-by-hand-34im) to build intuition for these two algorithms.
-
 Table of Contents
 - [What I am building](#building)
 - [Step 1: the tiled forward in PyTorch](#step1)
@@ -33,6 +17,22 @@ Table of Contents
 - [Step 4: the benchmark, and the baseline number](#step4)
 - [What is wrong with this kernel](#wrong)
 - [Future articles](#future)
+
+I wanted to learn kernel optimisation by starting with Triton. While I was able to follow basic tutorials like [vector addition](https://triton-lang.org/main/getting-started/tutorials/01-vector-add.html), the learning curve increased sharply when I moved towards more complex algorithms like [Flash Attention 2](https://triton-lang.org/main/getting-started/tutorials/06-fused-attention.html).
+
+After some exploration of various tutorials, I settled on following [Stanford CS336 assignment 2](https://github.com/stanford-cs336/assignment2-systems/blob/main/cs336_assignment2_systems.pdf) which provides the implementation of Flash Attention 2 (FA2) as an assignment. I liked it for the following reasons:
+* It began by asking for a PyTorch implementation of FA2, which helped to solidify my understanding of FA2 before introducing complexities associated with Triton.
+* It made assumptions to simplify the implementation of FA2 to help me build up my understanding of basic concepts in Triton first. These assumptions included (i) inputs of shape `(batch, seq, d)` with no head dimension; (ii) tile sizes of at least 16x16, which I hard-coded to 16x16; and (iii) sequence lengths and head dimensions that are powers of 2 and at least 16, so out-of-bounds accesses could be ignored.
+
+Future articles will relax these assumptions. 
+
+I also retained some of the mistakes I made when implementing FA2, along with explanations of these mistakes and their corrections, because I learnt the most from mistakes.
+
+All numbers in this series are from a single RTX 4070 Super (Ada, `sm_89`, 12 GB, roughly 100 KB of shared memory per SM) under Linux. 
+
+This article assumes familiarity with PyTorch and [Einops](https://dev.to/lewis_won/plain-guide-to-einops-3gpd), and no prior experience with Triton. This article was written with the assistance of AI.
+
+If you spot any mistakes in this article, please let me know. I have also written articles on [online softmax](https://dev.to/lewis_won/online-softmax-by-hand-4h13) and [FlashAttention by hand](https://dev.to/lewis_won/flashattention-by-hand-34im) to build intuition for these two algorithms.
 
 <a id="building">
 ## What I am building
