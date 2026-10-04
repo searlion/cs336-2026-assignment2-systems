@@ -8,7 +8,8 @@
 #      work keeps it busy; busy 10% of the time, it never leaves 2.52 GHz
 #   C  during an idle gap the clock climbs to about 2.7 GHz; when the work resumes, the 220 W
 #      limit pulls it back down within tens of ms (the "warm" capture's start)
-#   python plot_clock_dynamics.py clock_dynamics.png
+# Writes the article's Round 0 figure (and the copy kept here, clock_dynamics.png):
+#   python plot_clock_dynamics.py ../../2026_10_03_followup/images/nsys_clock_idle_dynamics.png
 import bisect
 import sqlite3
 import sys
