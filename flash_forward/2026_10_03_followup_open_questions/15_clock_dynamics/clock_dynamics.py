@@ -60,7 +60,7 @@ def poll(path, stop, read_violations):
         else:
             nxt = time.monotonic()
     th.join()
-    np.savez(path, fast=np.array(fast, dtype=float), viol=np.array(viol, dtype=float))
+    np.savez_compressed(path, fast=np.array(fast, dtype=float), viol=np.array(viol, dtype=float))
 
 
 def wait_idle(d, seconds):

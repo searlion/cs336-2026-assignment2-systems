@@ -1,0 +1,3 @@
+cudaProfilerStart blocked for 646 ms
+cudaProfilerStart blocked for 610 ms
+cudaProfilerStart blocked for 604 ms

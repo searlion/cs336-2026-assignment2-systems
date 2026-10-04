@@ -1,0 +1,221 @@
+280483 NVML samples, one every 1.00 ms (median); the reported clock or power changed 601 times, at a median interval of 0.50 s
+
+== trial 0, v0+sdpa: load from 0 to 6.00 s
+  t = -0.300 s  SM  210 MHz  power  11.8 W  1-s average  11.9 W  43 C  P8  reasons 0x001
+  t = -0.010 s  SM  210 MHz  power  11.8 W  1-s average  11.9 W  43 C  P8  reasons 0x001
+  t =  0.509 s  SM 2580 MHz  power  11.8 W  1-s average  11.9 W  43 C  P8  reasons 0x001
+  t =  0.513 s  SM 2580 MHz  power  11.8 W  1-s average  11.9 W  43 C  P2  reasons 0x001
+  t =  0.514 s  SM 2580 MHz  power 219.7 W  1-s average  92.5 W  43 C  P2  reasons 0x001
+  t =  0.518 s  SM 2580 MHz  power 219.7 W  1-s average  92.5 W  66 C  P2  reasons 0x004
+  t =  1.003 s  SM 2550 MHz  power 223.2 W  1-s average 189.2 W  69 C  P2  reasons 0x004
+  t =  1.504 s  SM 2565 MHz  power 220.2 W  1-s average 220.0 W  67 C  P2  reasons 0x004
+  t =  2.003 s  SM 2580 MHz  power 220.2 W  1-s average 220.0 W  67 C  P2  reasons 0x004
+  t =  2.004 s  SM 2580 MHz  power 222.4 W  1-s average 219.1 W  67 C  P2  reasons 0x004
+  t =  2.504 s  SM 2565 MHz  power 218.4 W  1-s average 219.6 W  70 C  P2  reasons 0x004
+  t =  3.003 s  SM 2550 MHz  power 218.4 W  1-s average 219.6 W  70 C  P2  reasons 0x004
+  t =  3.004 s  SM 2550 MHz  power 222.9 W  1-s average 219.4 W  70 C  P2  reasons 0x004
+  t =  3.504 s  SM 2550 MHz  power 219.0 W  1-s average 219.2 W  71 C  P2  reasons 0x004
+  t =  4.004 s  SM 2595 MHz  power 227.0 W  1-s average 220.0 W  72 C  P2  reasons 0x004
+  t =  4.505 s  SM 2565 MHz  power 212.2 W  1-s average 218.8 W  72 C  P2  reasons 0x004
+  t =  5.004 s  SM 2550 MHz  power 219.9 W  1-s average 219.4 W  72 C  P2  reasons 0x004
+  t =  5.505 s  SM 2550 MHz  power 216.9 W  1-s average 218.7 W  73 C  P2  reasons 0x004
+  t =  6.004 s  SM 2535 MHz  power 216.9 W  1-s average 218.7 W  73 C  P2  reasons 0x004
+  t =  6.005 s  SM 2535 MHz  power 222.4 W  1-s average 219.9 W  72 C  P2  reasons 0x004
+  t =  6.504 s  SM 2730 MHz  power 222.4 W  1-s average 219.9 W  72 C  P2  reasons 0x004
+  t =  6.505 s  SM 2730 MHz  power  48.3 W  1-s average 148.9 W  53 C  P2  reasons 0x000
+  t =  7.005 s  SM 2730 MHz  power  47.9 W  1-s average  69.9 W  51 C  P2  reasons 0x000
+  t =  7.505 s  SM 2730 MHz  power  47.5 W  1-s average  47.6 W  50 C  P2  reasons 0x000
+  t =  8.004 s  SM 2520 MHz  power  47.5 W  1-s average  47.6 W  50 C  P2  reasons 0x000
+  t =  8.005 s  SM 2520 MHz  power  38.2 W  1-s average  46.7 W  49 C  P2  reasons 0x000
+  t =  8.505 s  SM 2520 MHz  power  36.7 W  1-s average  41.8 W  49 C  P2  reasons 0x000
+
+== trial 0, spin: load from 0 to 6.00 s
+  t = -0.300 s  SM  210 MHz  power  12.0 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t = -0.007 s  SM  210 MHz  power  12.0 W  1-s average  12.1 W  44 C  P8  reasons 0x001
+  t =  0.493 s  SM 2745 MHz  power  57.7 W  1-s average  27.0 W  47 C  P2  reasons 0x000
+  t =  0.993 s  SM 2745 MHz  power  58.1 W  1-s average  47.9 W  47 C  P2  reasons 0x000
+  t =  1.493 s  SM 2745 MHz  power  58.2 W  1-s average  58.1 W  48 C  P2  reasons 0x000
+  t =  1.993 s  SM 2745 MHz  power  58.2 W  1-s average  58.2 W  48 C  P2  reasons 0x000
+  t =  2.493 s  SM 2745 MHz  power  58.1 W  1-s average  58.1 W  48 C  P2  reasons 0x000
+  t =  2.993 s  SM 2745 MHz  power  58.2 W  1-s average  58.1 W  48 C  P2  reasons 0x000
+  t =  3.493 s  SM 2745 MHz  power  58.0 W  1-s average  58.2 W  48 C  P2  reasons 0x000
+  t =  3.993 s  SM 2745 MHz  power  58.5 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  4.493 s  SM 2745 MHz  power  58.3 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  4.993 s  SM 2745 MHz  power  58.4 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  5.494 s  SM 2745 MHz  power  58.2 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  5.993 s  SM 2745 MHz  power  58.3 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  6.493 s  SM 2745 MHz  power  46.0 W  1-s average  53.4 W  49 C  P2  reasons 0x000
+  t =  6.993 s  SM 2745 MHz  power  46.6 W  1-s average  47.9 W  47 C  P2  reasons 0x000
+  t =  7.493 s  SM 2745 MHz  power  46.0 W  1-s average  46.0 W  47 C  P2  reasons 0x000
+  t =  7.993 s  SM 2520 MHz  power  37.7 W  1-s average  45.2 W  47 C  P2  reasons 0x000
+  t =  8.493 s  SM 2520 MHz  power  35.8 W  1-s average  40.7 W  46 C  P2  reasons 0x000
+  t =  8.993 s  SM 2520 MHz  power  36.3 W  1-s average  36.2 W  46 C  P2  reasons 0x000
+
+== trial 0, v0+sdpa (nv): load from 0 to 6.00 s
+  t = -0.299 s  SM  210 MHz  power  12.1 W  1-s average  12.1 W  43 C  P8  reasons 0x001
+  t = -0.014 s  SM  210 MHz  power  12.2 W  1-s average  12.1 W  43 C  P8  reasons 0x001
+  t =  0.486 s  SM 2580 MHz  power 222.7 W  1-s average  85.1 W  67 C  P2  reasons 0x004
+  t =  0.986 s  SM 2580 MHz  power 218.0 W  1-s average 181.4 W  69 C  P2  reasons 0x004
+  t =  1.486 s  SM 2565 MHz  power 222.7 W  1-s average 219.8 W  70 C  P2  reasons 0x004
+  t =  1.986 s  SM 2580 MHz  power 219.1 W  1-s average 219.1 W  70 C  P2  reasons 0x004
+  t =  2.486 s  SM 2550 MHz  power 222.8 W  1-s average 220.4 W  71 C  P2  reasons 0x004
+  t =  2.986 s  SM 2580 MHz  power 217.9 W  1-s average 219.3 W  71 C  P2  reasons 0x004
+  t =  3.486 s  SM 2550 MHz  power 222.4 W  1-s average 219.9 W  72 C  P2  reasons 0x004
+  t =  3.986 s  SM 2535 MHz  power 218.5 W  1-s average 219.1 W  72 C  P2  reasons 0x004
+  t =  4.486 s  SM 2535 MHz  power 223.3 W  1-s average 219.9 W  73 C  P2  reasons 0x004
+  t =  4.986 s  SM 2520 MHz  power 216.9 W  1-s average 219.3 W  73 C  P2  reasons 0x004
+  t =  5.486 s  SM 2535 MHz  power 223.3 W  1-s average 219.8 W  74 C  P2  reasons 0x004
+  t =  5.986 s  SM 2505 MHz  power 216.3 W  1-s average 219.2 W  74 C  P2  reasons 0x004
+  t =  6.486 s  SM 2730 MHz  power  47.7 W  1-s average 154.4 W  54 C  P2  reasons 0x000
+  t =  6.986 s  SM 2730 MHz  power  47.7 W  1-s average  75.1 W  52 C  P2  reasons 0x000
+  t =  7.486 s  SM 2730 MHz  power  47.4 W  1-s average  47.4 W  51 C  P2  reasons 0x000
+  t =  7.986 s  SM 2520 MHz  power  38.2 W  1-s average  46.5 W  50 C  P2  reasons 0x000
+  t =  8.486 s  SM 2520 MHz  power  36.2 W  1-s average  41.6 W  49 C  P2  reasons 0x000
+  t =  8.986 s  SM 2520 MHz  power  36.4 W  1-s average  36.7 W  49 C  P2  reasons 0x000
+
+== trial 1, v0+sdpa: load from 0 to 6.00 s
+  t = -0.300 s  SM  210 MHz  power  12.2 W  1-s average  12.1 W  44 C  P8  reasons 0x001
+  t = -0.012 s  SM  210 MHz  power  12.1 W  1-s average  12.1 W  44 C  P8  reasons 0x001
+  t =  0.487 s  SM 2580 MHz  power  12.1 W  1-s average  12.1 W  44 C  P2  reasons 0x001
+  t =  0.488 s  SM 2580 MHz  power 221.0 W  1-s average  91.0 W  68 C  P2  reasons 0x004
+  t =  0.987 s  SM 2520 MHz  power 221.0 W  1-s average  91.0 W  68 C  P2  reasons 0x004
+  t =  0.988 s  SM 2520 MHz  power 222.6 W  1-s average 187.9 W  70 C  P2  reasons 0x004
+  t =  1.488 s  SM 2595 MHz  power 222.6 W  1-s average 187.9 W  70 C  P2  reasons 0x004
+  t =  1.489 s  SM 2595 MHz  power 220.3 W  1-s average 220.2 W  71 C  P2  reasons 0x004
+  t =  1.987 s  SM 2535 MHz  power 220.3 W  1-s average 220.2 W  71 C  P2  reasons 0x004
+  t =  1.988 s  SM 2535 MHz  power 219.6 W  1-s average 218.3 W  71 C  P2  reasons 0x004
+  t =  2.488 s  SM 2565 MHz  power 221.0 W  1-s average 219.7 W  72 C  P2  reasons 0x004
+  t =  2.988 s  SM 2535 MHz  power 219.3 W  1-s average 219.1 W  73 C  P2  reasons 0x004
+  t =  3.491 s  SM 2535 MHz  power 218.3 W  1-s average 219.5 W  73 C  P2  reasons 0x004
+  t =  3.990 s  SM 2535 MHz  power 220.6 W  1-s average 219.4 W  74 C  P2  reasons 0x004
+  t =  4.492 s  SM 2520 MHz  power 216.8 W  1-s average 219.5 W  74 C  P2  reasons 0x004
+  t =  4.991 s  SM 2535 MHz  power 216.8 W  1-s average 219.5 W  72 C  P2  reasons 0x004
+  t =  4.992 s  SM 2535 MHz  power 221.6 W  1-s average 219.5 W  74 C  P2  reasons 0x004
+  t =  5.492 s  SM 2550 MHz  power 213.8 W  1-s average 219.1 W  74 C  P2  reasons 0x004
+  t =  6.018 s  SM 2550 MHz  power 219.8 W  1-s average 219.8 W  75 C  P2  reasons 0x004
+  t =  6.518 s  SM 2730 MHz  power  48.5 W  1-s average 151.6 W  54 C  P2  reasons 0x000
+  t =  7.018 s  SM 2730 MHz  power  47.6 W  1-s average  73.8 W  52 C  P2  reasons 0x000
+  t =  7.518 s  SM 2730 MHz  power  47.8 W  1-s average  47.6 W  52 C  P2  reasons 0x000
+  t =  8.018 s  SM 2520 MHz  power  36.8 W  1-s average  45.6 W  51 C  P2  reasons 0x000
+  t =  8.518 s  SM 2520 MHz  power  36.8 W  1-s average  40.8 W  50 C  P2  reasons 0x000
+
+== trial 1, spin: load from 0 to 6.00 s
+  t = -0.299 s  SM  210 MHz  power  12.2 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t = -0.006 s  SM  210 MHz  power  11.8 W  1-s average  12.0 W  44 C  P8  reasons 0x001
+  t =  0.494 s  SM 2745 MHz  power  56.3 W  1-s average  24.9 W  47 C  P2  reasons 0x000
+  t =  0.994 s  SM 2745 MHz  power  57.9 W  1-s average  45.7 W  48 C  P2  reasons 0x000
+  t =  1.494 s  SM 2745 MHz  power  57.7 W  1-s average  57.9 W  48 C  P2  reasons 0x000
+  t =  1.994 s  SM 2745 MHz  power  58.0 W  1-s average  58.0 W  48 C  P2  reasons 0x000
+  t =  2.494 s  SM 2745 MHz  power  58.4 W  1-s average  58.1 W  48 C  P2  reasons 0x000
+  t =  2.994 s  SM 2745 MHz  power  58.0 W  1-s average  58.1 W  48 C  P2  reasons 0x000
+  t =  3.494 s  SM 2745 MHz  power  58.3 W  1-s average  58.2 W  48 C  P2  reasons 0x000
+  t =  3.994 s  SM 2745 MHz  power  58.2 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  4.494 s  SM 2745 MHz  power  57.9 W  1-s average  58.2 W  49 C  P2  reasons 0x000
+  t =  4.994 s  SM 2745 MHz  power  58.0 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  5.494 s  SM 2745 MHz  power  58.3 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  5.994 s  SM 2745 MHz  power  59.5 W  1-s average  58.6 W  49 C  P2  reasons 0x000
+  t =  6.494 s  SM 2745 MHz  power  46.7 W  1-s average  53.6 W  47 C  P2  reasons 0x000
+  t =  6.994 s  SM 2745 MHz  power  46.4 W  1-s average  47.9 W  47 C  P2  reasons 0x000
+  t =  7.494 s  SM 2745 MHz  power  46.0 W  1-s average  46.2 W  47 C  P2  reasons 0x000
+  t =  7.994 s  SM 2520 MHz  power  37.2 W  1-s average  45.5 W  47 C  P2  reasons 0x000
+  t =  8.494 s  SM 2520 MHz  power  36.6 W  1-s average  41.1 W  47 C  P2  reasons 0x000
+  t =  8.994 s  SM 2520 MHz  power  36.4 W  1-s average  36.5 W  46 C  P2  reasons 0x000
+
+== trial 1, v0+sdpa (nv): load from 0 to 6.01 s
+  t = -0.299 s  SM  210 MHz  power  12.0 W  1-s average  12.1 W  43 C  P8  reasons 0x001
+  t = -0.000 s  SM  210 MHz  power  12.0 W  1-s average  12.1 W  43 C  P8  reasons 0x001
+  t =  0.499 s  SM 2565 MHz  power 222.3 W  1-s average  98.8 W  43 C  P2  reasons 0x001
+  t =  0.500 s  SM 2565 MHz  power 222.3 W  1-s average  98.8 W  67 C  P2  reasons 0x004
+  t =  0.999 s  SM 2580 MHz  power 231.9 W  1-s average 213.6 W  67 C  P2  reasons 0x004
+  t =  1.499 s  SM 2565 MHz  power 221.1 W  1-s average 219.9 W  69 C  P2  reasons 0x004
+  t =  1.999 s  SM 2535 MHz  power 222.3 W  1-s average 219.8 W  70 C  P2  reasons 0x004
+  t =  2.499 s  SM 2550 MHz  power 221.4 W  1-s average 219.5 W  71 C  P2  reasons 0x004
+  t =  2.999 s  SM 2535 MHz  power 221.8 W  1-s average 219.8 W  71 C  P2  reasons 0x004
+  t =  3.499 s  SM 2550 MHz  power 220.5 W  1-s average 219.8 W  72 C  P2  reasons 0x004
+  t =  3.999 s  SM 2535 MHz  power 220.5 W  1-s average 219.7 W  72 C  P2  reasons 0x004
+  t =  4.500 s  SM 2535 MHz  power 221.8 W  1-s average 220.0 W  73 C  P2  reasons 0x004
+  t =  4.999 s  SM 2550 MHz  power 221.8 W  1-s average 220.0 W  73 C  P2  reasons 0x004
+  t =  5.000 s  SM 2550 MHz  power 219.1 W  1-s average 219.1 W  73 C  P2  reasons 0x004
+  t =  5.500 s  SM 2520 MHz  power 222.8 W  1-s average 219.7 W  74 C  P2  reasons 0x004
+  t =  6.000 s  SM 2535 MHz  power 219.9 W  1-s average 219.5 W  74 C  P2  reasons 0x004
+  t =  6.500 s  SM 2730 MHz  power  48.0 W  1-s average 145.2 W  54 C  P2  reasons 0x000
+  t =  7.000 s  SM 2730 MHz  power  47.6 W  1-s average  66.8 W  52 C  P2  reasons 0x000
+  t =  7.500 s  SM 2730 MHz  power  50.8 W  1-s average  48.5 W  52 C  P2  reasons 0x000
+  t =  8.000 s  SM 2520 MHz  power  40.1 W  1-s average  47.4 W  50 C  P2  reasons 0x000
+  t =  8.500 s  SM 2520 MHz  power  36.8 W  1-s average  42.8 W  50 C  P2  reasons 0x000
+  t =  9.000 s  SM 2520 MHz  power  36.4 W  1-s average  37.6 W  49 C  P2  reasons 0x000
+
+== trial 2, v0+sdpa: load from 0 to 6.01 s
+  t = -0.299 s  SM  210 MHz  power  12.1 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t = -0.007 s  SM  210 MHz  power  12.3 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t =  0.492 s  SM 2565 MHz  power 223.5 W  1-s average  92.7 W  44 C  P2  reasons 0x001
+  t =  0.493 s  SM 2565 MHz  power 223.5 W  1-s average  92.7 W  67 C  P2  reasons 0x004
+  t =  0.993 s  SM 2550 MHz  power 223.5 W  1-s average  92.7 W  67 C  P2  reasons 0x004
+  t =  0.994 s  SM 2550 MHz  power 223.1 W  1-s average 188.4 W  69 C  P2  reasons 0x004
+  t =  1.493 s  SM 2550 MHz  power 224.7 W  1-s average 220.0 W  71 C  P2  reasons 0x004
+  t =  1.997 s  SM 2550 MHz  power 222.6 W  1-s average 219.6 W  71 C  P2  reasons 0x004
+  t =  2.493 s  SM 2565 MHz  power 226.8 W  1-s average 220.2 W  71 C  P2  reasons 0x004
+  t =  2.993 s  SM 2550 MHz  power 219.1 W  1-s average 219.1 W  72 C  P2  reasons 0x004
+  t =  3.493 s  SM 2565 MHz  power 223.7 W  1-s average 219.7 W  72 C  P2  reasons 0x004
+  t =  3.993 s  SM 2535 MHz  power 221.3 W  1-s average 219.6 W  72 C  P2  reasons 0x004
+  t =  4.493 s  SM 2550 MHz  power 220.6 W  1-s average 219.7 W  74 C  P2  reasons 0x004
+  t =  4.993 s  SM 2565 MHz  power 220.6 W  1-s average 219.7 W  74 C  P2  reasons 0x004
+  t =  4.994 s  SM 2565 MHz  power 220.9 W  1-s average 219.0 W  73 C  P2  reasons 0x004
+  t =  5.495 s  SM 2520 MHz  power 220.9 W  1-s average 219.0 W  73 C  P2  reasons 0x004
+  t =  5.496 s  SM 2520 MHz  power 218.2 W  1-s average 219.6 W  73 C  P2  reasons 0x004
+  t =  5.994 s  SM 2550 MHz  power 220.7 W  1-s average 219.2 W  74 C  P2  reasons 0x004
+  t =  6.494 s  SM 2730 MHz  power  47.7 W  1-s average 147.8 W  55 C  P2  reasons 0x000
+  t =  6.994 s  SM 2730 MHz  power  47.5 W  1-s average  70.1 W  53 C  P2  reasons 0x000
+  t =  7.494 s  SM 2730 MHz  power  48.9 W  1-s average  47.7 W  52 C  P2  reasons 0x000
+  t =  7.994 s  SM 2520 MHz  power  37.1 W  1-s average  45.8 W  51 C  P2  reasons 0x000
+  t =  8.494 s  SM 2520 MHz  power  36.7 W  1-s average  41.0 W  50 C  P2  reasons 0x000
+  t =  8.994 s  SM 2520 MHz  power  39.0 W  1-s average  37.3 W  50 C  P2  reasons 0x000
+
+== trial 2, spin: load from 0 to 6.00 s
+  t = -0.300 s  SM  210 MHz  power  11.9 W  1-s average  12.1 W  44 C  P8  reasons 0x001
+  t = -0.004 s  SM  210 MHz  power  12.3 W  1-s average  12.1 W  44 C  P8  reasons 0x001
+  t =  0.495 s  SM 2745 MHz  power  12.3 W  1-s average  12.1 W  44 C  P2  reasons 0x001
+  t =  0.496 s  SM 2745 MHz  power  58.0 W  1-s average  28.8 W  48 C  P2  reasons 0x000
+  t =  0.996 s  SM 2745 MHz  power  58.7 W  1-s average  49.8 W  48 C  P2  reasons 0x000
+  t =  1.497 s  SM 2745 MHz  power  58.9 W  1-s average  58.3 W  48 C  P2  reasons 0x000
+  t =  1.998 s  SM 2745 MHz  power  58.3 W  1-s average  58.3 W  49 C  P2  reasons 0x000
+  t =  2.497 s  SM 2745 MHz  power  59.2 W  1-s average  58.7 W  49 C  P2  reasons 0x000
+  t =  2.997 s  SM 2745 MHz  power  58.9 W  1-s average  59.1 W  49 C  P2  reasons 0x000
+  t =  3.497 s  SM 2745 MHz  power  59.8 W  1-s average  59.5 W  49 C  P2  reasons 0x000
+  t =  3.997 s  SM 2745 MHz  power  60.3 W  1-s average  59.7 W  49 C  P2  reasons 0x000
+  t =  4.497 s  SM 2745 MHz  power  58.8 W  1-s average  59.3 W  49 C  P2  reasons 0x000
+  t =  4.997 s  SM 2745 MHz  power  58.3 W  1-s average  58.7 W  49 C  P2  reasons 0x000
+  t =  5.497 s  SM 2745 MHz  power  58.4 W  1-s average  58.5 W  49 C  P2  reasons 0x000
+  t =  5.997 s  SM 2745 MHz  power  58.6 W  1-s average  58.5 W  49 C  P2  reasons 0x000
+  t =  6.497 s  SM 2745 MHz  power  46.4 W  1-s average  53.5 W  49 C  P2  reasons 0x000
+  t =  6.997 s  SM 2745 MHz  power  46.8 W  1-s average  48.1 W  48 C  P2  reasons 0x000
+  t =  7.497 s  SM 2745 MHz  power  47.7 W  1-s average  46.6 W  48 C  P2  reasons 0x000
+  t =  7.997 s  SM 2520 MHz  power  36.6 W  1-s average  44.9 W  48 C  P2  reasons 0x000
+  t =  8.497 s  SM 2520 MHz  power  36.2 W  1-s average  40.3 W  47 C  P2  reasons 0x000
+  t =  8.997 s  SM 2520 MHz  power  36.5 W  1-s average  36.4 W  47 C  P2  reasons 0x000
+
+== trial 2, v0+sdpa (nv): load from 0 to 6.01 s
+  t = -0.300 s  SM  210 MHz  power  12.6 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t = -0.008 s  SM  210 MHz  power  12.3 W  1-s average  12.2 W  44 C  P8  reasons 0x001
+  t =  0.491 s  SM 2580 MHz  power 223.2 W  1-s average  89.2 W  67 C  P2  reasons 0x004
+  t =  0.991 s  SM 2550 MHz  power 223.3 W  1-s average 185.3 W  70 C  P2  reasons 0x004
+  t =  1.491 s  SM 2565 MHz  power 220.4 W  1-s average 219.6 W  71 C  P2  reasons 0x004
+  t =  1.991 s  SM 2550 MHz  power 220.1 W  1-s average 219.7 W  72 C  P2  reasons 0x004
+  t =  2.491 s  SM 2550 MHz  power 222.3 W  1-s average 220.1 W  72 C  P2  reasons 0x004
+  t =  2.991 s  SM 2535 MHz  power 219.9 W  1-s average 219.4 W  72 C  P2  reasons 0x004
+  t =  3.491 s  SM 2550 MHz  power 224.3 W  1-s average 219.9 W  73 C  P2  reasons 0x004
+  t =  3.991 s  SM 2535 MHz  power 218.3 W  1-s average 219.3 W  73 C  P2  reasons 0x004
+  t =  4.491 s  SM 2565 MHz  power 216.2 W  1-s average 219.5 W  73 C  P2  reasons 0x004
+  t =  4.991 s  SM 2550 MHz  power 223.2 W  1-s average 218.7 W  74 C  P2  reasons 0x004
+  t =  5.491 s  SM 2535 MHz  power 218.7 W  1-s average 219.5 W  73 C  P2  reasons 0x004
+  t =  5.991 s  SM 2535 MHz  power 222.1 W  1-s average 219.9 W  74 C  P2  reasons 0x004
+  t =  6.491 s  SM 2730 MHz  power  48.5 W  1-s average 152.9 W  54 C  P2  reasons 0x000
+  t =  6.991 s  SM 2730 MHz  power  48.5 W  1-s average  74.7 W  52 C  P2  reasons 0x000
+  t =  7.491 s  SM 2730 MHz  power  49.1 W  1-s average  47.9 W  52 C  P2  reasons 0x000
+  t =  7.991 s  SM 2520 MHz  power  38.5 W  1-s average  47.0 W  50 C  P2  reasons 0x000
+  t =  8.491 s  SM 2520 MHz  power  37.5 W  1-s average  42.1 W  50 C  P2  reasons 0x000
+  t =  8.991 s  SM 2520 MHz  power  36.6 W  1-s average  37.0 W  49 C  P2  reasons 0x000
+
+sdpa    4178 calls, median 2.122 ms; more than 0.4 ms slower than the median: 87 (2.1%); over 3 ms: 66, slowest 3.60 ms
+v0      4178 calls, median 6.234 ms; more than 0.4 ms slower than the median: 383 (9.2%)
+spin   23505 calls, median 0.733 ms; more than 0.4 ms slower than the median: 2 (0.0%)
