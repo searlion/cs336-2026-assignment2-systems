@@ -1,11 +1,13 @@
 # profiler_start_pause.py
 # How long does cudaProfilerStart() block the program under nsys --capture-range=cudaProfilerApi
 # with GPU metrics on? During that time the GPU has no work, so its clock can climb (see panel C
-# of clock_dynamics.png). Same command line as the cold/warm capture (cold_capture.py). Appends
-# one line per run to profiler_start_pause.txt (before cudaProfilerStop, because nsys ends the
-# program there by default).
+# of clock_dynamics.png). Run with the cold/warm capture's command line (cold_capture.py, GPU
+# metrics on) and with the Round 0 timeline's (no GPU metrics). Appends one line per run to
+# profiler_start_pause.txt (before cudaProfilerStop, because nsys ends the program there by default).
 #   nsys profile --trace=cuda,nvtx --gpu-metrics-devices=0 --capture-range=cudaProfilerApi \
 #       -o reports/profiler_start_pause -f true python profiler_start_pause.py
+#   nsys profile --trace=cuda,nvtx --capture-range=cudaProfilerApi \
+#       -o reports/profiler_start_pause_nometrics -f true python profiler_start_pause.py
 import pathlib
 import time
 

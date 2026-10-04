@@ -117,7 +117,7 @@ style(ax, "C. After an idle gap the work starts fast, until the power limit pull
 handles = [plt.Rectangle((0, 0), 1, 1, color=OURS, alpha=0.2), plt.Rectangle((0, 0), 1, 1, color=SDPA, alpha=0.3)]
 leg = ax.legend(handles, ["baseline kernel (v0)", "SDPA"], frameon=False, fontsize=9, loc="upper left",
                 bbox_to_anchor=(0.0, 0.93))
-ax.text(258, 2.415, "3.28 and 3.43: occasional slow SDPA calls, at an unchanged clock", ha="right", va="bottom",
+ax.text(258, 2.415, "3.28 and 3.43: SDPA calls interrupted by the desktop's graphics work, at an unchanged clock", ha="right", va="bottom",
         fontsize=8, color=MUTED)
 for t in leg.get_texts():
     t.set_color(INK2)

@@ -22,3 +22,15 @@ SDPA calls over 3 ms, and ms inside each call with the SMs mostly idle (SMs Acti
   ramp_capture: calls under 2.2 ms have 0.1 ms mostly idle (median), 0.2 at most
   gap_capture: 12 of 385 calls over 3 ms: 3.42 (1.3), 3.86 (1.7), 3.86 (1.7), 3.87 (1.9), 3.30 (1.4), 3.88 (1.8), 3.28 (1.3), 3.43 (1.4), 3.45 (1.3), 3.38 (1.4), 3.39 (1.4), 3.43 (1.3)
   gap_capture: calls under 2.2 ms have 0.1 ms mostly idle (median), 0.3 at most
+
+Graphics work during SDPA calls: ms of 0.1-ms samples with vertex/tess/geometry or pixel warps in flight
+  ramp_capture: 19 of 289 calls overlap graphics work and take 2.37 to 3.84 ms; the other 270 take at most 2.37 ms; correlation of duration with graphics ms 0.97; SMs Active in the stalls of the calls over 3 ms: mean 7%
+  gap_capture: 28 of 385 calls overlap graphics work and take 2.32 to 3.88 ms; the other 357 take at most 2.37 ms; correlation of duration with graphics ms 0.98; SMs Active in the stalls of the calls over 3 ms: mean 7%
+
+Once boosted, how long the clock stays up after the last kernel (wake_capture and gap_capture)
+  wake_capture spin #1                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1915 ms, idle clock at 17.1 s
+  wake_capture spin #2                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1750 ms, idle clock at 17.1 s
+  wake_capture spin #3                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1743 ms, idle clock at 17.1 s
+  wake_capture wake, idle 0.5 s, spin   at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1732 ms, idle clock at 17.1 s
+  wake_capture wake, idle 1.0 s, spin   at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1812 ms, idle clock at 17.6 s
+  gap_capture  after 500 ms gap         at least 2.69 GHz from   76 ms, back to 2.52 GHz at  1767 ms, idle clock at 18.4 s

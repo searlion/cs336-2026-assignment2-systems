@@ -1,3 +1,7 @@
+with --gpu-metrics-devices=0 (the cold/warm capture's command):
 cudaProfilerStart blocked for 646 ms
 cudaProfilerStart blocked for 610 ms
 cudaProfilerStart blocked for 604 ms
+without GPU metrics (the Round 0 timeline's command):
+cudaProfilerStart blocked for 374 ms
+cudaProfilerStart blocked for 383 ms

@@ -1,0 +1,2 @@
+2026-10-04 16:53  1737 SDPA calls, median 2.144 ms; over 3 ms: 89 (1 in 20), 3.01-3.30 ms
+2026-10-04 16:54  1733 SDPA calls, median 2.146 ms; over 3 ms: 67 (1 in 26), 3.00-3.29 ms

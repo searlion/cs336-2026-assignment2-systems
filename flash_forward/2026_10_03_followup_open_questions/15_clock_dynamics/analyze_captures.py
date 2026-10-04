@@ -7,6 +7,10 @@
 #                  long until it falls below 2.56 GHz, and SDPA's time before and after that
 #   all three      SDPA calls slower than 3 ms, and how long the SMs sat mostly idle (SMs Active
 #                  under 50%) inside them, against normal calls
+#   ramp, gap      which SDPA calls overlap graphics work (vertex/tess/geometry or pixel warps in
+#                  flight: the desktop, which this GPU also drives) and how long they take
+#   wake, gap      once boosted, how long the clock stays up after the last kernel, and when it
+#                  falls back to 2.52 GHz and to the idle clock
 #   python analyze_captures.py > captures.txt
 import bisect
 import sqlite3
@@ -79,3 +83,48 @@ for name, cap in (("ramp_capture", ramp), ("gap_capture", gap)):
     slow = [((b - a) / 1e6, cap.idle_ms(a, b)) for a, b in sd if b - a > 3e6]
     print(f"  {name}: {len(slow)} of {len(sd)} calls over 3 ms: " + ", ".join(f"{d:.2f} ({i:.1f})" for d, i in slow))
     print(f"  {name}: calls under 2.2 ms have {statistics.median(normal):.1f} ms mostly idle (median), {max(normal):.1f} at most")
+
+
+def series(con, name):
+    mid = [m for m, n in con.execute("SELECT metricId, metricName FROM TARGET_INFO_GPU_METRICS") if n == name][0]
+    rows = sorted(con.execute(f"SELECT timestamp, value FROM GPU_METRICS WHERE metricId={mid}"))
+    return [t for t, _ in rows], [v for _, v in rows]
+
+
+def window(ser, a, b):
+    t, v = ser
+    return v[bisect.bisect_left(t, a):bisect.bisect_right(t, b)]
+
+
+print("\nGraphics work during SDPA calls: ms of 0.1-ms samples with vertex/tess/geometry or pixel warps in flight")
+for name in ("ramp_capture", "gap_capture"):
+    con = sqlite3.connect(f"reports/{name}.sqlite")
+    names = dict(con.execute("SELECT id, value FROM StringIds"))
+    vert = series(con, "Vertex/Tess/Geometry Warps in Flight [Throughput %]")
+    pix = series(con, "Pixel Warps in Flight [Throughput %]")
+    sms = series(con, "SMs Active [Throughput %]")
+    sd = sorted((s, e) for s, e, d in con.execute("SELECT start, end, demangledName FROM CUPTI_ACTIVITY_KIND_KERNEL")
+                if "pytorch_flash" in names[d])
+    dur = [(e - s) / 1e6 for s, e in sd]
+    gfx = [0.1 * sum(1 for x, y in zip(window(vert, s, e), window(pix, s, e)) if x > 0 or y > 0) for s, e in sd]
+    hit = [d for d, g in zip(dur, gfx) if g > 0]
+    clean = [d for d, g in zip(dur, gfx) if g == 0]
+    stall = [v for (s, e), d in zip(sd, dur) if d > 3 for v in window(sms, s, e) if v < 50]
+    print(f"  {name}: {len(hit)} of {len(sd)} calls overlap graphics work and take {min(hit):.2f} to {max(hit):.2f} ms; "
+          f"the other {len(clean)} take at most {max(clean):.2f} ms; correlation of duration with graphics ms "
+          f"{statistics.correlation(dur, gfx):.2f}; SMs Active in the stalls of the calls over 3 ms: "
+          f"mean {statistics.mean(stall):.0f}%")
+
+print("\nOnce boosted, how long the clock stays up after the last kernel (wake_capture and gap_capture)")
+for name in ("wake_capture", "gap_capture"):
+    cap = Capture(f"reports/{name}.sqlite")
+    for s, e, txt in cap.ranges:
+        last = max(b for a, b, _ in cap.kernels if s <= a <= e)
+        nxt = min((a for a, b, _ in cap.kernels if a > last), default=last + 30e9)
+        seg = cap.clock_in(last, nxt)
+        up = next((t for t, v in seg if v >= 2.69), None)
+        down = next((t for t, v in seg if up and t > up and v <= 2.53), None)
+        idle = next((t for t, v in seg if v < 0.5), None)
+        if up and down:
+            print(f"  {name:12s} {txt:24s} at least 2.69 GHz from {(up - last) / 1e6:4.0f} ms, back to 2.52 GHz at "
+                  f"{(down - last) / 1e6:5.0f} ms, idle clock at {(idle - last) / 1e9 if idle else float('nan'):4.1f} s")
