@@ -1,0 +1,16 @@
+workload                                                  ms  TFLOP/s clock MHz     W peak at clock % of it
+Triton bf16_in_fp32_acc                               15.710     70.0      2610   221          74.8   93.5%
+Triton fp16_in_fp32_acc                               16.028     68.6      2535   222          72.7   94.4%
+Triton fp16_in_fp16_acc                               10.423    105.5      2280   221         130.7   80.7%
+Triton tf32_in_fp32_acc                               31.968     34.4      2685   221          38.5   89.4%
+Triton int8_in_int32_acc                               6.472    169.9      2385   220         273.5   62.1%
+Triton fp8e4m3_in_fp32_acc                             8.962    122.7      2535   220         145.4   84.4%
+cuBLAS bf16 -> fp32 (torch.matmul)                    15.612     70.4      2655   220          76.1   92.5%
+cuBLAS fp16 -> fp32 (torch.matmul)                    15.802     69.6      2625   221          75.3   92.4%
+cuBLAS tf32 (torch.matmul, allow_tf32)                31.204     35.2      2595   221          37.2   94.7%
+cuBLAS fp32 on CUDA cores (SGEMM)                     53.646     20.5      2010   221          28.8   71.1%
+cuBLASLt int8 -> int32 (torch._int_mm)                 4.425    248.5      2370   223         271.8   91.4%
+cuBLASLt fp8 (torch._scaled_mm, use_fast_accum=False)   8.115    135.5      2550   223         146.2   92.7%
+cuBLASLt fp8 (torch._scaled_mm, use_fast_accum=True)   7.826    140.5      2580   220         295.9   47.5%
+
+680 nvidia-smi samples; int8 rows are TOPS, not TFLOP/s; peak = 56 SMs x ops/clk/SM x clock
