@@ -1,0 +1,6 @@
+Build cuda_12.8.r12.8/compiler.35583870_0
+f32.f16.f16.f32        accepted
+f16.f16.f16.f16        accepted
+f32.bf16.bf16.f32      accepted
+bf16.bf16.bf16.bf16    rejected: ptxas mma.ptx, line 7; error   : Unexpected instruction types specified for 'mma'
+f16.bf16.bf16.f16      rejected: ptxas mma.ptx, line 7; error   : Unexpected instruction types specified for 'mma'

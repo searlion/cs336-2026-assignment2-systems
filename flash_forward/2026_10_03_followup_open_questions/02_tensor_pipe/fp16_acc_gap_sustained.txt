@@ -1,0 +1,5 @@
+workload                                          ms  TFLOP/s clock MHz     W peak at clock % of it
+Triton fp16 -> fp32 acc (128, 128, 32, 8, 4)  15.658     70.2      2595   220          74.4   94.4%
+Triton fp16 -> fp16 acc (128, 256, 64, 8, 3)  10.221    107.6      2325   219         133.3   80.7%
+cuBLAS fp32 acc (torch.matmul)                15.176     72.4      2625   219          75.3   96.3%
+cuBLAS fp16 acc (CUBLAS_COMPUTE_16F)          11.521     95.4      1732   221          99.3   96.1%

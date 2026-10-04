@@ -1,0 +1,4 @@
+Triton fp16 -> fp32 acc (128, 128, 32, 8, 4) max abs error vs fp32 matmul 0.0001 (largest |value| 5.14)
+Triton fp16 -> fp16 acc (128, 256, 64, 8, 3) max abs error vs fp32 matmul 0.0605 (largest |value| 5.14)
+cuBLAS fp32 acc (torch.matmul)               max abs error vs fp32 matmul 0.0036 (largest |value| 5.14)
+cuBLAS fp16 acc (CUBLAS_COMPUTE_16F)         max abs error vs fp32 matmul 0.0605 (largest |value| 5.14)

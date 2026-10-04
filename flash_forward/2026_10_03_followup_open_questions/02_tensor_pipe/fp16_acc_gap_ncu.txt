@@ -1,0 +1,25 @@
+Nsight Compute, default --clock-control (clock locked at 2.52 GHz unless power pulls it lower)
+
+Triton fp16 -> fp32 acc (128, 128, 32, 8, 4): matmul_kernel
+  15.627 ms = 70.4 TFLOP/s at 2.515 GHz; tensor ops 97.5% of the 512 ops/clk/SM peak (fp16 -> fp32)
+  128 registers/thread, 256 threads/block, 15.9 warps active per SM (4.0 per scheduler), issue slots busy 8.5%
+  instructions 739 M, L2 sectors 546 M, shared-memory wavefronts 436 M, DRAM read 1.27 GB
+  cycles stalled per issued instruction: math_pipe_throttle 34.89, barrier 4.96, wait 2.47, short_scoreboard 1.41, selected 1.00
+
+Triton fp16 -> fp16 acc (128, 256, 64, 8, 3): matmul_kernel
+  9.055 ms = 121.4 TFLOP/s at 2.518 GHz; tensor ops 84.1% of the 1024 ops/clk/SM peak (fp16 -> fp16)
+  174 registers/thread, 256 threads/block, 8.0 warps active per SM (2.0 per scheduler), issue slots busy 13.8%
+  instructions 695 M, L2 sectors 407 M, shared-memory wavefronts 279 M, DRAM read 1.49 GB
+  cycles stalled per issued instruction: math_pipe_throttle 8.47, wait 2.59, selected 1.00, lg_throttle 0.56, barrier 0.53
+
+cuBLAS fp32 acc (torch.matmul): ampere_fp16_s16816gemm_fp16_256x128_ldg8_f2f_stages_32x3_nn
+  15.811 ms = 69.5 TFLOP/s at 2.517 GHz; tensor ops 96.4% of the 512 ops/clk/SM peak (fp16 -> fp32)
+  218 registers/thread, 256 threads/block, 8.0 warps active per SM (2.0 per scheduler), issue slots busy 5.9%
+  instructions 522 M, L2 sectors 425 M, shared-memory wavefronts 287 M, DRAM read 1.09 GB
+  cycles stalled per issued instruction: math_pipe_throttle 28.31, wait 3.53, selected 1.00, not_selected 0.53, barrier 0.22
+
+cuBLAS fp16 acc (CUBLAS_COMPUTE_16F): ampere_h1688gemm_128x128_ldg8_stages_32x1_nn
+  9.108 ms = 120.7 TFLOP/s at 2.213 GHz; tensor ops 95.2% of the 1024 ops/clk/SM peak (fp16 -> fp16)
+  186 registers/thread, 128 threads/block, 7.9 warps active per SM (2.0 per scheduler), issue slots busy 17.3%
+  instructions 771 M, L2 sectors 541 M, shared-memory wavefronts 420 M, DRAM read 1.15 GB
+  cycles stalled per issued instruction: wait 4.64, math_pipe_throttle 4.24, selected 1.00, not_selected 0.58, barrier 0.35
