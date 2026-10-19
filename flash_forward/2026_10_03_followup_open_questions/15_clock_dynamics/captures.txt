@@ -27,10 +27,16 @@ Graphics work during SDPA calls: ms of 0.1-ms samples with vertex/tess/geometry 
   ramp_capture: 19 of 289 calls overlap graphics work and take 2.37 to 3.84 ms; the other 270 take at most 2.37 ms; correlation of duration with graphics ms 0.97; SMs Active in the stalls of the calls over 3 ms: mean 7%
   gap_capture: 28 of 385 calls overlap graphics work and take 2.32 to 3.88 ms; the other 357 take at most 2.37 ms; correlation of duration with graphics ms 0.98; SMs Active in the stalls of the calls over 3 ms: mean 7%
 
-Once boosted, how long the clock stays up after the last kernel (wake_capture and gap_capture)
-  wake_capture spin #1                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1915 ms, idle clock at 17.1 s
-  wake_capture spin #2                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1750 ms, idle clock at 17.1 s
-  wake_capture spin #3                  at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1743 ms, idle clock at 17.1 s
-  wake_capture wake, idle 0.5 s, spin   at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1732 ms, idle clock at 17.1 s
-  wake_capture wake, idle 1.0 s, spin   at least 2.69 GHz from    0 ms, back to 2.52 GHz at  1812 ms, idle clock at 17.6 s
-  gap_capture  after 500 ms gap         at least 2.69 GHz from   76 ms, back to 2.52 GHz at  1767 ms, idle clock at 18.4 s
+Once boosted, how long the clock stays up after the last kernel of a range (s or ms after it)
+  wake_capture spin #1                  at least 2.69 GHz from   0 ms, back to 2.52 GHz at  1915 ms, leaves 2.52 GHz at 16.2 s, below 0.5 GHz at 17.1 s, at the 210 MHz idle clock at 19.7 s
+  wake_capture spin #2                  at least 2.69 GHz from   0 ms, back to 2.52 GHz at  1750 ms, leaves 2.52 GHz at 16.4 s, below 0.5 GHz at 17.1 s, at the 210 MHz idle clock at 19.5 s
+  wake_capture spin #3                  at least 2.69 GHz from   0 ms, back to 2.52 GHz at  1743 ms, leaves 2.52 GHz at 16.4 s, below 0.5 GHz at 17.1 s, at the 210 MHz idle clock at 19.3 s
+  wake_capture wake, idle 0.5 s, spin   at least 2.69 GHz from   0 ms, back to 2.52 GHz at  1732 ms, leaves 2.52 GHz at 16.4 s, below 0.5 GHz at 17.1 s, at the 210 MHz idle clock at 19.3 s
+  wake_capture wake, idle 1.0 s, spin   at least 2.69 GHz from   0 ms, back to 2.52 GHz at  1812 ms, leaves 2.52 GHz at 16.9 s, below 0.5 GHz at 17.6 s, at the 210 MHz idle clock at 19.8 s
+  gap_capture  gap before the next range:    5 ms; at least 2.69 GHz from nan ms; highest clock in the gap 2.519 GHz
+  gap_capture  gap before the next range:   20 ms; at least 2.69 GHz from nan ms; highest clock in the gap 2.595 GHz
+  gap_capture  gap before the next range:   50 ms; at least 2.69 GHz from nan ms; highest clock in the gap 2.678 GHz
+  gap_capture  gap before the next range:  100 ms; at least 2.69 GHz from  40 ms; highest clock in the gap 2.715 GHz
+  gap_capture  gap before the next range:  200 ms; at least 2.69 GHz from  53 ms; highest clock in the gap 2.715 GHz
+  gap_capture  gap before the next range:  500 ms; at least 2.69 GHz from  53 ms; highest clock in the gap 2.715 GHz
+  gap_capture  after 500 ms gap         at least 2.69 GHz from  76 ms, back to 2.52 GHz at  1767 ms, leaves 2.52 GHz at 17.0 s, below 0.5 GHz at 18.4 s, at the 210 MHz idle clock at 25.0 s

@@ -115,7 +115,7 @@ for name in ("ramp_capture", "gap_capture"):
           f"{statistics.correlation(dur, gfx):.2f}; SMs Active in the stalls of the calls over 3 ms: "
           f"mean {statistics.mean(stall):.0f}%")
 
-print("\nOnce boosted, how long the clock stays up after the last kernel (wake_capture and gap_capture)")
+print("\nOnce boosted, how long the clock stays up after the last kernel of a range (s or ms after it)")
 for name in ("wake_capture", "gap_capture"):
     cap = Capture(f"reports/{name}.sqlite")
     for s, e, txt in cap.ranges:
@@ -124,7 +124,15 @@ for name in ("wake_capture", "gap_capture"):
         seg = cap.clock_in(last, nxt)
         up = next((t for t, v in seg if v >= 2.69), None)
         down = next((t for t, v in seg if up and t > up and v <= 2.53), None)
-        idle = next((t for t, v in seg if v < 0.5), None)
+        leaves = next((t for t, v in seg if down and t > down and v < 2.4), None)
+        below = next((t for t, v in seg if leaves and t > leaves and v < 0.5), None)
+        idle = next((t for t, v in seg if below and t >= below and v <= 0.215), None)
         if up and down:
-            print(f"  {name:12s} {txt:24s} at least 2.69 GHz from {(up - last) / 1e6:4.0f} ms, back to 2.52 GHz at "
-                  f"{(down - last) / 1e6:5.0f} ms, idle clock at {(idle - last) / 1e9 if idle else float('nan'):4.1f} s")
+            f = lambda t: f"{(t - last) / 1e9:4.1f} s" if t else " n/a  "
+            print(f"  {name:12s} {txt:24s} at least 2.69 GHz from {(up - last) / 1e6:3.0f} ms, back to 2.52 GHz at "
+                  f"{(down - last) / 1e6:5.0f} ms, leaves 2.52 GHz at {f(leaves)}, below 0.5 GHz at {f(below)}, "
+                  f"at the 210 MHz idle clock at {f(idle)}")
+        elif nxt - last < 1e9:
+            top = max((v for t, v in seg), default=float("nan"))
+            print(f"  {name:12s} gap before the next range: {(nxt - last) / 1e6:4.0f} ms; at least 2.69 GHz from "
+                  f"{(up - last) / 1e6 if up else float('nan'):3.0f} ms; highest clock in the gap {top:.3f} GHz")

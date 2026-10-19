@@ -82,7 +82,7 @@ style(ax, "A. From idle: 2.52 GHz until the GPU has been busy for about 0.13 to 
 # B: idle time does not count
 ax = axes[1]
 for rng, color, label, lx, ly in (("wake, idle 1.0 s, spin", LIGHT, "woken, idle for 1 s, then the low-power load: boosts 0.22 s after the work starts", 0.02, 2.765),
-                                  ("5 ms in 50", HEAVY, "5 ms of the low-power load every 50 ms (busy 10% of the time): never boosts", 0.02, 2.455)):
+                                  ("5 ms in 50", HEAVY, "5 ms of the low-power load every 50 ms (busy 10% of the time): no boost in 1.5 s", 0.02, 2.455)):
     s, e = wake.ranges[rng]
     k0 = wake.kernels_in(s, e)[0][0]
     x, y = wake.clock_between(k0 - 20e6, e + 50e6, k0, 1e9)
