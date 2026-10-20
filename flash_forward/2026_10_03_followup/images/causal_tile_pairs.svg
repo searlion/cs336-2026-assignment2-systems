@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" font-family="Helvetica, Arial, sans-serif">
+  <rect width="900" height="560" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Causal attention: which (query tile, key tile) pairs need work</text>
+
+  <!-- Axis labels -->
+  <text x="342" y="74" text-anchor="middle" font-size="13" fill="#333">Key tiles j (32 keys each) →</text>
+  <text x="30" y="292" text-anchor="middle" font-size="13" fill="#333" transform="rotate(-90 30 292)">Query tiles i (64 rows each) ↓</text>
+
+  <!-- Column numbers -->
+  <g font-size="10" fill="#555" text-anchor="middle">
+    <text x="162" y="94">0</text><text x="186" y="94">1</text><text x="210" y="94">2</text><text x="234" y="94">3</text>
+    <text x="258" y="94">4</text><text x="282" y="94">5</text><text x="306" y="94">6</text><text x="330" y="94">7</text>
+    <text x="354" y="94">8</text><text x="378" y="94">9</text><text x="402" y="94">10</text><text x="426" y="94">11</text>
+    <text x="450" y="94">12</text><text x="474" y="94">13</text><text x="498" y="94">14</text><text x="522" y="94">15</text>
+  </g>
+
+  <!-- Row labels -->
+  <g text-anchor="end" fill="#333">
+    <text x="142" y="122" font-size="12">i = 0</text><text x="142" y="137" font-size="10" fill="#666">rows 0–63</text>
+    <text x="142" y="170" font-size="12">i = 1</text><text x="142" y="185" font-size="10" fill="#666">rows 64–127</text>
+    <text x="142" y="218" font-size="12">i = 2</text><text x="142" y="233" font-size="10" fill="#666">rows 128–191</text>
+    <text x="142" y="266" font-size="12" font-weight="bold">i = 3</text><text x="142" y="281" font-size="10" fill="#666">rows 192–255</text>
+    <text x="142" y="314" font-size="12">i = 4</text><text x="142" y="329" font-size="10" fill="#666">rows 256–319</text>
+    <text x="142" y="362" font-size="12">i = 5</text><text x="142" y="377" font-size="10" fill="#666">rows 320–383</text>
+    <text x="142" y="410" font-size="12">i = 6</text><text x="142" y="425" font-size="10" fill="#666">rows 384–447</text>
+    <text x="142" y="458" font-size="12">i = 7</text><text x="142" y="473" font-size="10" fill="#666">rows 448–511</text>
+  </g>
+
+  <!-- Grid cells: x = 150 + 24j, y = 100 + 48i, 24 x 48 each -->
+  <g stroke="#ffffff" stroke-width="1">
+    <!-- skipped background for the whole grid -->
+    <rect x="150" y="100" width="384" height="384" fill="#e4e4e4"/>
+    <!-- fully visible: j < 2i -->
+    <rect x="150" y="148" width="48" height="48" fill="#5aa86f"/>
+    <rect x="150" y="196" width="96" height="48" fill="#5aa86f"/>
+    <rect x="150" y="244" width="144" height="48" fill="#5aa86f"/>
+    <rect x="150" y="292" width="192" height="48" fill="#5aa86f"/>
+    <rect x="150" y="340" width="240" height="48" fill="#5aa86f"/>
+    <rect x="150" y="388" width="288" height="48" fill="#5aa86f"/>
+    <rect x="150" y="436" width="336" height="48" fill="#5aa86f"/>
+    <!-- diagonal: j = 2i, 2i+1 -->
+    <rect x="150" y="100" width="48" height="48" fill="#f0a23b"/>
+    <rect x="198" y="148" width="48" height="48" fill="#f0a23b"/>
+    <rect x="246" y="196" width="48" height="48" fill="#f0a23b"/>
+    <rect x="294" y="244" width="48" height="48" fill="#f0a23b"/>
+    <rect x="342" y="292" width="48" height="48" fill="#f0a23b"/>
+    <rect x="390" y="340" width="48" height="48" fill="#f0a23b"/>
+    <rect x="438" y="388" width="48" height="48" fill="#f0a23b"/>
+    <rect x="486" y="436" width="48" height="48" fill="#f0a23b"/>
+  </g>
+  <!-- tile grid lines -->
+  <g stroke="#ffffff" stroke-width="1.2">
+    <line x1="174" y1="100" x2="174" y2="484"/><line x1="198" y1="100" x2="198" y2="484"/><line x1="222" y1="100" x2="222" y2="484"/>
+    <line x1="246" y1="100" x2="246" y2="484"/><line x1="270" y1="100" x2="270" y2="484"/><line x1="294" y1="100" x2="294" y2="484"/>
+    <line x1="318" y1="100" x2="318" y2="484"/><line x1="342" y1="100" x2="342" y2="484"/><line x1="366" y1="100" x2="366" y2="484"/>
+    <line x1="390" y1="100" x2="390" y2="484"/><line x1="414" y1="100" x2="414" y2="484"/><line x1="438" y1="100" x2="438" y2="484"/>
+    <line x1="462" y1="100" x2="462" y2="484"/><line x1="486" y1="100" x2="486" y2="484"/><line x1="510" y1="100" x2="510" y2="484"/>
+    <line x1="150" y1="148" x2="534" y2="148"/><line x1="150" y1="196" x2="534" y2="196"/><line x1="150" y1="244" x2="534" y2="244"/>
+    <line x1="150" y1="292" x2="534" y2="292"/><line x1="150" y1="340" x2="534" y2="340"/><line x1="150" y1="388" x2="534" y2="388"/>
+    <line x1="150" y1="436" x2="534" y2="436"/>
+  </g>
+
+  <!-- causal boundary: key position = query position -->
+  <line x1="150" y1="100" x2="534" y2="484" stroke="#b23a3a" stroke-width="2" stroke-dasharray="6 4"/>
+
+  <!-- highlight query tile 3 -->
+  <rect x="150" y="244" width="192" height="48" fill="none" stroke="#1f2a44" stroke-width="3"/>
+  <text x="350" y="264" font-size="12" font-weight="bold" fill="#1f2a44">← needs key tiles 0–7:</text>
+  <text x="350" y="280" font-size="12" font-weight="bold" fill="#1f2a44">2·3 + 2 = 8 tiles</text>
+
+  <!-- note in the skipped region -->
+  <text x="330" y="122" font-size="11" fill="#555">Grey: every key is after every</text>
+  <text x="330" y="137" font-size="11" fill="#555">query row of the tile → skip</text>
+  <text x="400" y="200" font-size="11" fill="#b23a3a" transform="rotate(45 400 200)">key = query</text>
+
+  <!-- Frame -->
+  <rect x="150" y="100" width="384" height="384" fill="none" stroke="#888" stroke-width="1"/>
+
+  <!-- Caption -->
+  <text x="342" y="512" text-anchor="middle" font-size="12" fill="#444">Drawn for N = 512 (8 query tiles × 16 key tiles) so each tile is visible.</text>
+  <text x="342" y="530" text-anchor="middle" font-size="12" fill="#444">At N = 4096 the grid is 64 × 128 tiles, with exactly the same staircase.</text>
+
+  <!-- Legend -->
+  <text x="585" y="112" font-size="14" font-weight="bold" fill="#222">Each (query tile, key tile) pair is</text>
+  <rect x="585" y="128" width="18" height="18" fill="#5aa86f"/>
+  <text x="612" y="142" font-size="12" fill="#222">fully visible: compute, no mask</text>
+  <rect x="585" y="156" width="18" height="18" fill="#f0a23b"/>
+  <text x="612" y="170" font-size="12" fill="#222">on the diagonal: compute, then mask</text>
+  <rect x="585" y="184" width="18" height="18" fill="#e4e4e4" stroke="#bbb"/>
+  <text x="612" y="198" font-size="12" fill="#222">fully masked: no work needed</text>
+
+  <!-- Zoom into one diagonal pair -->
+  <text x="585" y="238" font-size="14" font-weight="bold" fill="#222">Zoom: the two orange tiles of tile i</text>
+  <polygon points="620,255 620,375 740,375" fill="#5aa86f"/>
+  <polygon points="620,255 740,255 740,375" fill="#e4e4e4"/>
+  <line x1="680" y1="255" x2="680" y2="375" stroke="#ffffff" stroke-width="2"/>
+  <line x1="620" y1="255" x2="740" y2="375" stroke="#b23a3a" stroke-width="2" stroke-dasharray="6 4"/>
+  <rect x="620" y="255" width="120" height="120" fill="none" stroke="#f0a23b" stroke-width="3"/>
+  <text x="650" y="391" text-anchor="middle" font-size="10" fill="#444">tile 2i</text>
+  <text x="710" y="391" text-anchor="middle" font-size="10" fill="#444">tile 2i+1</text>
+  <text x="614" y="261" text-anchor="end" font-size="10" fill="#444">row 64i</text>
+  <text x="614" y="378" text-anchor="end" font-size="10" fill="#444">row 64i+63</text>
+  <text x="750" y="300" font-size="11" fill="#222">row 64i + t keeps</text>
+  <text x="750" y="315" font-size="11" fill="#222">only its first t + 1</text>
+  <text x="750" y="330" font-size="11" fill="#222">keys here, so these</text>
+  <text x="750" y="345" font-size="11" fill="#222">tiles need the mask</text>
+
+  <!-- Counts at N = 4096 -->
+  <text x="585" y="428" font-size="14" font-weight="bold" fill="#222">One head at N = 4096</text>
+  <text x="585" y="450" font-size="12" fill="#222">4,096 / 64 = 64 query tiles</text>
+  <text x="585" y="468" font-size="12" fill="#222">4,096 / 32 = 128 key tiles</text>
+  <text x="585" y="486" font-size="12" fill="#222">64 × 128 = 8,192 pairs, of which</text>
+  <text x="600" y="506" font-size="12" fill="#2f7a45">4,032 visible</text>
+  <text x="690" y="506" font-size="12" fill="#b46f10">128 diagonal</text>
+  <text x="780" y="506" font-size="12" fill="#666">4,032 skipped</text>
+  <text x="585" y="528" font-size="12" fill="#222">Needed: 4,032 + 128 = 4,160 (50.8%)</text>
+</svg>
