@@ -1,0 +1,2 @@
+swizzle=False  slice:     0 wrong of 16384  (in K-block 0: 0; wrong values equal to K-block 0's value: 0)   full coordinate: 0 wrong
+swizzle=True   slice: 12288 wrong of 16384  (in K-block 0: 0; wrong values equal to K-block 0's value: 12288)   full coordinate: 0 wrong

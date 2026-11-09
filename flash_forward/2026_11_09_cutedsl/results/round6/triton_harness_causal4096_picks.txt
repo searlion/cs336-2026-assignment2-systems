@@ -1,0 +1,10 @@
+triton_v5_run10.txt causal 4096 K_TILE=128 ours_ms=1.079
+triton_v5_run1.txt causal 4096 K_TILE=128 ours_ms=1.076
+triton_v5_run2.txt causal 4096 K_TILE=32 ours_ms=1.082
+triton_v5_run3.txt causal 4096 K_TILE=128 ours_ms=1.079
+triton_v5_run4.txt causal 4096 K_TILE=32 ours_ms=1.073
+triton_v5_run5.txt causal 4096 K_TILE=32 ours_ms=1.077
+triton_v5_run6.txt causal 4096 K_TILE=128 ours_ms=1.082
+triton_v5_run7.txt causal 4096 K_TILE=128 ours_ms=1.085
+triton_v5_run8.txt causal 4096 K_TILE=128 ours_ms=1.078
+triton_v5_run9.txt causal 4096 K_TILE=32 ours_ms=1.070

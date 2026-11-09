@@ -1,0 +1,7 @@
+A = kernels/v5_tuned [auto]   B = kernels/v6_mbarrier [auto]   7 rounds
+[0] N=512 causal=False: A 0.0451 ms  B 0.0532 ms  B/A-1 = +18.2%   (A 0.0451-0.0453, B 0.0532-0.0538)
+[0] N=4096 causal=False: A 1.9743 ms  B 2.0225 ms  B/A-1 = +2.4%   (A 1.9651-1.9967, B 2.0126-2.0346)
+[0] N=4096 causal=True : A 1.0496 ms  B 1.1233 ms  B/A-1 = +7.0%   (A 1.0476-1.0644, B 1.1182-1.1330)
+[1] N=512 causal=False: A 0.0440 ms  B 0.0522 ms  B/A-1 = +18.6%   (A 0.0432-0.0440, B 0.0522-0.0524)
+[1] N=4096 causal=False: A 1.9791 ms  B 2.0234 ms  B/A-1 = +2.2%   (A 1.9743-1.9968, B 2.0224-2.0357)
+[1] N=4096 causal=True : A 1.0546 ms  B 1.1233 ms  B/A-1 = +6.5%   (A 1.0484-1.0639, B 1.1220-1.1284)

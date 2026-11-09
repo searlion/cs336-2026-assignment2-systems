@@ -1,0 +1,34 @@
+# experiments/mbarrier_probe/probe.py, nvidia-cutlass-dsl 4.8.1, sm_89
+## with the DSL's wrappers (cute.arch.cp_async_mbarrier_arrive_noinc, cute.arch.mbarrier_test_wait):
+[91m[1merror[CONFIG_UNSUPPORTED_ARCH]:[0m Unsupported GPU architecture 'sm_89'. This kernel is only compatible with: [base_dsl.Arch.sm_90, base_dsl.Arch.sm_90a, base_dsl.Arch.sm_100, base_dsl.Arch.sm_100a, base_dsl.Arch.sm_100f, base_dsl.Arch.sm_110, base_dsl.Arch.sm_110a, base_dsl.Arch.sm_110f, base_dsl.Arch.sm_103, base_dsl.Arch.sm_103a, base_dsl.Arch.sm_103f, base_dsl.Arch.sm_107, base_dsl.Arch.sm_107a, base_dsl.Arch.sm_107f, base_dsl.Arch.sm_120, base_dsl.Arch.sm_120a, base_dsl.Arch.sm_120f, base_dsl.Arch.sm_121, base_dsl.Arch.sm_121a, base_dsl.Arch.sm_121f].
+22 |         cute.arch.cp_async_mbarrier_arrive_noinc(ptr)
+  [92msuggestion:[0m Set `CUTE_DSL_ARCH` environment variable or pass a compatible `gpu_arch` to compile
+## with the NVVM ops underneath them:
+correct: True
+.target sm_89
+mbarrier.init.shared.b64 	[%r1], %r7;
+cp.async.cg.shared.global [%r4+128], [%rd1], 16, 16;
+cp.async.mbarrier.arrive.noinc.shared.b64 	[%r1];
+mbarrier.test_wait.parity.acquire.cta.shared::cta.b64 %p2, [%r1], 0;
+mbarrier.test_wait.parity.acquire.cta.shared::cta.b64 %p3, [%r1], 0;
+cp.async.cg.shared.global [%r4+2176], [%rd1+2048], 16, 16;
+cp.async.mbarrier.arrive.noinc.shared.b64 	[%r1];
+mbarrier.test_wait.parity.acquire.cta.shared::cta.b64 %p5, [%r1], 1;
+mbarrier.test_wait.parity.acquire.cta.shared::cta.b64 %p6, [%r1], 1;
+## SASS:
+/*00c0*/              @!PT LDS RZ, [RZ] ;                                    
+/*00d0*/              @!PT LDS RZ, [RZ] ;                                    
+/*00e0*/              @!PT LDS RZ, [RZ] ;                                    
+/*00f0*/                   LDGSTS.E.BYPASS.128 [R7+0x80], [R2.64] ;          
+/*0110*/              @!PT LDS RZ, [RZ] ;                                    
+/*0120*/              @!PT LDS RZ, [RZ] ;                                    
+/*0130*/              @!PT LDS RZ, [RZ] ;                                    
+/*0140*/              @!PT LDS RZ, [RZ] ;                                    
+/*0150*/                   ARRIVES.LDGSTSBAR.64 [URZ] ;                      
+/*0170*/                   LDS R4, [0x4] ;                                   
+/*01d0*/               @P0 BRA 0x220 ;                                       
+/*01e0*/                   LDS R4, [0x4] ;                                   
+
+## plain mbarrier.arrive (experiments/mbarrier_probe/arrive_probe.py): cute.arch.mbarrier_arrive, then inline PTX
+dsl FAILED: [91merror:[0m NVVM backend compilation failed
+asm OK: ['mbarrier.arrive.shared::cta.b64 state, [%r4];']

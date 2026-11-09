@@ -1,0 +1,8 @@
+median CPU time per call over 2000 calls, N = 512, B*H = 32, D = 64 (µs)
+CuTe v5: whole FlashAttentionCuTe.apply          32.7
+  torch.empty for O and L                         2.3
+  5 x make_ptr                                    2.7
+  cuda.CUstream(current stream)                   2.5
+  compiled kernel call (prebuilt arguments)      10.7
+Triton v5: whole FlashAttentionTriton.apply      28.6
+SDPA                                              7.5

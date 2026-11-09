@@ -1,0 +1,15 @@
+config 64,64,4,3: regs/thread=158 spills=0 shared=40960 B
+  layout: #blocked = #ttg.blocked<{sizePerThread = [1, 8], threadsPerWarp = [4, 8], warpsPerCTA = [4, 1], order = [1, 0]}>
+  layout: #blocked1 = #ttg.blocked<{sizePerThread = [1], threadsPerWarp = [32], warpsPerCTA = [4], order = [0]}>
+  layout: #mma = #ttg.nvidia_mma<{versionMajor = 2, versionMinor = 0, warpsPerCTA = [4, 1], instrShape = [16, 8]}>
+  layout: #shared = #ttg.swizzled_shared<{vec = 8, perPhase = 1, maxPhase = 8, order = [1, 0]}>
+  layout: #smem = #ttg.shared_memory
+   12 x async_copy_global_to_local       64x64x!tt.ptr<bf16
+    1 x convert_layout                   #linear1 -> #blocked1
+    1 x convert_layout                   #mma -> #blocked
+    2 x convert_layout                   #mma -> kWidth = 2}
+    4 x local_alloc                      
+    1 x local_alloc                      #blocked
+    2 x local_load                       #linear
+    4 x local_load                       kWidth = 2}
+  static SASS opcode counts: FMUL=177, HMMA.16816.F32.BF16=128, LOP3.LUT=92, IMAD.WIDE.U32=82, FADD=82, IMAD=80, IADD3=78, FMNMX=76, FFMA=72, MUFU.EX2=72, FSEL=66, IMAD.MOV.U32=63, LEA=60, LEA.HI.X=55, LDGSTS.E.BYPASS.128=48, F2FP.BF16.F32.PACK_AB=48, LDSM.16.M88.4=44, CS2R=42, SEL=39, IMAD.IADD=38, IMAD.U32=35, IADD3.X=33, PLOP3.LUT=32, LDSM.16.MT88.4=32, ISETP.GT.AND=31, IMAD.X=29, FFMA.FTZ=24, LDS=18, SHFL.BFLY=16, IMAD.SHL.U32=15, NOP=15, ISETP.GE.U32.AND=14, USHF.R.S32.HI=13, UIADD3=13, ISETP.NE.U32.AND=13, LDGDEPBAR=12, ISETP.GE.AND.EX=12, ULDC.64=11, UIMAD=11, BAR.SYNC.DEFER_BLOCKING=11

@@ -1,0 +1,30 @@
+                                flash_fwd_kernel  flash_fwd_kernel  flash_fwd_kernel
+duration (ms)                              1.152             1.136             1.144
+SM clock (GHz)                              2.52              2.52              2.52
+tensor ops (G)                              70.9              69.8              69.8
+tensor TOP/s                                61.5              61.4              61.0
+tensor % of peak                            85.3              85.2              84.4
+LSU pipe (%)                                16.8              19.4              24.5
+issue slots busy (%)                        14.7              17.7              21.5
+instructions (M)                              96               113               139
+registers/thread                             255               158               128
+shared mem/block (KB)                       41.0              41.0              32.8
+theoretical occupancy (%)                   16.7              16.7              25.0
+achieved occupancy (%)                      16.4              16.4              24.4
+L2->L1 bytes (GB)                           1.12              1.11              1.11
+L2 hit rate (%)                             95.4              95.5              95.5
+DRAM bytes (MB)                               61                59                59
+shared st+ld wavefronts (M)                   40                43                50
+shared load instructions (M)                 0.0               0.0               0.0
+shared store instructions (M)                0.1               0.1               0.1
+ldmatrix instructions (M)                    9.2               9.6              10.7
+cp.async instructions (M)                    2.4               2.4               2.3
+shared load wavefronts (M)                    37                39                43
+shared store wavefronts (M)                    0                 0                 0
+shared load bank conflicts (M)                 0                 0                 0
+shared store bank conflicts (M)                 0                 0                 0
+warp cycles / issued inst                  12.72             10.65             12.64
+top stalls (cycles per issued instruction):
+  flash_fwd_kernel  math_pipe_throttle 8.11, wait 1.12, long_scoreboard 1.11, selected 1.00
+  flash_fwd_kernel  math_pipe_throttle 6.16, wait 1.51, selected 1.00, short_scoreboard 0.67
+  flash_fwd_kernel  math_pipe_throttle 7.48, barrier 1.69, wait 1.30, selected 1.00

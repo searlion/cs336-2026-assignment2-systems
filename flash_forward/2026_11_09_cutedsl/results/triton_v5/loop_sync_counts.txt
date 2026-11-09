@@ -1,0 +1,10 @@
+results/triton_v5/v5_64x128x4x2_noncausal.sass
+                                HMMA      LDSM    LDGSTS LDGDEPBAR    DEPBAR  BAR.SYNC  MUFU.EX2       LDL       STL   total
+loop 0x01610-0x03d10           128        68        16         2         1         2        68         0         0     622
+loop 0x056d0-0x08bf0           128        68        16         2         1         2        68         0         0     848
+DEPBAR operands in loops: ['SB0, 0x0']
+results/triton_v5/v5_64x128x4x2_causal.sass
+                                HMMA      LDSM    LDGSTS LDGDEPBAR    DEPBAR  BAR.SYNC  MUFU.EX2       LDL       STL   total
+loop 0x01690-0x03d80           128        68        16         2         1         2        68         0         0     621
+loop 0x05130-0x09060           128        68        16         2         1         2        68         0         0    1009
+DEPBAR operands in loops: ['SB0, 0x0']

@@ -1,0 +1,27 @@
+round 0 causal=False cute_v5   0.043 ms  145.7 W  52->65 C  SM 2715 MHz (min 2715)  {}
+round 0 causal=False triton_v5 0.045 ms  142.9 W  46->59 C  SM 2730 MHz (min 2520)  {}
+round 0 causal=False sdpa      0.063 ms  137.5 W  45->57 C  SM 2730 MHz (min 2520)  {}
+round 0 causal=True  cute_v5   0.037 ms  135.6 W  44->55 C  SM 2730 MHz (min 2520)  {}
+round 0 causal=True  triton_v5 0.037 ms  136.0 W  43->55 C  SM 2730.0 MHz (min 2520)  {}
+round 0 causal=True  sdpa      0.054 ms  132.7 W  43->54 C  SM 2730 MHz (min 2730)  {}
+round 1 causal=False sdpa      0.063 ms  135.7 W  43->55 C  SM 2730 MHz (min 2730)  {}
+round 1 causal=False triton_v5 0.044 ms  142.1 W  47->60 C  SM 2730.0 MHz (min 2730)  {}
+round 1 causal=False cute_v5   0.043 ms  142.1 W  45->58 C  SM 2730 MHz (min 2730)  {}
+round 1 causal=True  sdpa      0.054 ms  133.2 W  44->55 C  SM 2730.0 MHz (min 2730)  {}
+round 1 causal=True  triton_v5 0.037 ms  136.1 W  43->55 C  SM 2730.0 MHz (min 2730)  {}
+round 1 causal=True  cute_v5   0.037 ms  135.2 W  43->54 C  SM 2730 MHz (min 2520)  {}
+round 2 causal=False cute_v5   0.043 ms  139.8 W  43->56 C  SM 2730 MHz (min 2520)  {}
+round 2 causal=False triton_v5 0.045 ms  143.4 W  47->60 C  SM 2730 MHz (min 2520)  {}
+round 2 causal=False sdpa      0.063 ms  137.7 W  45->57 C  SM 2730 MHz (min 2730)  {}
+round 2 causal=True  cute_v5   0.037 ms  135.0 W  44->55 C  SM 2730 MHz (min 2730)  {}
+round 2 causal=True  triton_v5 0.037 ms  136.0 W  43->55 C  SM 2730 MHz (min 2730)  {}
+round 2 causal=True  sdpa      0.054 ms  132.6 W  43->54 C  SM 2730.0 MHz (min 2730)  {}
+
+median over rounds (N = 512):
+kernel     causal      ms  power W  max W temp start max temp  SM MHz  min SM  mem MHz  reasons (fraction of samples)
+cute_v5    False    0.043    142.1  146.3         45       65    2730    2520    10251  
+triton_v5  False    0.045    142.9  144.2         47       60    2730    2520    10251  
+sdpa       False    0.063    137.5  138.1         45       57    2730    2520    10251  
+cute_v5    True     0.037    135.2  135.8         44       55    2730    2520    10251  
+triton_v5  True     0.037    136.0  136.4         43       55    2730    2520    10251  
+sdpa       True     0.054    132.7  133.5         43       55    2730    2730    10251  

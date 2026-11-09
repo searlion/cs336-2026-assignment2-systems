@@ -1,0 +1,34 @@
+What Triton 3.6.0's experimental Gluon layer can express on sm_89 (RTX 4070 SUPER), for each
+round-6 idea. Sources are files in .venv/lib/python3.12/site-packages/triton/; the compile probe
+is experiments/gluon_probe/probe.py, its output gluon_probe.txt (this folder).
+
+Round-6 idea                     | Gluon 3.6 on sm_89                    | Evidence
+---------------------------------+---------------------------------------+------------------------------------------
+v6: cp.async completion tracked  | YES: compiles, runs, correct          | experimental/gluon/language/nvidia/ampere/
+by mbarriers, per-buffer waits   | (PTX: cp.async.mbarrier.arrive.noinc, |   async_copy.py:43 mbarrier_arrive(
+instead of wait_group + barrier; |  mbarrier.test_wait.parity, as in     |   increment_count=False) -> .noinc;
+separate K and V ring depths     |  CuTe v6)                             |   mbarrier.py:20 init, :44 wait, :61 arrive;
+                                 |                                       |   allocate_shared_memory per buffer
+                                 |                                       |   (_core.py:446), so ring depths are free.
+v7: k-sliced Q K^T interleaved   | YES (same level as CuTe: program      | _core.py:280 shared_memory_descriptor.slice
+with the softmax of the previous | order of explicit ops; ptxas          |   (k-slices of Q and K in shared memory),
+S tile                           | schedules)                            |   ampere/__init__.py:13 mma_v2 (bf16 x bf16
+                                 |                                       |   + fp32 accumulator); probe 1 chains
+                                 |                                       |   4 slices, max |S - fp32 ref| = 5.7e-6.
+v8: Q pinned in registers        | YES (load Q once with a DotOperand    | shared_memory_descriptor.load(layout)
+                                 | layout before the loop)               |   (_core.py:256); not built (v8 skipped).
+v9: producer warp (warp          | NO on sm_89: ttgl.warp_specialize     | _core.py:493 warp_specialize; probe 2:
+specialisation)                  | fails in LLVM: "Cannot select:        |   worker_num_regs 48, 168, 256 and
+                                 | intrinsic llvm.nvvm.setmaxnreg..."    |   maxnreg=168 all fail the same way;
+                                 | (setmaxnreg is sm_90a only)           |   setmaxnreg is emitted unconditionally.
+
+For comparison, Triton's standard tl language on sm_89 (results/triton_v5/):
+- One ttg.async_wait %K, %V {num = 0} per iteration waits for K and V together, and the SASS loop has
+  DEPBAR.LE SB0, 0x0 and two BAR.SYNC per iteration (loop_sync_counts.txt): no per-buffer waits,
+  no mbarriers for cp.async, and tl.range/num_stages set one depth for all loads in a loop.
+- tl.range(..., warp_specialize=True) compiles on sm_89 but creates no ttg.warp_specialize region
+  (still 4 warps); it changes the kernel (shared memory 40,960 -> 24,576 B, spills 2 -> 10), i.e.
+  it switches off the loop's multi-buffering (warp_specialize_probe.txt). Its docstring
+  (language/core.py:3281) says warp specialization is only supported on Blackwell.
+- The coarse form of v7 (loop rotation: compute S_{j+1} before the softmax of S_j) IS expressible in
+  tl: kernels/t6_rotated.

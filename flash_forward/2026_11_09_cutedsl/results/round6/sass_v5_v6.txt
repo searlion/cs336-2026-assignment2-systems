@@ -1,0 +1,48 @@
+kernels/v5_tuned causal=0 config=(64, 64, 4, 1): registers 165, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL   ARRIVES     SYNCS     ATOMS  WARPSYNC     total
+whole kernel                   128        72         0        20         0        18        40         5         4         4        68        12        68       102        72        48         0         0         0         0         0         0      1116
+loop 0 (0xb80-0x22a0)           64        36         0         4         0         0        12         2         2         2        34         4        34        34        36        16         0         0         0         0         0         0       356
+loop 1 (0x2400-0x41c0)          64        36         0         8         0         0        16         2         2         2        34         4        34        34        36        16         0         0         0         0         0         0       453
+                          HMMA-free run, longest  mean gap  gaps >= 8
+loop 0 (0xb80-0x22a0)                        178       4.6          5
+loop 1 (0x2400-0x41c0)                       247       6.1          5
+kernels/v5_tuned causal=1 config=(64, 64, 4, 2): registers 128, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL   ARRIVES     SYNCS     ATOMS  WARPSYNC     total
+whole kernel                   128        72         0        28         0        18        52         3         2         2        68        12        68       102        72        48         0         0         0         0         0         0      1265
+loop 0 (0xf80-0x2950)           64        36         0         8         0         0        16         1         1         1        34         4        34        34        36        16         0         0         0         0         0         0       390
+loop 1 (0x2a50-0x4cb0)          64        36         0         8         0         0        16         1         1         1        34         4        34        34        36        16         0         0         0         0         0         0       527
+                          HMMA-free run, longest  mean gap  gaps >= 8
+loop 0 (0xf80-0x2950)                        127       5.1          4
+loop 1 (0x2a50-0x4cb0)                       233       7.2          4
+kernels/v6_mbarrier causal=0 config=(64, 64, 4, 1, 1): registers 128, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL   ARRIVES     SYNCS     ATOMS  WARPSYNC     total
+whole kernel                   128        72        16        24         0        18        40         0         0         1        68        12        68       102        72        48         0         0         9         0        12         0      1281
+loop 0 (0xe50-0xe80)             0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 1 (0xf20-0xf50)             0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 2 (0x1530-0x1560)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 3 (0x2690-0x26c0)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 4 (0xde0-0x2ab0)           64        36         8         4         0         0        12         0         0         0        34         4        34        34        36        16         0         0         3         0         4         0       424
+loop 5 (0x2be0-0x2c10)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 6 (0x2cb0-0x2ce0)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 7 (0x3630-0x3660)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 8 (0x4b90-0x4bc0)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 9 (0x2b50-0x4fc0)          64        36         8         8         0         0        16         0         0         0        34         4        34        34        36        16         0         0         4         0         6         0       530
+                          HMMA-free run, longest  mean gap  gaps >= 8
+loop 4 (0xde0-0x2ab0)                        281       5.6          2
+loop 9 (0x2b50-0x4fc0)                       345       7.3          2
+kernels/v6_mbarrier causal=1 config=(64, 64, 4, 2, 2): registers 128, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL   ARRIVES     SYNCS     ATOMS  WARPSYNC     total
+whole kernel                   128        72        16        44         0        18        68         0         0         1        68        12        68       102        72        48         0         0        16         0        20         0      1628
+loop 0 (0x1d80-0x1db0)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 1 (0x1ed0-0x1f00)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 2 (0x28f0-0x2920)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 3 (0x3a50-0x3a80)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 4 (0x1cc0-0x3f40)          64        36         8         8         0         0        16         0         0         0        34         4        34        34        36        16         0         0         4         0         6         0       499
+loop 5 (0x4100-0x4130)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 6 (0x4250-0x4280)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 7 (0x4c70-0x4ca0)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 8 (0x6600-0x6630)           0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         4
+loop 9 (0x3fe0-0x6af0)          64        36         8         8         0         0        16         0         0         0        34         4        34        34        36        16         0         0         4         0         6         0       636
+                          HMMA-free run, longest  mean gap  gaps >= 8
+loop 4 (0x1cc0-0x3f40)                       292       6.8          2
+loop 9 (0x3fe0-0x6af0)                       423       8.9          2

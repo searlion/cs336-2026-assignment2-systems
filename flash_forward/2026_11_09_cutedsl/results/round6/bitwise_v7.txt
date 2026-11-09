@@ -1,0 +1,43 @@
+bfloat16 B=32 Nq= 512 Nk= 512 D= 64 causal=False: bitwise identical
+bfloat16 B=32 Nq= 512 Nk= 512 D= 64 causal=True : bitwise identical
+bfloat16 B=32 Nq=1024 Nk=1024 D= 64 causal=False: bitwise identical
+bfloat16 B=32 Nq=1024 Nk=1024 D= 64 causal=True : bitwise identical
+bfloat16 B=32 Nq=2048 Nk=2048 D= 64 causal=False: bitwise identical
+bfloat16 B=32 Nq=2048 Nk=2048 D= 64 causal=True : bitwise identical
+bfloat16 B=32 Nq=4096 Nk=4096 D= 64 causal=False: bitwise identical
+bfloat16 B=32 Nq=4096 Nk=4096 D= 64 causal=True : bitwise identical
+bfloat16 B= 4 Nq= 128 Nk= 128 D= 64 causal=False: bitwise identical
+bfloat16 B= 4 Nq= 128 Nk= 128 D= 64 causal=True : bitwise identical
+bfloat16 B= 2 Nq= 100 Nk= 100 D= 64 causal=False: bitwise identical
+bfloat16 B= 2 Nq= 100 Nk= 100 D= 64 causal=True : bitwise identical
+bfloat16 B= 1 Nq=  37 Nk=  53 D= 32 causal=False: bitwise identical
+bfloat16 B= 1 Nq= 200 Nk=  96 D=128 causal=False: bitwise identical
+bfloat16 B= 3 Nq= 300 Nk= 300 D= 64 causal=False: bitwise identical
+bfloat16 B= 3 Nq= 300 Nk= 300 D= 64 causal=True : bitwise identical
+bfloat16 B= 2 Nq=1000 Nk=1000 D= 64 causal=False: bitwise identical
+bfloat16 B= 2 Nq=1000 Nk=1000 D= 64 causal=True : bitwise identical
+bfloat16 B= 1 Nq=4097 Nk=4097 D= 64 causal=False: bitwise identical
+bfloat16 B= 1 Nq=4097 Nk=4097 D= 64 causal=True : bitwise identical
+bfloat16 B= 2 Nq= 777 Nk=1500 D= 64 causal=False: bitwise identical
+bfloat16 B= 2 Nq=  65 Nk=  65 D=128 causal=False: bitwise identical
+bfloat16 B= 2 Nq=  65 Nk=  65 D=128 causal=True : bitwise identical
+float32  B=32 Nq= 512 Nk= 512 D= 64 causal=False: bitwise identical
+float32  B=32 Nq= 512 Nk= 512 D= 64 causal=True : bitwise identical
+float32  B=32 Nq=1024 Nk=1024 D= 64 causal=False: bitwise identical
+float32  B=32 Nq=1024 Nk=1024 D= 64 causal=True : bitwise identical
+float32  B= 4 Nq= 128 Nk= 128 D= 64 causal=False: bitwise identical
+float32  B= 4 Nq= 128 Nk= 128 D= 64 causal=True : bitwise identical
+float32  B= 2 Nq= 100 Nk= 100 D= 64 causal=False: bitwise identical
+float32  B= 2 Nq= 100 Nk= 100 D= 64 causal=True : bitwise identical
+float32  B= 1 Nq=  37 Nk=  53 D= 32 causal=False: bitwise identical
+float32  B= 1 Nq= 200 Nk=  96 D=128 causal=False: bitwise identical
+float32  B= 3 Nq= 300 Nk= 300 D= 64 causal=False: bitwise identical
+float32  B= 3 Nq= 300 Nk= 300 D= 64 causal=True : bitwise identical
+float32  B= 2 Nq=1000 Nk=1000 D= 64 causal=False: bitwise identical
+float32  B= 2 Nq=1000 Nk=1000 D= 64 causal=True : bitwise identical
+float32  B= 1 Nq=4097 Nk=4097 D= 64 causal=False: bitwise identical
+float32  B= 1 Nq=4097 Nk=4097 D= 64 causal=True : bitwise identical
+float32  B= 2 Nq= 777 Nk=1500 D= 64 causal=False: bitwise identical
+float32  B= 2 Nq=  65 Nk=  65 D=128 causal=False: bitwise identical
+float32  B= 2 Nq=  65 Nk=  65 D=128 causal=True : bitwise identical
+ALL BITWISE IDENTICAL

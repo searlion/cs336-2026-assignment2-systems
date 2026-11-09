@@ -1,0 +1,3 @@
+N=512 causal=False: A 0.0521 ms  B 0.0522 ms  B/A-1 = +0.3%
+N=4096 causal=False: A 1.9625 ms  B 1.9517 ms  B/A-1 = -0.5%
+N=4096 causal=True: A 1.0499 ms  B 1.0332 ms  B/A-1 = -1.6%

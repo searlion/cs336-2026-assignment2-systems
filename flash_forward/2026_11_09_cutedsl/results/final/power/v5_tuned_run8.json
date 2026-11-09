@@ -1,0 +1,325 @@
+{
+ "device": {
+  "gpu": "NVIDIA GeForce RTX 4070 SUPER",
+  "power_limit_W": 220.0,
+  "max_sm_clock_MHz": 3105,
+  "max_mem_clock_MHz": 10501,
+  "sample_period_ms": 10.0
+ },
+ "shapes": [
+  {
+   "N": 512,
+   "causal": false,
+   "ours_ms": 0.048128001391887665,
+   "sdpa_ms": 0.06451199948787689,
+   "ours": {
+    "samples": 13,
+    "fresh_readings": 2,
+    "seconds": 0.524,
+    "power_W_median": 12.5,
+    "power_W_max": 38.4,
+    "power_avg_reading_W_median": 12.6,
+    "temp_C_start": 43,
+    "temp_C_end": 44,
+    "temp_C_max": 44,
+    "sm_MHz_median": 210,
+    "sm_MHz_min": 210,
+    "mem_MHz_median": 405,
+    "mem_MHz_min": 405,
+    "reasons": {
+     "gpu_idle": 0.538
+    }
+   },
+   "sdpa": {
+    "samples": 11,
+    "fresh_readings": 1,
+    "seconds": 0.11,
+    "power_W_median": 38.4,
+    "power_W_max": 38.4,
+    "power_avg_reading_W_median": 23.4,
+    "temp_C_start": 44,
+    "temp_C_end": 44,
+    "temp_C_max": 44,
+    "sm_MHz_median": 2520,
+    "sm_MHz_min": 2520,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 512,
+   "causal": true,
+   "ours_ms": 0.03891199827194214,
+   "sdpa_ms": 0.0541439987719059,
+   "ours": {
+    "samples": 16,
+    "fresh_readings": 2,
+    "seconds": 0.55,
+    "power_W_median": 48.9,
+    "power_W_max": 48.9,
+    "power_avg_reading_W_median": 48.0,
+    "temp_C_start": 44,
+    "temp_C_end": 46,
+    "temp_C_max": 46,
+    "sm_MHz_median": 2745.0,
+    "sm_MHz_min": 2520,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   },
+   "sdpa": {
+    "samples": 11,
+    "fresh_readings": 1,
+    "seconds": 0.111,
+    "power_W_median": 48.9,
+    "power_W_max": 48.9,
+    "power_avg_reading_W_median": 48.0,
+    "temp_C_start": 46,
+    "temp_C_end": 46,
+    "temp_C_max": 46,
+    "sm_MHz_median": 2745,
+    "sm_MHz_min": 2745,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 1024,
+   "causal": false,
+   "ours_ms": 0.1382399946451187,
+   "sdpa_ms": 0.15052799880504608,
+   "ours": {
+    "samples": 16,
+    "fresh_readings": 4,
+    "seconds": 0.622,
+    "power_W_median": 72.8,
+    "power_W_max": 107.6,
+    "power_avg_reading_W_median": 71.6,
+    "temp_C_start": 46,
+    "temp_C_end": 47,
+    "temp_C_max": 50,
+    "sm_MHz_median": 2745.0,
+    "sm_MHz_min": 2745,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   },
+   "sdpa": {
+    "samples": 11,
+    "fresh_readings": 1,
+    "seconds": 0.104,
+    "power_W_median": 107.6,
+    "power_W_max": 107.6,
+    "power_avg_reading_W_median": 70.0,
+    "temp_C_start": 47,
+    "temp_C_end": 47,
+    "temp_C_max": 47,
+    "sm_MHz_median": 2745,
+    "sm_MHz_min": 2745,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 1024,
+   "causal": true,
+   "ours_ms": 0.08806400001049042,
+   "sdpa_ms": 0.11980800330638885,
+   "ours": {
+    "samples": 18,
+    "fresh_readings": 2,
+    "seconds": 0.713,
+    "power_W_median": 49.3,
+    "power_W_max": 107.6,
+    "power_avg_reading_W_median": 70.8,
+    "temp_C_start": 47,
+    "temp_C_end": 47,
+    "temp_C_max": 47,
+    "sm_MHz_median": 2730.0,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   },
+   "sdpa": {
+    "samples": 11,
+    "fresh_readings": 1,
+    "seconds": 0.112,
+    "power_W_median": 49.3,
+    "power_W_max": 49.3,
+    "power_avg_reading_W_median": 70.8,
+    "temp_C_start": 47,
+    "temp_C_end": 47,
+    "temp_C_max": 47,
+    "sm_MHz_median": 2730,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 2048,
+   "causal": false,
+   "ours_ms": 0.49459201097488403,
+   "sdpa_ms": 0.536543995141983,
+   "ours": {
+    "samples": 12,
+    "fresh_readings": 2,
+    "seconds": 0.114,
+    "power_W_median": 151.8,
+    "power_W_max": 151.8,
+    "power_avg_reading_W_median": 90.0,
+    "temp_C_start": 47,
+    "temp_C_end": 52,
+    "temp_C_max": 52,
+    "sm_MHz_median": 2730.0,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   },
+   "sdpa": {
+    "samples": 12,
+    "fresh_readings": 1,
+    "seconds": 0.127,
+    "power_W_median": 151.8,
+    "power_W_max": 151.8,
+    "power_avg_reading_W_median": 90.0,
+    "temp_C_start": 52,
+    "temp_C_end": 52,
+    "temp_C_max": 52,
+    "sm_MHz_median": 2730.0,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 2048,
+   "causal": true,
+   "ours_ms": 0.2815999984741211,
+   "sdpa_ms": 0.3301919996738434,
+   "ours": {
+    "samples": 12,
+    "fresh_readings": 1,
+    "seconds": 0.121,
+    "power_W_median": 151.8,
+    "power_W_max": 151.8,
+    "power_avg_reading_W_median": 90.0,
+    "temp_C_start": 52,
+    "temp_C_end": 52,
+    "temp_C_max": 52,
+    "sm_MHz_median": 2730.0,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   },
+   "sdpa": {
+    "samples": 12,
+    "fresh_readings": 1,
+    "seconds": 0.118,
+    "power_W_median": 151.8,
+    "power_W_max": 151.8,
+    "power_avg_reading_W_median": 90.0,
+    "temp_C_start": 52,
+    "temp_C_end": 52,
+    "temp_C_max": 52,
+    "sm_MHz_median": 2730.0,
+    "sm_MHz_min": 2730,
+    "mem_MHz_median": 10251.0,
+    "mem_MHz_min": 10251,
+    "reasons": {}
+   }
+  },
+  {
+   "N": 4096,
+   "causal": false,
+   "ours_ms": 2.033728063106537,
+   "sdpa_ms": 2.164736032485962,
+   "ours": {
+    "samples": 13,
+    "fresh_readings": 2,
+    "seconds": 0.135,
+    "power_W_median": 187.8,
+    "power_W_max": 187.8,
+    "power_avg_reading_W_median": 129.8,
+    "temp_C_start": 52,
+    "temp_C_end": 58,
+    "temp_C_max": 58,
+    "sm_MHz_median": 2655,
+    "sm_MHz_min": 2655,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {
+     "sw_power_cap": 0.538
+    }
+   },
+   "sdpa": {
+    "samples": 13,
+    "fresh_readings": 1,
+    "seconds": 0.129,
+    "power_W_median": 187.8,
+    "power_W_max": 187.8,
+    "power_avg_reading_W_median": 129.8,
+    "temp_C_start": 58,
+    "temp_C_end": 58,
+    "temp_C_max": 58,
+    "sm_MHz_median": 2655,
+    "sm_MHz_min": 2655,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {
+     "sw_power_cap": 1.0
+    }
+   }
+  },
+  {
+   "N": 4096,
+   "causal": true,
+   "ours_ms": 1.0286400318145752,
+   "sdpa_ms": 1.117184042930603,
+   "ours": {
+    "samples": 13,
+    "fresh_readings": 1,
+    "seconds": 0.132,
+    "power_W_median": 187.8,
+    "power_W_max": 187.8,
+    "power_avg_reading_W_median": 129.8,
+    "temp_C_start": 58,
+    "temp_C_end": 58,
+    "temp_C_max": 58,
+    "sm_MHz_median": 2655,
+    "sm_MHz_min": 2655,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {
+     "sw_power_cap": 1.0
+    }
+   },
+   "sdpa": {
+    "samples": 13,
+    "fresh_readings": 1,
+    "seconds": 0.131,
+    "power_W_median": 187.8,
+    "power_W_max": 187.8,
+    "power_avg_reading_W_median": 129.8,
+    "temp_C_start": 58,
+    "temp_C_end": 58,
+    "temp_C_max": 58,
+    "sm_MHz_median": 2655,
+    "sm_MHz_min": 2655,
+    "mem_MHz_median": 10251,
+    "mem_MHz_min": 10251,
+    "reasons": {
+     "sw_power_cap": 1.0
+    }
+   }
+  }
+ ]
+}

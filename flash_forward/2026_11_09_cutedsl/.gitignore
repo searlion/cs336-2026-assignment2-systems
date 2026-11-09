@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+# large binary profiler reports and scratch runs (the text tables in results/ are kept)
+*.ncu-rep
+*.sqlite
+results/dev/

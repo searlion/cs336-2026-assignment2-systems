@@ -1,0 +1,13 @@
+# experiments/gluon_probe/probe.py, Triton 3.6.0, RTX 4070 SUPER (sm_89)
+## 1. cp.async + mbarrier + k-sliced shared-memory operands + mma_v2 (bf16, fp32 accumulate)
+qk_mbarrier: compiled for GPUTarget(backend='cuda', arch=89, warp_size=32), num_warps=4, max |S - ref| = 5.72e-06
+   PTX ops: bar.sync, cp.async.cg.shared.global, cp.async.mbarrier.arrive.noinc.shared.b64, mbarrier.init.shared::cta.b64, mbarrier.test_wait.parity.shared.b64, mma.sync.aligned.m16n8k16.row.col.f32.bf16.bf16.f32
+## 2. ttgl.warp_specialize (4-warp default partition + 1-warp cp.async producer)
+worker_num_regs=[48]:
+LLVM ERROR: Cannot select: intrinsic %llvm.nvvm.setmaxnreg.inc.sync.aligned.u32
+worker_num_regs=[168]:
+LLVM ERROR: Cannot select: intrinsic %llvm.nvvm.setmaxnreg.inc.sync.aligned.u32
+worker_num_regs=[256]:
+LLVM ERROR: Cannot select: intrinsic %llvm.nvvm.setmaxnreg.inc.sync.aligned.u32
+worker_num_regs=[48], maxnreg=168:
+LLVM ERROR: Cannot select: intrinsic %llvm.nvvm.setmaxnreg.dec.sync.aligned.u32

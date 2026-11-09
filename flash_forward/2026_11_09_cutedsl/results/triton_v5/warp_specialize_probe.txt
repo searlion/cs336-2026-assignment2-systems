@@ -1,0 +1,6 @@
+v5_final: regs=255 spills=2 shared=40960 num_warps=4 'warp_specialize' in TTGIR: False; loop attrs: []; cubin sha: -5147947988559631285
+  correct vs SDPA: True
+tl.range, no flag: regs=255 spills=2 shared=40960 num_warps=4 'warp_specialize' in TTGIR: False; loop attrs: []; cubin sha: -5518106194389936268
+  correct vs SDPA: True
+tl.range, warp_specialize=True: regs=255 spills=10 shared=24576 num_warps=4 'warp_specialize' in TTGIR: False; loop attrs: ['tt.warp_specialize']; cubin sha: -3916491407893484046
+  correct vs SDPA: True

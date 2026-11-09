@@ -1,0 +1,30 @@
+# Fair fight, N = 4096, B*H = 32, D = 64: 5 rounds, 30 s cool-down, 4 s per window (medians over rounds)
+Triton autotuner picks: {'triton_v5': {"(4096, 4096, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 128, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None', "(4096, 4096, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None'}, 'triton_64x64': {}, 't6_rotated': {"(4096, 4096, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 128, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None', "(4096, 4096, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None'}}
+| kernel | mask | ms | vs CuTe v5 | median SM MHz | vs CuTe v5 clock | median W | mJ per call | share at power cap | max °C | thermal/HW slowdown |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cute_v5 | non-causal | 1.954 | +0.0% | 2640 | +0.0% | 222 | 434.1 | 99% | 73 | none |
+| cute_v6 | non-causal | 2.001 | +2.4% | 2625 | -0.6% | 221 | 441.6 | 100% | 74 | none |
+| cute_v7 | non-causal | 1.995 | +2.1% | 2640 | +0.0% | 221 | 441.1 | 100% | 72 | none |
+| triton_v5 | non-causal | 1.964 | +0.5% | 2655 | +0.6% | 218 | 428.4 | 98% | 73 | none |
+| triton_64x64 | non-causal | 2.048 | +4.8% | 2655 | +0.6% | 221 | 452.6 | 96% | 73 | none |
+| t6_rotated | non-causal | 2.058 | +5.3% | 2625 | -0.6% | 220 | 452.7 | 97% | 74 | none |
+| sdpa | non-causal | 2.004 | +2.6% | 2700 | +2.3% | 218 | 436.4 | 92% | 72 | none |
+| cute_v5 | causal | 1.037 | +0.0% | 2670 | +0.0% | 218 | 226.3 | 98% | 73 | none |
+| cute_v6 | causal | 1.110 | +7.0% | 2685 | +0.6% | 219 | 243.2 | 98% | 72 | none |
+| cute_v7 | causal | 1.066 | +2.8% | 2685 | +0.6% | 220 | 234.7 | 98% | 70 | none |
+| triton_v5 | causal | 1.080 | +4.1% | 2670 | +0.0% | 220 | 237.5 | 98% | 73 | none |
+| triton_64x64 | causal | 1.078 | +3.9% | 2670 | +0.0% | 219 | 235.8 | 96% | 72 | none |
+| t6_rotated | causal | 1.098 | +5.8% | 2640 | -1.1% | 220 | 242.0 | 96% | 71 | none |
+| sdpa | causal | 1.112 | +7.2% | 2715 | +1.7% | 199 | 221.5 | 4% | 70 | none |
+(vs CuTe v5: + means slower than CuTe v5. Clocks are matched when within 1% and the power-cap shares agree.)
+
+# Headroom
+peak bf16 tensor rate: 67.2 TOP/s at 93.2% of peak and 2.52 GHz -> 511 FLOP per clock per SM (56 SMs), consistent with the hardware's 512 (dense bf16 MMA, fp32 accumulate, Ada); the floors use 512
+non-causal: 137.4 G tensor ops at CuTe v5's median 2640 MHz -> floor 1.815 ms; measured 1.954 ms = 7.6% above the floor
+causal: 69.8 G tensor ops at CuTe v5's median 2670 MHz -> floor 0.912 ms; measured 1.037 ms = 13.8% above the floor
+Nsight Compute, CuTe v5 non-causal: 94.0% of tensor peak at B*H = 21 (8 whole waves), 93.2% at B*H = 32 (12.19 waves); causal 85.5% / 87.9%
+Wall clock (wave_probe_time.txt):
+v5_tuned   causal=False BH=21 1.2647 ms 71.3 TFLOP/s   BH=32 1.9641 ms 70.0 TFLOP/s   BH=32 throughput / BH=21 = 0.981
+v5_final   causal=False BH=21 1.2831 ms 70.3 TFLOP/s   BH=32 1.9855 ms 69.2 TFLOP/s   BH=32 throughput / BH=21 = 0.985
+v5_tuned   causal=True  BH=21 0.6963 ms 64.8 TFLOP/s   BH=32 1.0430 ms 65.9 TFLOP/s   BH=32 throughput / BH=21 = 1.017
+v5_final   causal=True  BH=21 0.7276 ms 62.0 TFLOP/s   BH=32 1.0869 ms 63.2 TFLOP/s   BH=32 throughput / BH=21 = 1.020

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 440" width="980" height="440" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="980" height="440" fill="#ffffff"/>
+<text x="20" y="30" font-size="16" font-weight="600" fill="#0b0b0b">N = 4096, B = 4, H = 8, D = 64, bf16: TFLOP/s (median of the harness runs)</text>
+<text x="190" y="66" font-size="14" font-weight="600" fill="#0b0b0b">non-causal</text>
+<line x1="190.0" y1="88" x2="190.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="190.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">0</text>
+<line x1="272.5" y1="88" x2="272.5" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="272.5" y="382" font-size="11" fill="#8a8984" text-anchor="middle">20</text>
+<line x1="355.0" y1="88" x2="355.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="355.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">40</text>
+<line x1="437.5" y1="88" x2="437.5" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="437.5" y="382" font-size="11" fill="#8a8984" text-anchor="middle">60</text>
+<line x1="520.0" y1="88" x2="520.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="520.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">80</text>
+<text x="178" y="110" font-size="12.5" fill="#52514e" text-anchor="end">v0 naive port</text>
+<rect x="190" y="97" width="104.4" height="18" rx="3" fill="#2a78d6"/>
+<line x1="288.2" y1="106.0" x2="294.4" y2="106.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="288.2" y1="101.0" x2="288.2" y2="111.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="294.4" y1="101.0" x2="294.4" y2="111.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="300.4" y="110" font-size="12" fill="#0b0b0b">25.3</text>
+<text x="178" y="140" font-size="12.5" fill="#52514e" text-anchor="end">v1 swizzle</text>
+<rect x="190" y="127" width="211.2" height="18" rx="3" fill="#2a78d6"/>
+<line x1="400.0" y1="136.0" x2="401.6" y2="136.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="400.0" y1="131.0" x2="400.0" y2="141.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="401.6" y1="131.0" x2="401.6" y2="141.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="407.6" y="140" font-size="12" fill="#0b0b0b">51.2</text>
+<text x="178" y="170" font-size="12.5" fill="#52514e" text-anchor="end">v2 ldmatrix</text>
+<rect x="190" y="157" width="252.0" height="18" rx="3" fill="#2a78d6"/>
+<line x1="441.2" y1="166.0" x2="442.9" y2="166.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="441.2" y1="161.0" x2="441.2" y2="171.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="442.9" y1="161.0" x2="442.9" y2="171.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="448.9" y="170" font-size="12" fill="#0b0b0b">61.1</text>
+<text x="178" y="200" font-size="12.5" fill="#52514e" text-anchor="end">v3 P in registers</text>
+<rect x="190" y="187" width="257.0" height="18" rx="3" fill="#2a78d6"/>
+<line x1="444.1" y1="196.0" x2="447.4" y2="196.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="444.1" y1="191.0" x2="444.1" y2="201.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="447.4" y1="191.0" x2="447.4" y2="201.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="453.4" y="200" font-size="12" fill="#0b0b0b">62.3</text>
+<text x="178" y="230" font-size="12.5" fill="#52514e" text-anchor="end">v4 cp.async</text>
+<rect x="190" y="217" width="269.8" height="18" rx="3" fill="#2a78d6"/>
+<line x1="456.5" y1="226.0" x2="484.1" y2="226.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="456.5" y1="221.0" x2="456.5" y2="231.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="484.1" y1="221.0" x2="484.1" y2="231.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="490.1" y="230" font-size="12" fill="#0b0b0b">65.4</text>
+<text x="178" y="260" font-size="12.5" fill="#52514e" text-anchor="end">v5 tuned (final)</text>
+<rect x="190" y="247" width="285.0" height="18" rx="3" fill="#2a78d6"/>
+<line x1="459.8" y1="256.0" x2="485.3" y2="256.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="459.8" y1="251.0" x2="459.8" y2="261.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="485.3" y1="251.0" x2="485.3" y2="261.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="491.3" y="260" font-size="12" fill="#0b0b0b">69.1</text>
+<text x="178" y="290" font-size="12.5" fill="#52514e" text-anchor="end">Triton v5 (last article)</text>
+<rect x="190" y="277" width="287.9" height="18" rx="3" fill="#eb6834"/>
+<line x1="449.5" y1="286.0" x2="480.0" y2="286.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="449.5" y1="281.0" x2="449.5" y2="291.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="480.0" y1="281.0" x2="480.0" y2="291.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="486.0" y="290" font-size="12" fill="#0b0b0b">69.8</text>
+<text x="178" y="320" font-size="12.5" fill="#52514e" text-anchor="end">NVIDIA CuTe example</text>
+<rect x="190" y="307" width="290.8" height="18" rx="3" fill="#1baf7a"/>
+<line x1="456.1" y1="316.0" x2="481.6" y2="316.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="456.1" y1="311.0" x2="456.1" y2="321.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="481.6" y1="311.0" x2="481.6" y2="321.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="487.6" y="320" font-size="12" fill="#0b0b0b">70.5</text>
+<text x="178" y="350" font-size="12.5" fill="#52514e" text-anchor="end">PyTorch SDPA</text>
+<rect x="190" y="337" width="262.8" height="18" rx="3" fill="#eda100"/>
+<line x1="447.4" y1="346.0" x2="474.2" y2="346.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="447.4" y1="341.0" x2="447.4" y2="351.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="474.2" y1="341.0" x2="474.2" y2="351.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="480.2" y="350" font-size="12" fill="#0b0b0b">63.7</text>
+<line x1="190" y1="272" x2="900" y2="272" stroke="#8a8984" stroke-dasharray="3 3"/>
+<text x="570" y="66" font-size="14" font-weight="600" fill="#0b0b0b">causal</text>
+<line x1="570.0" y1="88" x2="570.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="570.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">0</text>
+<line x1="652.5" y1="88" x2="652.5" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="652.5" y="382" font-size="11" fill="#8a8984" text-anchor="middle">20</text>
+<line x1="735.0" y1="88" x2="735.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="735.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">40</text>
+<line x1="817.5" y1="88" x2="817.5" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="817.5" y="382" font-size="11" fill="#8a8984" text-anchor="middle">60</text>
+<line x1="900.0" y1="88" x2="900.0" y2="366" stroke="#e4e3df" stroke-width="1"/>
+<text x="900.0" y="382" font-size="11" fill="#8a8984" text-anchor="middle">80</text>
+<rect x="570" y="97" width="94.5" height="18" rx="3" fill="#2a78d6"/>
+<line x1="663.2" y1="106.0" x2="664.9" y2="106.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="663.2" y1="101.0" x2="663.2" y2="111.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="664.9" y1="101.0" x2="664.9" y2="111.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="670.9" y="110" font-size="12" fill="#0b0b0b">22.9</text>
+<rect x="570" y="127" width="214.1" height="18" rx="3" fill="#2a78d6"/>
+<line x1="782.4" y1="136.0" x2="785.7" y2="136.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="782.4" y1="131.0" x2="782.4" y2="141.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="785.7" y1="131.0" x2="785.7" y2="141.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="791.7" y="140" font-size="12" fill="#0b0b0b">51.9</text>
+<rect x="570" y="157" width="253.3" height="18" rx="3" fill="#2a78d6"/>
+<line x1="820.8" y1="166.0" x2="823.7" y2="166.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="820.8" y1="161.0" x2="820.8" y2="171.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="823.7" y1="161.0" x2="823.7" y2="171.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="829.7" y="170" font-size="12" fill="#0b0b0b">61.4</text>
+<rect x="570" y="187" width="259.9" height="18" rx="3" fill="#2a78d6"/>
+<line x1="829.5" y1="196.0" x2="829.9" y2="196.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="829.5" y1="191.0" x2="829.5" y2="201.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="829.9" y1="191.0" x2="829.9" y2="201.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="835.9" y="200" font-size="12" fill="#0b0b0b">63.0</text>
+<rect x="570" y="217" width="272.2" height="18" rx="3" fill="#2a78d6"/>
+<line x1="841.8" y1="226.0" x2="843.5" y2="226.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="841.8" y1="221.0" x2="841.8" y2="231.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="843.5" y1="221.0" x2="843.5" y2="231.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="849.5" y="230" font-size="12" fill="#0b0b0b">66.0</text>
+<rect x="570" y="247" width="275.6" height="18" rx="3" fill="#2a78d6"/>
+<line x1="844.3" y1="256.0" x2="847.2" y2="256.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="844.3" y1="251.0" x2="844.3" y2="261.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="847.2" y1="251.0" x2="847.2" y2="261.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="853.2" y="260" font-size="12" fill="#0b0b0b">66.8</text>
+<rect x="570" y="277" width="262.8" height="18" rx="3" fill="#eb6834"/>
+<line x1="831.1" y1="286.0" x2="834.8" y2="286.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="831.1" y1="281.0" x2="831.1" y2="291.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="834.8" y1="281.0" x2="834.8" y2="291.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="840.8" y="290" font-size="12" fill="#0b0b0b">63.7</text>
+<rect x="570" y="307" width="273.1" height="18" rx="3" fill="#1baf7a"/>
+<line x1="842.7" y1="316.0" x2="843.1" y2="316.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="842.7" y1="311.0" x2="842.7" y2="321.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="843.1" y1="311.0" x2="843.1" y2="321.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="849.1" y="320" font-size="12" fill="#0b0b0b">66.2</text>
+<rect x="570" y="337" width="253.7" height="18" rx="3" fill="#eda100"/>
+<line x1="820.8" y1="346.0" x2="824.5" y2="346.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="820.8" y1="341.0" x2="820.8" y2="351.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<line x1="824.5" y1="341.0" x2="824.5" y2="351.0" stroke="#0b0b0b" stroke-width="1.5"/>
+<text x="830.5" y="350" font-size="12" fill="#0b0b0b">61.5</text>
+<text x="20" y="408" font-size="11.5" fill="#8a8984">Bars: median; black lines: lowest to highest run (3 runs, 10 for v5 and Triton v5, 35 for SDPA). Below the dashed line: the references.</text>
+<text x="20" y="426" font-size="11.5" fill="#8a8984">v4 and v5 run the same kernel non-causal: the gap between them is run-to-run noise. Causal TFLOP/s count half of the non-causal work, as the harness does.</text>
+</svg>

@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 390" width="1060" height="390" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1060" height="390" fill="#ffffff"/>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">Where the threads and memory live: GPU → SM → block → warp → lane</text>
+<rect x="20" y="56" width="230" height="290" fill="#ffffff" stroke="#d6d5d0" stroke-width="1.5" rx="8"/>
+<text x="32" y="78" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">The GPU</text>
+<text x="32" y="96" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">56 SMs (streaming multiprocessors)</text>
+<rect x="39" y="112" width="20" height="20" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="3"/>
+<rect x="63" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="112" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="136" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="160" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="184" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="208" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="232" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="39" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="63" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="87" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="111" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="135" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="159" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="183" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="207" y="256" width="20" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="32" y="288" width="206" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="135.0" y="304" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">Global memory 12 GB (+ L2 cache 48 MB)</text>
+<line x1="256" y1="201.0" x2="272" y2="201.0" stroke="#52514e" stroke-width="1.5"/>
+<path d="M267,196.0 L273,201.0 L267,206.0" fill="none" stroke="#52514e" stroke-width="1.5"/>
+<rect x="280" y="56" width="250" height="290" fill="#ffffff" stroke="#2a78d6" stroke-width="1.5" rx="8"/>
+<text x="292" y="78" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">One SM</text>
+<text x="292" y="96" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">holds 3 of our blocks at once</text>
+<rect x="292" y="110" width="226" height="32" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.5" rx="4"/>
+<text x="405" y="131" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">block 0</text>
+<rect x="292" y="150" width="226" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="405" y="171" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">block 1</text>
+<rect x="292" y="190" width="226" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="405" y="211" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">block 2</text>
+<rect x="292" y="234" width="226" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="405.0" y="250" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">Shared memory: 100 KB, split by blocks</text>
+<rect x="292" y="262" width="226" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="405.0" y="278" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">Registers: 65,536, split by threads</text>
+<rect x="292" y="290" width="226" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="405.0" y="306" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">Tensor cores: small matrix multiplies</text>
+<line x1="536" y1="201.0" x2="552" y2="201.0" stroke="#52514e" stroke-width="1.5"/>
+<path d="M547,196.0 L553,201.0 L547,206.0" fill="none" stroke="#52514e" stroke-width="1.5"/>
+<rect x="560" y="56" width="250" height="290" fill="#ffffff" stroke="#eb6834" stroke-width="1.5" rx="8"/>
+<text x="572" y="78" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">One block (CTA)</text>
+<text x="572" y="96" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">128 threads = 4 warps</text>
+<text x="572" y="111" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">computes 64 query rows</text>
+<rect x="572" y="126" width="226" height="30" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="4"/>
+<text x="685" y="146" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">warp 0: rows 0–15</text>
+<rect x="572" y="164" width="226" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="685" y="184" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">warp 1: rows 16–31</text>
+<rect x="572" y="202" width="226" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="685" y="222" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">warp 2: rows 32–47</text>
+<rect x="572" y="240" width="226" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="685" y="260" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">warp 3: rows 48–63</text>
+<rect x="572" y="290" width="226" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="685.0" y="306" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">its shared memory: Q, K, V tiles (24 KB)</text>
+<line x1="816" y1="201.0" x2="832" y2="201.0" stroke="#52514e" stroke-width="1.5"/>
+<path d="M827,196.0 L833,201.0 L827,206.0" fill="none" stroke="#52514e" stroke-width="1.5"/>
+<rect x="840" y="56" width="200" height="290" fill="#ffffff" stroke="#1baf7a" stroke-width="1.5" rx="8"/>
+<text x="852" y="78" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">One warp</text>
+<text x="852" y="96" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">32 threads (lanes) that run</text>
+<text x="852" y="111" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">the same instruction together</text>
+<rect x="854" y="126" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="138" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="898" y="126" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="138" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="942" y="126" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="138" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="986" y="126" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="138" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 3</text>
+<rect x="854" y="146" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="158" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="898" y="146" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="158" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="942" y="146" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="158" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="986" y="146" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="158" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<rect x="854" y="166" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="178" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="898" y="166" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="178" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="942" y="166" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="178" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="986" y="166" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="178" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<rect x="854" y="186" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="198" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="898" y="186" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="198" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="942" y="186" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="198" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="986" y="186" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="198" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<rect x="854" y="206" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="218" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="898" y="206" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="218" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="942" y="206" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="218" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="986" y="206" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="218" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<rect x="854" y="226" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="238" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="898" y="226" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="238" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="942" y="226" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="238" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="986" y="226" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="238" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<rect x="854" y="246" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="258" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="898" y="246" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="258" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="942" y="246" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="258" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="986" y="246" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="258" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<rect x="854" y="266" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="874" y="278" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="898" y="266" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="918" y="278" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="942" y="266" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="962" y="278" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="986" y="266" width="40" height="16" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="1006" y="278" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<rect x="851" y="123" width="178" height="22" fill="none" stroke="#0b0b0b" stroke-width="1.5" rx="4"/>
+<text x="854" y="300" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">Each row is a quad (4 lanes).</text>
+<text x="854" y="316" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">Each lane has its own registers.</text>
+<text x="20" y="374" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Fastest to slowest: registers (one lane) → shared memory (one block) → L2 cache → global memory (whole GPU).</text>
+</svg>

@@ -1,0 +1,27 @@
+round 0 causal=False cute_v5   0.500 ms  205.2 W  45->70 C  SM 2700 MHz (min 2700)  {'sw_power_cap': 0.141}
+round 0 causal=False triton_v5 0.508 ms  202.0 W  43->68 C  SM 2715 MHz (min 2715)  {'sw_power_cap': 0.144}
+round 0 causal=False sdpa      0.538 ms  186.7 W  43->65 C  SM 2715.0 MHz (min 2715)  {}
+round 0 causal=True  cute_v5   0.281 ms  180.8 W  42->62 C  SM 2715 MHz (min 2715)  {}
+round 0 causal=True  triton_v5 0.293 ms  182.5 W  42->63 C  SM 2715 MHz (min 2715)  {}
+round 0 causal=True  sdpa      0.328 ms  165.2 W  42->61 C  SM 2730.0 MHz (min 2520)  {}
+round 1 causal=False sdpa      0.538 ms  186.4 W  42->64 C  SM 2715.0 MHz (min 2715)  {}
+round 1 causal=False triton_v5 0.508 ms  200.9 W  42->66 C  SM 2715.0 MHz (min 2715)  {'sw_power_cap': 0.145}
+round 1 causal=False cute_v5   0.498 ms  204.8 W  42->66 C  SM 2715.0 MHz (min 2700)  {'sw_power_cap': 0.142}
+round 1 causal=True  sdpa      0.329 ms  166.1 W  42->61 C  SM 2715.0 MHz (min 2715)  {}
+round 1 causal=True  triton_v5 0.293 ms  184.5 W  42->63 C  SM 2715.0 MHz (min 2715)  {}
+round 1 causal=True  cute_v5   0.281 ms  181.1 W  42->63 C  SM 2715.0 MHz (min 2715)  {}
+round 2 causal=False cute_v5   0.497 ms  203.4 W  42->67 C  SM 2715 MHz (min 2520)  {'sw_power_cap': 0.141}
+round 2 causal=False triton_v5 0.508 ms  201.1 W  42->67 C  SM 2715 MHz (min 2700)  {'sw_power_cap': 0.144}
+round 2 causal=False sdpa      0.538 ms  186.5 W  42->66 C  SM 2715.0 MHz (min 2715)  {}
+round 2 causal=True  cute_v5   0.281 ms  180.8 W  42->62 C  SM 2730.0 MHz (min 2715)  {}
+round 2 causal=True  triton_v5 0.293 ms  184.0 W  42->64 C  SM 2715 MHz (min 2715)  {}
+round 2 causal=True  sdpa      0.328 ms  166.4 W  42->62 C  SM 2730.0 MHz (min 2715)  {}
+
+median over rounds (N = 2048):
+kernel     causal      ms  power W  max W temp start max temp  SM MHz  min SM  mem MHz  reasons (fraction of samples)
+cute_v5    False    0.498    204.8  206.6         42       70    2715    2520    10251  sw_power_cap 0.14
+triton_v5  False    0.508    201.1  203.5         42       68    2715    2700    10251  sw_power_cap 0.14
+sdpa       False    0.538    186.5  188.0         42       66    2715    2715    10251  
+cute_v5    True     0.281    180.8  181.7         42       63    2715    2715    10251  
+triton_v5  True     0.293    184.0  185.3         42       64    2715    2715    10251  
+sdpa       True     0.328    166.1  167.0         42       62    2730    2520    10251  

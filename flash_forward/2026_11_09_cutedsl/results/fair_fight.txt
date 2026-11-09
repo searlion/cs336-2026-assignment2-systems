@@ -1,0 +1,27 @@
+round 0 causal=False cute_v5   2.101 ms  219.2 W  42->71 C  SM 2670 MHz (min 2655)  {'sw_power_cap': 0.962}
+round 0 causal=False triton_v5 2.119 ms  217.8 W  43->71 C  SM 2685 MHz (min 2595)  {'sw_power_cap': 0.977}
+round 0 causal=False sdpa      2.182 ms  208.1 W  43->71 C  SM 2700.0 MHz (min 2520)  {'sw_power_cap': 0.144}
+round 0 causal=True  cute_v5   1.030 ms  215.7 W  43->69 C  SM 2685.0 MHz (min 2655)  {'sw_power_cap': 0.855}
+round 0 causal=True  triton_v5 1.074 ms  214.3 W  43->73 C  SM 2700.0 MHz (min 2685)  {'sw_power_cap': 1.0}
+round 0 causal=True  sdpa      1.115 ms  188.9 W  43->67 C  SM 2715.0 MHz (min 2715)  {}
+round 1 causal=False sdpa      2.021 ms  207.3 W  43->71 C  SM 2715.0 MHz (min 2700)  {'sw_power_cap': 0.142}
+round 1 causal=False triton_v5 2.138 ms  221.1 W  43->72 C  SM 2700.0 MHz (min 2640)  {'sw_power_cap': 0.931}
+round 1 causal=False cute_v5   1.946 ms  218.8 W  43->72 C  SM 2640.0 MHz (min 2595)  {'sw_power_cap': 0.956}
+round 1 causal=True  sdpa      1.112 ms  197.5 W  43->68 C  SM 2715.0 MHz (min 2565)  {}
+round 1 causal=True  triton_v5 1.076 ms  219.9 W  43->73 C  SM 2670.0 MHz (min 2520)  {'sw_power_cap': 0.991}
+round 1 causal=True  cute_v5   1.033 ms  218.0 W  43->72 C  SM 2700 MHz (min 2655)  {'sw_power_cap': 1.0}
+round 2 causal=False cute_v5   1.944 ms  220.7 W  43->72 C  SM 2655 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 2 causal=False triton_v5 1.962 ms  219.1 W  43->72 C  SM 2670 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 2 causal=False sdpa      2.003 ms  214.5 W  43->71 C  SM 2700 MHz (min 2700)  {'sw_power_cap': 0.587}
+round 2 causal=True  cute_v5   1.030 ms  219.1 W  43->70 C  SM 2700.0 MHz (min 2640)  {'sw_power_cap': 0.942}
+round 2 causal=True  triton_v5 1.075 ms  218.7 W  44->70 C  SM 2685 MHz (min 2595)  {'sw_power_cap': 0.962}
+round 2 causal=True  sdpa      1.124 ms  187.4 W  44->67 C  SM 2715 MHz (min 2520)  {}
+
+median over rounds (N = 4096):
+kernel     causal      ms  power W  max W temp start max temp  SM MHz  min SM  mem MHz  reasons (fraction of samples)
+cute_v5    False    1.946    219.2  227.2         43       72    2655    2595    10251  sw_power_cap 0.97
+triton_v5  False    2.119    219.1  231.4         43       72    2685    2595    10251  sw_power_cap 0.97
+sdpa       False    2.021    208.1  218.6         43       71    2700    2520    10251  sw_power_cap 0.29
+cute_v5    True     1.030    218.0  224.5         43       72    2700    2640    10251  sw_power_cap 0.93
+triton_v5  True     1.075    218.7  229.8         43       73    2685    2520    10251  sw_power_cap 0.98
+sdpa       True     1.115    188.9  199.6         43       68    2715    2520    10251  

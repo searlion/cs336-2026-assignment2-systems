@@ -1,0 +1,9 @@
+5.885 ms  kernel_cutlass_kernel_v0_naiveFlashFwd_object_at__
+5.594 ms  kernel_cutlass_kernel_v0_naiveFlashFwd_object_at__
+5.392 ms  kernel_cutlass_kernel_v0_naiveFlashFwd_object_at__
+1.907 ms  flash_fwd_kernel
+2.169 ms  flash_fwd_kernel
+2.226 ms  flash_fwd_kernel
+1.969 ms   (bool)0>(pytorch_flash::Flash_fwd_params)"
+3.193 ms   (bool)0>(pytorch_flash::Flash_fwd_params)"
+2.675 ms   (bool)0>(pytorch_flash::Flash_fwd_params)"

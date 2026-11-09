@@ -1,0 +1,8 @@
+metric: GPC Clock Frequency [MHz]
+kernel     causal launches samples/launch median MHz  min MHz  max MHz median ms
+cute_v5    False        10             20       2730     2729     2730     1.970
+sdpa       False        10             21       2595     2590     2712     2.122
+triton_v5  False        10             20       2726     2711     2729     2.013
+cute_v5    True         10             10       2725     2718     2728     1.018
+sdpa       True         10             12       2595     2595     2595     1.169
+triton_v5  True         10             11       2693     2689     2694     1.056

@@ -1,0 +1,88 @@
+Triton autotuner picks: {'triton_v5': {"(4096, 4096, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 128, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None', "(4096, 4096, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 4, maxnreg: None'}, 'triton_64x64': {}, 't6_rotated': {"(4096, 4096, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 128, num_warps: 4, num_ctas: 1, num_stages: 2, maxnreg: None', "(4096, 4096, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')": 'Q_TILE_SIZE: 64, K_TILE_SIZE: 32, num_warps: 4, num_ctas: 1, num_stages: 3, maxnreg: None'}}
+round 0 causal=False cute_v5      1.956 ms  225.3 W  45->73 C  SM 2640 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 0 causal=False cute_v6      2.001 ms  221.7 W  44->74 C  SM 2640.0 MHz (min 2580)  {'sw_power_cap': 1.0}
+round 0 causal=False cute_v7      1.996 ms  216.6 W  43->72 C  SM 2640 MHz (min 2625)  {'sw_power_cap': 1.0}
+round 0 causal=False triton_v5    1.968 ms  217.3 W  43->73 C  SM 2655.0 MHz (min 2625)  {'sw_power_cap': 1.0}
+round 0 causal=False triton_64x64 2.052 ms  218.3 W  43->73 C  SM 2640.0 MHz (min 2550)  {'sw_power_cap': 0.948}
+round 0 causal=False t6_rotated   2.060 ms  219.4 W  43->74 C  SM 2625 MHz (min 2520)  {'sw_power_cap': 0.979}
+round 0 causal=False sdpa         2.003 ms  216.9 W  43->72 C  SM 2700.0 MHz (min 2520)  {'sw_power_cap': 0.98}
+round 0 causal=True  cute_v5      1.037 ms  221.2 W  43->70 C  SM 2670.0 MHz (min 2640)  {'sw_power_cap': 1.0}
+round 0 causal=True  cute_v6      1.110 ms  217.1 W  43->72 C  SM 2700 MHz (min 2670)  {'sw_power_cap': 1.0}
+round 0 causal=True  cute_v7      1.066 ms  220.1 W  43->70 C  SM 2670.0 MHz (min 2655)  {'sw_power_cap': 1.0}
+round 0 causal=True  triton_v5    1.080 ms  223.3 W  43->70 C  SM 2670.0 MHz (min 2640)  {'sw_power_cap': 1.0}
+round 0 causal=True  triton_64x64 1.079 ms  214.9 W  43->71 C  SM 2625 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 0 causal=True  t6_rotated   1.098 ms  219.2 W  43->71 C  SM 2655.0 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 0 causal=True  sdpa         1.111 ms  199.4 W  43->68 C  SM 2715 MHz (min 2715)  {'sw_power_cap': 0.183}
+round 1 causal=False sdpa         2.004 ms  216.4 W  43->72 C  SM 2700.0 MHz (min 2685)  {'sw_power_cap': 0.925}
+round 1 causal=False t6_rotated   2.057 ms  219.7 W  43->72 C  SM 2625 MHz (min 2520)  {'sw_power_cap': 0.951}
+round 1 causal=False triton_64x64 2.049 ms  220.9 W  43->72 C  SM 2640.0 MHz (min 2520)  {'sw_power_cap': 0.983}
+round 1 causal=False triton_v5    1.964 ms  221.8 W  43->71 C  SM 2655.0 MHz (min 2625)  {'sw_power_cap': 1.0}
+round 1 causal=False cute_v7      1.996 ms  219.9 W  43->71 C  SM 2640 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 1 causal=False cute_v6      2.003 ms  219.0 W  42->72 C  SM 2640.0 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 1 causal=False cute_v5      1.954 ms  218.1 W  43->72 C  SM 2640.0 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 1 causal=True  sdpa         1.112 ms  199.4 W  43->68 C  SM 2715.0 MHz (min 2700)  {}
+round 1 causal=True  t6_rotated   1.098 ms  220.5 W  43->70 C  SM 2655 MHz (min 2520)  {'sw_power_cap': 0.944}
+round 1 causal=True  triton_64x64 1.075 ms  222.7 W  43->70 C  SM 2700 MHz (min 2520)  {'sw_power_cap': 0.953}
+round 1 causal=True  triton_v5    1.080 ms  220.0 W  43->73 C  SM 2640 MHz (min 2520)  {'sw_power_cap': 0.956}
+round 1 causal=True  cute_v7      1.065 ms  220.1 W  43->70 C  SM 2685.0 MHz (min 2520)  {'sw_power_cap': 0.964}
+round 1 causal=True  cute_v6      1.110 ms  222.4 W  43->69 C  SM 2655.0 MHz (min 2640)  {'sw_power_cap': 0.971}
+round 1 causal=True  cute_v5      1.038 ms  218.1 W  43->73 C  SM 2685.0 MHz (min 2520)  {'sw_power_cap': 0.979}
+round 2 causal=False cute_v5      1.954 ms  222.2 W  43->72 C  SM 2655.0 MHz (min 2520)  {'sw_power_cap': 0.982}
+round 2 causal=False cute_v6      2.000 ms  221.0 W  43->72 C  SM 2625 MHz (min 2520)  {'sw_power_cap': 0.986}
+round 2 causal=False cute_v7      1.994 ms  223.6 W  43->72 C  SM 2640 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 2 causal=False triton_v5    1.964 ms  218.1 W  43->72 C  SM 2655 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 2 causal=False triton_64x64 2.046 ms  221.5 W  42->72 C  SM 2655 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 2 causal=False t6_rotated   2.058 ms  220.0 W  43->71 C  SM 2625 MHz (min 2595)  {'sw_power_cap': 0.947}
+round 2 causal=False sdpa         2.005 ms  218.2 W  43->72 C  SM 2700 MHz (min 2685)  {'sw_power_cap': 0.807}
+round 2 causal=True  cute_v5      1.035 ms  217.3 W  42->70 C  SM 2670.0 MHz (min 2520)  {'sw_power_cap': 0.979}
+round 2 causal=True  cute_v6      1.110 ms  219.1 W  42->70 C  SM 2685.0 MHz (min 2520)  {'sw_power_cap': 0.979}
+round 2 causal=True  cute_v7      1.065 ms  222.1 W  43->70 C  SM 2700.0 MHz (min 2520)  {'sw_power_cap': 0.991}
+round 2 causal=True  triton_v5    1.080 ms  218.5 W  43->70 C  SM 2655.0 MHz (min 2520)  {'sw_power_cap': 0.997}
+round 2 causal=True  triton_64x64 1.078 ms  218.7 W  43->71 C  SM 2670 MHz (min 2655)  {'sw_power_cap': 1.0}
+round 2 causal=True  t6_rotated   1.098 ms  224.7 W  43->70 C  SM 2610.0 MHz (min 2550)  {'sw_power_cap': 1.0}
+round 2 causal=True  sdpa         1.112 ms  198.6 W  43->68 C  SM 2715 MHz (min 2700)  {}
+round 3 causal=False sdpa         2.005 ms  219.4 W  42->72 C  SM 2700.0 MHz (min 2670)  {'sw_power_cap': 1.0}
+round 3 causal=False t6_rotated   2.065 ms  222.9 W  42->72 C  SM 2655 MHz (min 2595)  {'sw_power_cap': 1.0}
+round 3 causal=False triton_64x64 2.046 ms  218.8 W  43->72 C  SM 2655.0 MHz (min 2625)  {'sw_power_cap': 0.949}
+round 3 causal=False triton_v5    1.964 ms  219.4 W  43->71 C  SM 2655 MHz (min 2520)  {'sw_power_cap': 0.985}
+round 3 causal=False cute_v7      1.995 ms  221.1 W  43->71 C  SM 2640 MHz (min 2520)  {'sw_power_cap': 0.991}
+round 3 causal=False cute_v6      2.001 ms  218.7 W  43->72 C  SM 2625 MHz (min 2565)  {'sw_power_cap': 1.0}
+round 3 causal=False cute_v5      1.953 ms  221.2 W  43->72 C  SM 2655 MHz (min 2640)  {'sw_power_cap': 1.0}
+round 3 causal=True  sdpa         1.111 ms  199.2 W  43->70 C  SM 2715 MHz (min 2715)  {}
+round 3 causal=True  t6_rotated   1.097 ms  224.2 W  42->70 C  SM 2640 MHz (min 2520)  {'sw_power_cap': 0.927}
+round 3 causal=True  triton_64x64 1.078 ms  212.7 W  42->72 C  SM 2655 MHz (min 2520)  {'sw_power_cap': 0.941}
+round 3 causal=True  triton_v5    1.078 ms  216.2 W  42->70 C  SM 2670.0 MHz (min 2655)  {'sw_power_cap': 0.947}
+round 3 causal=True  cute_v7      1.067 ms  221.1 W  43->70 C  SM 2685 MHz (min 2685)  {'sw_power_cap': 0.953}
+round 3 causal=True  cute_v6      1.109 ms  219.3 W  42->70 C  SM 2685 MHz (min 2655)  {'sw_power_cap': 0.956}
+round 3 causal=True  cute_v5      1.037 ms  219.9 W  43->72 C  SM 2670 MHz (min 2520)  {'sw_power_cap': 0.967}
+round 4 causal=False cute_v5      1.954 ms  223.0 W  43->73 C  SM 2640.0 MHz (min 2520)  {'sw_power_cap': 0.971}
+round 4 causal=False cute_v6      2.001 ms  220.7 W  43->73 C  SM 2625.0 MHz (min 2610)  {'sw_power_cap': 1.0}
+round 4 causal=False cute_v7      1.995 ms  222.0 W  42->72 C  SM 2655 MHz (min 2625)  {'sw_power_cap': 1.0}
+round 4 causal=False triton_v5    1.964 ms  215.0 W  43->72 C  SM 2655 MHz (min 2520)  {'sw_power_cap': 0.929}
+round 4 causal=False triton_64x64 2.048 ms  222.3 W  43->71 C  SM 2655.0 MHz (min 2520)  {'sw_power_cap': 0.937}
+round 4 causal=False t6_rotated   2.057 ms  222.5 W  42->72 C  SM 2640.0 MHz (min 2595)  {'sw_power_cap': 0.971}
+round 4 causal=False sdpa         2.003 ms  217.9 W  43->72 C  SM 2700.0 MHz (min 2685)  {'sw_power_cap': 0.864}
+round 4 causal=True  cute_v5      1.035 ms  217.2 W  42->73 C  SM 2670.0 MHz (min 2670)  {'sw_power_cap': 1.0}
+round 4 causal=True  cute_v6      1.109 ms  222.3 W  43->69 C  SM 2655 MHz (min 2625)  {'sw_power_cap': 1.0}
+round 4 causal=True  cute_v7      1.068 ms  218.0 W  43->70 C  SM 2700 MHz (min 2685)  {'sw_power_cap': 1.0}
+round 4 causal=True  triton_v5    1.079 ms  222.9 W  43->70 C  SM 2670 MHz (min 2655)  {'sw_power_cap': 1.0}
+round 4 causal=True  triton_64x64 1.079 ms  220.8 W  43->69 C  SM 2670 MHz (min 2655)  {'sw_power_cap': 0.929}
+round 4 causal=True  t6_rotated   1.098 ms  218.1 W  43->70 C  SM 2625 MHz (min 2580)  {'sw_power_cap': 0.938}
+round 4 causal=True  sdpa         1.112 ms  199.9 W  43->68 C  SM 2715.0 MHz (min 2715)  {}
+
+median over rounds (N = 4096):
+kernel       causal      ms  mJ/call  power W  max W temp start max temp  SM MHz  min SM  mem MHz  reasons (fraction of samples)
+cute_v5      False    1.954    434.1    222.2  229.6         43       73    2640    2520    10251  sw_power_cap 0.99
+cute_v6      False    2.001    441.6    220.7  229.1         43       74    2625    2520    10251  sw_power_cap 1.00
+cute_v7      False    1.995    441.1    221.1  229.7         43       72    2640    2520    10251  sw_power_cap 1.00
+triton_v5    False    1.964    428.4    218.1  227.4         43       73    2655    2520    10251  sw_power_cap 0.98
+triton_64x64 False    2.048    452.6    220.9  228.2         43       73    2655    2520    10251  sw_power_cap 0.96
+t6_rotated   False    2.058    452.7    220.0  229.7         43       74    2625    2520    10251  sw_power_cap 0.97
+sdpa         False    2.004    436.4    217.9  221.6         43       72    2700    2520    10251  sw_power_cap 0.92
+cute_v5      True     1.037    226.3    218.1  227.0         43       73    2670    2520    10251  sw_power_cap 0.99
+cute_v6      True     1.110    243.2    219.3  226.2         43       72    2685    2520    10251  sw_power_cap 0.98
+cute_v7      True     1.066    234.7    220.1  228.8         43       70    2685    2520    10251  sw_power_cap 0.98
+triton_v5    True     1.080    237.5    220.0  230.3         43       73    2670    2520    10251  sw_power_cap 0.98
+triton_64x64 True     1.078    235.8    218.7  227.5         43       72    2670    2520    10251  sw_power_cap 0.96
+t6_rotated   True     1.098    242.0    220.5  231.2         43       71    2640    2520    10251  sw_power_cap 0.96
+sdpa         True     1.112    221.5    199.4  201.1         43       70    2715    2700    10251  sw_power_cap 0.04

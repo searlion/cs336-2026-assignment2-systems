@@ -1,0 +1,31 @@
+                                kernel_cutlass_kernel_v5_tuned  kernel_cutlass_kernel_v5_tuned  kernel_cutlass_kernel_v6_mbarr  kernel_cutlass_kernel_v6_mbarr
+duration (ms)                                            2.041                           1.083                           2.081                           1.174
+SM clock (GHz)                                            2.52                            2.52                            2.52                            2.52
+tensor ops (G)                                           137.4                            69.8                           137.4                            69.8
+tensor TOP/s                                              67.3                            64.4                            66.0                            59.4
+tensor % of peak                                          93.2                            89.3                            91.5                            82.4
+LSU pipe (%)                                              20.6                            19.6                            34.2                            27.1
+issue slots busy (%)                                      15.6                            15.8                            20.5                            18.3
+instructions (M)                                           180                              97                             240                             121
+registers/thread                                           165                             128                             128                             128
+shared mem/block (KB)                                     24.6                            41.0                            25.6                            42.0
+theoretical occupancy (%)                                 25.0                            16.7                            25.0                            16.7
+achieved occupancy (%)                                    24.5                            16.4                            24.5                            16.3
+L2->L1 bytes (GB)                                         2.16                            1.11                            2.16                            1.11
+L2 hit rate (%)                                           97.2                            95.3                            97.6                            95.5
+DRAM bytes (MB)                                             68                              78                              57                              57
+shared st+ld wavefronts (M)                                 81                              41                             101                              48
+shared load instructions (M)                               0.0                             0.0                             3.5                             1.4
+shared store instructions (M)                              0.0                             0.0                             0.0                             0.0
+ldmatrix instructions (M)                                 18.9                             9.6                            18.9                             9.6
+cp.async instructions (M)                                  4.2                             2.2                             4.2                             2.2
+shared load wavefronts (M)                                  76                              38                              85                              40
+shared store wavefronts (M)                                  0                               0                               0                               0
+shared load bank conflicts (M)                               0                               0                               0                               0
+shared store bank conflicts (M)                               0                               0                               0                               0
+warp cycles / issued inst                                18.58                           11.97                           14.20                           10.18
+top stalls (cycles per issued instruction):
+  kernel_cutlass_kernel_v5_tuned  math_pipe_throttle 12.17, barrier 1.88, wait 1.81, selected 1.00
+  kernel_cutlass_kernel_v5_tuned  math_pipe_throttle 7.33, wait 1.81, selected 1.00, barrier 0.67
+  kernel_cutlass_kernel_v6_mbarr  math_pipe_throttle 7.86, wait 2.54, short_scoreboard 1.32, selected 1.00
+  kernel_cutlass_kernel_v6_mbarr  math_pipe_throttle 5.53, wait 2.16, selected 1.00, short_scoreboard 0.80

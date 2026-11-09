@@ -1,0 +1,38 @@
+== CuTe v5 causal: 96.5 M warp instructions executed, 143645 stall samples
+  executed   258048 times/instr:  350 static instrs,   90.3 M executed (93.6%), 95.9% of stall samples
+  executed     8192 times/instr:  751 static instrs,    6.2 M executed ( 6.4%),  3.7% of stall samples
+  executed     8064 times/instr:    6 static instrs,    0.0 M executed ( 0.1%),  0.0% of stall samples
+  executed        0 times/instr:  245 static instrs,    0.0 M executed ( 0.0%),  0.3% of stall samples
+  HMMA executed 17.04 M; non-HMMA instructions per HMMA: 4.66
+== Triton 64x64x3 causal: 113.4 M warp instructions executed, 149390 stall samples
+  executed   258048 times/instr:  388 static instrs,  100.1 M executed (88.3%), 94.1% of stall samples
+  executed     8192 times/instr: 1496 static instrs,   12.3 M executed (10.8%),  5.6% of stall samples
+  executed     8064 times/instr:   96 static instrs,    0.8 M executed ( 0.7%),  0.2% of stall samples
+  executed   249984 times/instr:    1 static instrs,    0.2 M executed ( 0.2%),  0.0% of stall samples
+  executed     4096 times/instr:    3 static instrs,    0.0 M executed ( 0.0%),  0.0% of stall samples
+  executed        0 times/instr:   16 static instrs,    0.0 M executed ( 0.0%),  0.0% of stall samples
+  HMMA executed 17.04 M; non-HMMA instructions per HMMA: 5.66
+
+Unmasked loop body, opcodes per iteration (CuTe / Triton):
+  FMNMX        36   38  (+2)
+  FADD         34   38  (+4)
+  FFMA         34   36  (+2)
+  MUFU         34   36  (+2)
+  IMAD          6   30  (+24)
+  IADD3        12   17  (+5)
+  SHFL          4    8  (+4)
+  LDS           6    2  (-4)
+  NOP           0    7  (+7)
+  UIADD3        5    2  (-3)
+  UISETP        2    3  (+1)
+  LEA           3    1  (-2)
+  BRA           4    0  (-4)
+  BAR           1    2  (+1)
+  LDGDEPBAR     1    2  (+1)
+  MOV           2    1  (-1)
+  USHF          2    0  (-2)
+  ULOP3         2    0  (-2)
+  USEL          0    1  (+1)
+  SEL           0    1  (+1)
+  CALL          0    1  (+1)
+  total       350  388

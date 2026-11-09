@@ -1,0 +1,7 @@
+A = kernels/v5_tuned [auto]   B = kernels/v7_swpipe [auto]   7 rounds
+[0] N=512 causal=False: A 0.0451 ms  B 0.0506 ms  B/A-1 = +12.4%   (A 0.0451-0.0459, B 0.0502-0.0512)
+[0] N=4096 causal=False: A 1.9640 ms  B 2.0050 ms  B/A-1 = +2.1%   (A 1.9528-1.9853, B 1.9937-2.0183)
+[0] N=4096 causal=True : A 1.0455 ms  B 1.0721 ms  B/A-1 = +2.5%   (A 1.0404-1.0555, B 1.0657-1.0767)
+[1] N=512 causal=False: A 0.0437 ms  B 0.0502 ms  B/A-1 = +14.9%   (A 0.0430-0.0440, B 0.0499-0.0502)
+[1] N=4096 causal=False: A 1.9753 ms  B 2.0084 ms  B/A-1 = +1.7%   (A 1.9630-1.9866, B 2.0060-2.0193)
+[1] N=4096 causal=True : A 1.0486 ms  B 1.0788 ms  B/A-1 = +2.9%   (A 1.0435-1.0516, B 1.0732-1.0861)

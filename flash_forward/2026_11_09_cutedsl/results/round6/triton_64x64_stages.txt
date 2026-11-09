@@ -1,0 +1,2 @@
+causal=True: 64x64 1 stages 1.2012 ms  64x64 2 stages 1.0793 ms  64x64 3 stages 1.0767 ms  64x64 4 stages 1.2114 ms
+causal=False: 64x64 1 stages 2.3250 ms  64x64 2 stages 2.0693 ms  64x64 3 stages 2.0572 ms  64x64 4 stages 2.2651 ms

@@ -1,0 +1,4 @@
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Style,Range
+53.0,1613038,20,80651.9,59406.0,55550,329302,60857.6,PushPop,:v5_tuned causal=False
+34.2,1039435,20,51971.8,44810.0,39640,126381,19609.8,PushPop,:v5_final causal=False
+12.8,389532,20,19476.6,16925.0,16571,63691,10432.8,PushPop,:sdpa causal=False

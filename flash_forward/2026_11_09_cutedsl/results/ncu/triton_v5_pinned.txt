@@ -1,0 +1,29 @@
+                                flash_fwd_kernel  flash_fwd_kernel
+duration (ms)                              2.063             1.151
+SM clock (GHz)                              2.52              2.52
+tensor ops (G)                             137.4              70.9
+tensor TOP/s                                66.6              61.6
+tensor % of peak                            92.2              85.3
+LSU pipe (%)                                17.9              16.8
+issue slots busy (%)                        14.7              14.7
+instructions (M)                             171                96
+registers/thread                             255               255
+shared mem/block (KB)                       41.0              41.0
+theoretical occupancy (%)                   16.7              16.7
+achieved occupancy (%)                      16.6              16.4
+L2->L1 bytes (GB)                           2.16              1.12
+L2 hit rate (%)                             97.6              95.5
+DRAM bytes (MB)                               77                77
+shared st+ld wavefronts (M)                   76                40
+shared load instructions (M)                 0.0               0.0
+shared store instructions (M)                0.1               0.1
+ldmatrix instructions (M)                   17.9               9.2
+cp.async instructions (M)                    4.5               2.4
+shared load wavefronts (M)                    71                37
+shared store wavefronts (M)                    0                 0
+shared load bank conflicts (M)                 0                 0
+shared store bank conflicts (M)                 0                 0
+warp cycles / issued inst                  13.25             12.73
+top stalls (cycles per issued instruction):
+  flash_fwd_kernel  math_pipe_throttle 9.12, wait 1.08, selected 1.00, long_scoreboard 0.96
+  flash_fwd_kernel  math_pipe_throttle 8.12, wait 1.12, long_scoreboard 1.10, selected 1.00

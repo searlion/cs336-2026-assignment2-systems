@@ -1,0 +1,60 @@
+kernels/v0_naive causal=0 config=(64, 64, 4): registers 118, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128         0       448        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1512
+loop 0 (0x590-0x2a60)           64         0       224        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       590
+loop 1 (0x2bc0-0x5630)          64         0       224        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       680
+kernels/v0_naive causal=1 config=(64, 64, 4): registers 128, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128         0       448        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1576
+loop 0 (0x5e0-0x2af0)           64         0       224        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       594
+loop 1 (0x2c90-0x5ae0)          64         0       224        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       742
+kernels/v1_swizzle causal=0 config=(64, 64, 4): registers 253, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128         0       448        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1944
+loop 0 (0x2120-0x4630)          64         0       224        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       594
+loop 1 (0x4700-0x71e0)          64         0       224        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       687
+kernels/v1_swizzle causal=1 config=(64, 64, 4): registers 253, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128         0       448        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      2016
+loop 0 (0x21f0-0x4700)          64         0       224        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       594
+loop 1 (0x4810-0x7660)          64         0       224        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       742
+kernels/v2_ldmatrix causal=0 config=(64, 64, 4): registers 168, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        80         0        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1080
+loop 0 (0x960-0x1eb0)           64        40         0        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       342
+loop 1 (0x2090-0x3b60)          64        40         0        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       430
+kernels/v2_ldmatrix causal=1 config=(64, 64, 4): registers 168, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        80         0        59        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1152
+loop 0 (0x9c0-0x1f10)           64        40         0        24         8         0         0         0         0         2        34         4        34        34        36        16         0         0       342
+loop 1 (0x2130-0x4000)          64        40         0        28         8         0         0         0         0         2        34         4        34        34        36        16         0         0       494
+kernels/v3_p_regs causal=0 config=(64, 64, 4): registers 168, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        27        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1008
+loop 0 (0x7e0-0x1be0)           64        36         0         8         8         0         0         0         0         2        34         4        34        34        36        16         0         0       321
+loop 1 (0x1d70-0x36e0)          64        36         0        12         8         0         0         0         0         2        34         4        34        34        36        16         0         0       408
+kernels/v3_p_regs causal=1 config=(64, 64, 4): registers 168, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        27        20        18         0         0         0         4        68        12        68       102        72        48         0         0      1080
+loop 0 (0x880-0x1c80)           64        36         0         8         8         0         0         0         0         2        34         4        34        34        36        16         0         0       321
+loop 1 (0x1e40-0x3bb0)          64        36         0        12         8         0         0         0         0         2        34         4        34        34        36        16         0         0       472
+kernels/v4_cpasync causal=0 config=(64, 64, 4): registers 165, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        20         0        18        40         5         4         4        68        12        68       102        72        48         0         0      1116
+loop 0 (0xb80-0x22a0)           64        36         0         4         0         0        12         2         2         2        34         4        34        34        36        16         0         0       356
+loop 1 (0x2400-0x41c0)          64        36         0         8         0         0        16         2         2         2        34         4        34        34        36        16         0         0       453
+kernels/v4_cpasync causal=1 config=(64, 64, 4): registers 129, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        20         0        18        40         5         4         4        68        12        68       102        72        48         0         0      1196
+loop 0 (0xca0-0x23d0)           64        36         0         4         0         0        12         2         2         2        34         4        34        34        36        16         0         0       357
+loop 1 (0x2500-0x46b0)          64        36         0         8         0         0        16         2         2         2        34         4        34        34        36        16         0         0       516
+kernels/v5_tuned causal=0 config=(64, 64, 4, 1): registers 165, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        20         0        18        40         5         4         4        68        12        68       102        72        48         0         0      1116
+loop 0 (0xb80-0x22a0)           64        36         0         4         0         0        12         2         2         2        34         4        34        34        36        16         0         0       356
+loop 1 (0x2400-0x41c0)          64        36         0         8         0         0        16         2         2         2        34         4        34        34        36        16         0         0       453
+kernels/v5_tuned causal=1 config=(64, 64, 4, 2): registers 128, static shared 0 B, local 0 B
+                              HMMA      LDSM       LDS       STS       LDG       STG    LDGSTS LDGDEPBAR    DEPBAR       BAR  MUFU.EX2 SHFL.BFLY      FFMA      FMUL     FMNMX      F2FP       LDL       STL     total
+whole kernel                   128        72         0        28         0        18        52         3         2         2        68        12        68       102        72        48         0         0      1265
+loop 0 (0xf80-0x2950)           64        36         0         8         0         0        16         1         1         1        34         4        34        34        36        16         0         0       390
+loop 1 (0x2a50-0x4cb0)          64        36         0         8         0         0        16         1         1         1        34         4        34        34        36        16         0         0       527
