@@ -1,9 +1,10 @@
 # make_svgs.py
-# Writes the four explanatory diagrams of the article as plain SVG (no external fonts):
+# Writes the five explanatory diagrams of the article as plain SVG (no external fonts):
 #   images/mma_ownership.svg   who holds which value of a 64 x 64 score tile
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
+#   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
 # The results chart is drawn by plot_results_svg.py from the benchmark files.
 import pathlib
 
@@ -236,10 +237,71 @@ def gpu_hierarchy():
     return svg(1060, top + h + 44, b)
 
 
+def layouts():
+    b = []
+    GREY_L = "#f6f6f4"
+    cw, ch = 46, 28
+
+    def cell(x, y, s, fill=SURF, ink=INK, size=12):
+        b.append(rect(x, y, cw, ch, fill, GRID, 1))
+        b.append(text(x + cw / 2, y + 18, s, size, ink, "middle"))
+
+    def arrow(x1, y1, x2, y2, label, lx, ly, anchor="middle"):
+        b.append(line(x1, y1, x2, y2, INK2, 1.5))
+        if x1 == x2:
+            b.append(f'<path d="M{x2 - 5},{y2 - 6} L{x2},{y2} L{x2 + 5},{y2 - 6}" fill="none" stroke="{INK2}" stroke-width="1.5"/>')
+        else:
+            b.append(f'<path d="M{x2 - 6},{y2 - 5} L{x2},{y2} L{x2 - 6},{y2 + 5}" fill="none" stroke="{INK2}" stroke-width="1.5"/>')
+        b.append(text(lx, ly, label, 12, INK2, anchor))
+
+    # left: (64, 64):(64, 1), row-major; show rows 0-2 and 63, columns 0-3 and 63
+    x0, y0 = 70, 110
+    b.append(text(20, 30, "(64, 64):(64, 1)", 15, weight="600", family=MONO))
+    b.append(text(20, 50, "64 rows × 64 columns, row-major (corner shown)", 12.5, INK2))
+    b.append(text(20, 68, "offset = 64·r + 1·c", 12.5, INK, family=MONO))
+    cols, rows = [0, 1, 2, 3, None, 63], [0, 1, 2, None, 63]
+    for j, c in enumerate(cols):
+        b.append(text(x0 + j * cw + cw / 2, y0 - 8, "…" if c is None else f"c={c}", 11.5, MUTED, "middle"))
+    for i, r in enumerate(rows):
+        y = y0 + i * ch
+        b.append(text(x0 - 8, y + 18, "⋮" if r is None else f"r={r}", 11.5, MUTED, "end"))
+        for j, c in enumerate(cols):
+            if r is None or c is None:
+                b.append(text(x0 + j * cw + cw / 2, y + 18, "⋮" if r is None and c is not None else "…" if c is None and r is not None else "", 12, MUTED, "middle"))
+            else:
+                cell(x0 + j * cw, y, str(64 * r + c))
+    gy = y0 + len(rows) * ch
+    arrow(x0, gy + 18, x0 + 3 * cw, gy + 18, "next column: +1", x0 + 1.5 * cw, gy + 36)
+    arrow(x0 + 6 * cw + 16, y0 + 4, x0 + 6 * cw + 16, y0 + 2 * ch + 24, "next row:", x0 + 6 * cw + 24, y0 + ch + 10, "start")
+    b.append(text(x0 + 6 * cw + 24, y0 + ch + 26, "+64", 12, INK2))
+
+    # right: ((2, 2), 8):((1, 16), 2), the row index is itself two modes (i0, i1)
+    x1 = 540
+    b.append(text(x1 - 60, 30, "((2, 2), 8):((1, 16), 2)", 15, weight="600", family=MONO))
+    b.append(text(x1 - 60, 50, "4 rows × 8 columns; each row index is a pair (i0, i1)", 12.5, INK2))
+    b.append(text(x1 - 60, 68, "offset = 1·i0 + 16·i1 + 2·c", 12.5, INK, family=MONO))
+    for c in range(8):
+        b.append(text(x1 + c * cw + cw / 2, y0 - 8, f"c={c}", 11.5, MUTED, "middle"))
+    for i in range(4):
+        i0, i1 = i % 2, i // 2
+        y = y0 + i * ch
+        b.append(text(x1 - 8, y + 18, f"({i0}, {i1})", 11.5, MUTED, "end"))
+        for c in range(8):
+            cell(x1 + c * cw, y, str(i0 + 16 * i1 + 2 * c), ORANGE_L if i1 == 0 else AQUA_L)
+    gy = y0 + 4 * ch
+    arrow(x1, gy + 18, x1 + 3 * cw, gy + 18, "next column: +2", x1 + 1.5 * cw, gy + 36)
+    b.append(text(x1 + 4 * cw, gy + 23, "next i0: +1", 12, INK2))
+    b.append(text(x1 + 4 * cw, gy + 39, "next i1: +16", 12, INK2))
+    b.append(text(x1 - 60, gy + 64, "Orange rows (i1 = 0) take offsets 0–15, green rows (i1 = 1) take 16–31;", 12, INK2))
+    b.append(text(x1 - 60, gy + 80, "within each colour, one row takes the even offsets and the other the odd.", 12, INK2))
+    return svg(920, gy + 96, b)
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     (OUT / "mma_ownership.svg").write_text(mma_ownership())
     (OUT / "swizzle_banks.svg").write_text(swizzle_banks())
     (OUT / "pipeline.svg").write_text(pipeline())
     (OUT / "gpu_hierarchy.svg").write_text(gpu_hierarchy())
+    (OUT / "layouts.svg").write_text(layouts())
     print("wrote", *sorted(p.name for p in OUT.glob("*.svg")))
