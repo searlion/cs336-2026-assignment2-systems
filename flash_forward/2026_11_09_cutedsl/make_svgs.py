@@ -5,9 +5,10 @@
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
 #   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
-#   images/tiled_mma.svg       how a 64 x 64 score tile is split into warps, MMA instructions and pairs
+#   images/tiled_mma.svg       what (16, 8, 16), (4, 1, 1) and permutation (64, 16, 16) each cover of S = Q K^T
 #   images/ldmatrix_pairs.svg  why permutation_mnk N = 16 halves the loads of K and V
 #   images/warp_shuffle.svg    a quad's row maximum through shared memory against two warp shuffles
+#   images/warp_split.svg      where row 0 of S lives under (4, 1, 1) and (2, 2, 1), and its maximum's cost
 #   images/tiled_copy.svg      the layout of a tiled copy: each make_layout line on a 64 x 64 tile of K
 #   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
 #   images/memory_hierarchy.svg registers, L1 / shared memory, L2 and global memory, fastest to slowest
@@ -49,49 +50,55 @@ def line(x1, y1, x2, y2, stroke=INK2, sw=1, dash=None):
 
 # ---------------------------------------------------------------------------------------------
 def mma_ownership():
-    b = []
-    b.append(text(20, 30, "Who holds which score: a 64 × 64 tile of S = Q Kᵀ, 4 warps, 16 × 8 MMA tiles", 16, weight="600"))
-    # left: the whole tile, 4 px per element
-    x0, y0, px = 90, 70, 4
-    b.append(text(x0, y0 - 12, "The whole tile (64 rows × 64 keys)", 13, INK2))
-    fills = ["#eef4fc", "#f6f6f4", "#eef4fc", "#f6f6f4"]
-    for w in range(4):
-        b.append(rect(x0, y0 + w * 64, 256, 64, fills[w], GRID))
-        b.append(text(x0 - 10, y0 + w * 64 + 37, f"warp {w}", 12, INK2, "end"))
-    for a in range(8):  # warp 0's eight 16 x 8 MMA tiles
-        b.append(rect(x0 + a * 32, y0, 32, 64, "none", "#9fb8d9", 1))
-    for r in (0, 8):     # rows 0 and 8 of the tile
-        b.append(rect(x0, y0 + r * px, 256, px, BLUE))
-    b.append(rect(x0, y0, 32, 64, "none", INK, 2))
-    b.append(text(x0 - 50, y0 + 256 + 22, "Warp 0 owns rows 0–15. Its strip is 8 MMA tiles of 16 rows × 8 keys.", 12, INK2))
-    b.append(text(x0 - 50, y0 + 256 + 40, "Blue: rows 0 and 8, which lanes 0–3 (one quad) hold.", 12, INK2))
-    # right: zoom of one MMA tile, lane per element
-    zx, zy, cw, ch = 440, 70, 40, 15
-    b.append(text(zx, zy - 12, "One 16 × 8 MMA tile, zoomed: the lane that holds each value", 13, INK2))
-    b.append(line(x0 + 32, y0, zx, zy, MUTED, 1, "4 3"))
-    b.append(line(x0 + 32, y0 + 64, zx, zy + 16 * ch, MUTED, 1, "4 3"))
-    for r in range(16):
-        for c in range(8):
-            lane = (r % 8) * 4 + c // 2
-            quad0 = lane < 4
-            b.append(rect(zx + c * cw, zy + r * ch, cw, ch, BLUE if quad0 else "#f6f6f4", SURF, 1))
-            b.append(text(zx + c * cw + cw / 2, zy + r * ch + 11, f"T{lane}", 9.5, SURF if quad0 else INK2,
-                          "middle", family=MONO))
-    for c in range(8):
-        b.append(text(zx + c * cw + cw / 2, zy + 16 * ch + 14, str(c), 10, MUTED, "middle"))
-    for r in (0, 8, 15):
-        b.append(text(zx - 6, zy + r * ch + 11, str(r), 10, MUTED, "end"))
-    b.append(text(zx + 4 * cw, zy + 16 * ch + 30, "key within the tile", 11, MUTED, "middle"))
-    nx = zx + 8 * cw + 22
-    notes = ["Each lane holds 2 neighbouring keys", "in 2 rows (r and r + 8) of every tile.",
-             "", "The 4 lanes of a quad share those rows:",
-             "lanes 0–3 hold all of rows 0 and 8.", "",
-             "So the maximum (or sum) of a row is",
-             "1. a max over the lane's own 16 values,", "    no communication, then",
-             "2. two shuffles inside the quad:", "    with lane xor 2, then with lane xor 1."]
-    for i, s in enumerate(notes):
-        b.append(text(nx, zy + 14 + i * 19, s, 12.5, INK if i in (3, 6) else INK2))
-    return svg(1050, 400, b)
+    # What thread 0 gets from each partition line of the code, checked on the GPU with the real
+    # tiled MMA: Q rows 0 and 8, K rows 0, 8, ..., 56, S rows 0 and 8; head dims / keys with c % 8 in {0, 1}.
+    px, n = 4, 64
+    side = px * n
+    xs, y0 = (40, 360, 680), 126
+    W = 1040
+    b = [text(20, 30, "What thread 0 gets from each line of the code", 16, weight="600")]
+    b.append(text(20, 52, "Blue: the values thread 0 works on. Every one of the 128 threads gets its own share "
+                          "the same way.", 12.5, INK2))
+    mine = lambda r, c, keys: (r % 8 == 0 if keys else r in (0, 8)) and c % 8 in (0, 1)
+    panels = [
+        ("sQ", "Q tile: 64 rows × 64 head dims", "tSsQ = partition_A(sQ)", "32 values: rows 0 and 8", False, True),
+        ("sK", "K tile: 64 keys × 64 head dims", "tSsK = partition_B(sK)", "128 values: keys 0, 8, 16, …, 56", True, True),
+        ("acc_S", "S tile: 64 rows × 64 keys", "acc_S = make_rmem_tensor(…)", "32 values: rows 0 and 8, in registers",
+         False, False),
+    ]
+    for x0, (name, cap, code, note, keys, kband) in zip(xs, panels):
+        b.append(text(x0, y0 - 48, name, 14, INK, weight="600", family=MONO))
+        b.append(text(x0, y0 - 30, cap, 12.5, INK2))
+        b.append(rect(x0, y0, side, side, "#f6f6f4", GRID))
+        if kband:   # the four 16-wide bands the loop walks through, one per step k
+            for kk in range(4):
+                if kk:
+                    b.append(line(x0 + kk * 16 * px, y0 - 4, x0 + kk * 16 * px, y0 + side, MUTED, 1, "3 3"))
+                b.append(text(x0 + (kk + 0.5) * 16 * px, y0 - 9, f"k = {kk}", 11, MUTED, "middle"))
+        for r in range(n):
+            for c in range(n):
+                if mine(r, c, keys):
+                    b.append(rect(x0 + c * px, y0 + r * px, px, px, BLUE))
+                elif name == "acc_S" and r in (0, 8):
+                    b.append(rect(x0 + c * px, y0 + r * px, px, px, BLUE_L))
+        b.append(text(x0, y0 + side + 24, code, 12.5, INK, family=MONO))
+        b.append(text(x0, y0 + side + 43, note, 12.5, INK2))
+    # S panel: say who holds the light blue
+    sx = xs[2]
+    b.append(line(sx + side + 4, y0 + 2, sx + side + 14, y0 + 2, MUTED))
+    b.append(line(sx + side + 4, y0 + 8 * px + 2, sx + side + 14, y0 + 8 * px + 2, MUTED))
+    b.append(line(sx + side + 14, y0 + 2, sx + side + 14, y0 + 8 * px + 2, MUTED))
+    b.append(text(sx + side + 18, y0 + 4 * px + 2, "light: lanes 1–3", 11, INK2))
+    b.append(text(sx + side + 18, y0 + 4 * px + 16, "(same quad)", 11, INK2))
+    # bottom: the fragments and the loop
+    by = y0 + side + 82
+    b.append(line(20, by - 20, W - 20, by - 20, GRID))
+    b.append(text(20, by, "make_fragment_A/B", 12.5, INK, family=MONO))
+    b.append(text(200, by, "allocate registers for the blue values of Q and K: 32 and 128 values.", 12.5, INK2))
+    b.append(text(20, by + 22, "loop step k", 12.5, INK, family=MONO))
+    b.append(text(200, by + 22, "[None, None, k] picks band k: copy those Q and K values into registers, "
+                                "then gemm adds Q·Kᵀ into acc_S.", 12.5, INK2))
+    return svg(W, by + 40, b)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -338,68 +345,149 @@ def layouts():
 
 
 def tiled_mma():
+    """How the three arguments of make_tiled_mma build up, from one instruction to the 64 x 64 x 64 tile.
+    Each panel draws S = Q Kt as a matrix multiply: Kt above S, Q to its left, so M, N and K are all visible."""
     b = []
-    WARP = [BLUE_L, "#f6f6f4", BLUE_L, "#f6f6f4"]
-    b.append(text(20, 30, "How a 64 × 64 score tile S = Q Kᵀ is split into MMA instructions", 16, weight="600"))
-    x0, y0, px = 150, 84, 5                     # 5 px per element: the tile is 320 x 320
-    b.append(text(x0 + 160, y0 - 12, "64 keys (one key block)", 12.5, INK2, "middle"))
-    for w in range(4):
-        y = y0 + 80 * w
-        b.append(rect(x0, y, 320, 80, WARP[w], GRID, 1))
-        b.append(text(x0 - 10, y + 36, f"warp {w}", 12.5, INK, "end"))
-        b.append(text(x0 - 10, y + 52, f"rows {16 * w}–{16 * w + 15}", 11.5, MUTED, "end"))
-        for c in range(1, 8):
-            b.append(line(x0 + 40 * c, y, x0 + 40 * c, y + 80, INK2 if c % 2 == 0 else GRID, 1))
-    b.append(rect(x0, y0, 320, 320, "none", INK2, 1))
-    # one instruction (warp 0, last piece) and one pair (warp 2, last two pieces)
-    b.append(rect(x0 + 280, y0, 40, 80, "none", INK, 2.5))
-    b.append(rect(x0 + 240, y0 + 160, 80, 80, "none", ORANGE, 2.5))
+    W, P = 160, 2.5                             # 64 elements -> 160 px
+    FAINT, GREY_L = "#ecebe7", "#f6f6f4"
+    b.append(text(20, 30, "What each argument of make_tiled_mma covers of S = Q Kᵀ", 16, weight="600"))
+    b.append(text(20, 50, "M = query rows of S, N = keys (columns of S), K = head dims summed over. "
+                  "Each panel adds one argument to the one before.", 12.5, INK2))
 
-    tx = x0 + 350
-    lines1 = [("Black: one MMA instruction, (16, 8, 16)", INK, "600"),
-              ("16 rows × 8 keys of S. One instruction adds up", INK2, "normal"),
-              ("16 of the 64 head dimensions, so 4 in a row", INK2, "normal"),
-              ("finish the piece.", INK2, "normal")]
-    for i, (t, c, wgt) in enumerate(lines1):
-        b.append(text(tx, y0 + 18 + 17 * i, t, 12.5, c, weight=wgt))
-    lines2 = [("A warp's strip is 8 pieces: 8 × 4 = 32", INK, "600"),
-              ("instructions per key block, one after another.", INK2, "normal"),
-              ("The 4 warps run at the same time.", INK2, "normal")]
-    for i, (t, c, wgt) in enumerate(lines2):
-        b.append(text(tx, y0 + 100 + 17 * i, t, 12.5, c, weight=wgt))
-    lines3 = [("Orange: a pair, 16 rows × 16 keys", ORANGE, "600"),
-              ("Both pieces need the same 16 × 16 piece of K,", INK2, "normal"),
-              ("so one ldmatrix.x4 loads it once for both.", INK2, "normal"),
-              ("CuTe works through each strip a pair at a time.", INK2, "normal")]
-    for i, (t, c, wgt) in enumerate(lines3):
-        b.append(text(tx, y0 + 178 + 17 * i, t, 12.5, c, weight=wgt))
-    b.append(text(20, y0 + 350, "64 × 64 is the kernel's tile size (64 query rows × 64 keys), not the instruction's. "
-                  "16 × 8 is the instruction's: it takes 4 × 8 = 32 pieces to cover the tile.", 12.5, INK2))
-    return svg(870, y0 + 366, b)
+    def rot(x, y, s, size=11, fill=MUTED):
+        return (f'<text transform="translate({x},{y}) rotate(-90)" font-size="{size}" fill="{fill}" '
+                f'text-anchor="middle">{s}</text>')
+
+    def panel(px0, py0, title, code, caption, table, draw):
+        b.append(text(px0, py0, title, 14, weight="600"))
+        is_code = "(" in code
+        b.append(text(px0, py0 + 20, code, 12.5, INK if is_code else INK2, family=MONO if is_code else None))
+        for i, c in enumerate(caption):
+            b.append(text(px0, py0 + 40 + 16 * i, c, 12.5, INK2))
+        qx, ktx, kty = px0 + 40, px0 + 40 + W + 12, py0 + 88
+        sy = kty + W + 12
+        mats = {"Q": (qx, sy, 16, 16), "Kt": (ktx, kty, 16, 8), "S": (ktx, sy, 16, 8)}   # origin, grid rows/cols
+        for name, (x, y, gr, gc) in mats.items():
+            b.append(rect(x, y, W, W, SURF, GRID, 1))
+            for k in range(gr, 64, gr):
+                b.append(line(x, y + k * P, x + W, y + k * P, FAINT, 1))
+            for k in range(gc, 64, gc):
+                b.append(line(x + k * P, y, x + k * P, y + W, FAINT, 1))
+
+        def hl(name, r0, c0, nr, nc, fill, stroke, sw=1.5):
+            x, y, _, _ = mats[name]
+            b.append(rect(x + c0 * P, y + r0 * P, nc * P, nr * P, fill, stroke, sw))
+
+        def note(name, r, c, s, fill=INK2):  # text at element (r, c) of a matrix
+            x, y, _, _ = mats[name]
+            b.append(text(x + c * P, y + r * P, s, 11, fill))
+
+        draw(hl, note)
+        for name, (x, y, _, _) in mats.items():
+            b.append(text(x + W - 6, y + W - 7, "Kᵀ" if name == "Kt" else name, 13, MUTED, "end", "600"))
+        b.append(text(ktx + W / 2, kty - 7, "keys 0–63 (N)", 11, MUTED, "middle"))
+        b.append(rot(ktx + W + 14, kty + W / 2, "head dims (K)"))
+        b.append(rot(qx - 10, sy + W / 2, "query rows 0–63 (M)"))
+        b.append(text(qx + W / 2, sy + W + 16, "head dims 0–63 (K)", 11, MUTED, "middle"))
+        b.append(text(ktx + W / 2, sy + W + 16, "keys (N)", 11, MUTED, "middle"))
+        for i, (letter, expr, col, wgt) in enumerate(table):
+            y = kty + 22 + 22 * i
+            if letter:
+                b.append(text(px0, y, letter, 13.5, col, weight="600"))
+            b.append(text(px0 + 22, y, expr, 13, col, weight=wgt))
+
+    L, R, T1, T2 = 20, 520, 92, 552
+
+    # 1. the instruction
+    def d1(hl, note):
+        hl("Q", 0, 0, 16, 16, BLUE_L, BLUE)
+        hl("Kt", 0, 0, 16, 8, BLUE_L, BLUE)
+        hl("S", 0, 0, 16, 8, BLUE_L, BLUE)
+        note("S", 10, 11, "warp 0")
+    panel(L, T1, "1. The instruction", "MmaF16BF16Op(..., (16, 8, 16))",
+          ["One warp runs one mma: a 16 × 8 piece of S. It sums only 16",
+           "of the 64 head dims: 16 × 16 of Q times 16 × 8 of Kᵀ."],
+          [("M", "16", INK, "normal"), ("N", "8", INK, "normal"), ("K", "16", INK, "normal"),
+           ("", "(M, N, K) = (16, 8, 16)", INK2, "normal")], d1)
+
+    # 2. four warps along M
+    def d2(hl, note):
+        for w in range(4):
+            hl("Q", 16 * w, 0, 16, 16, BLUE_L, BLUE)
+            hl("S", 16 * w, 0, 16, 8, BLUE_L, BLUE)
+            note("S", 16 * w + 10, 11, f"warp {w}")
+        hl("Kt", 0, 0, 16, 8, BLUE_L, BLUE)
+        note("Kt", 7, 11, "the same piece")
+        note("Kt", 13, 11, "for all 4 warps")
+    panel(R, T1, "2. The warps", "make_tiled_mma(op, (4, 1, 1), ...)",
+          ["Warps along (M, N, K): 4 × 1 × 1. The 4 warps stack along M,",
+           "each doing step 1 on its own 16 rows: a 64 × 8 strip of S."],
+          [("M", "16 × 4 warps = 64", BLUE, "600"), ("N", "8 × 1 = 8", INK, "normal"),
+           ("K", "16 × 1 = 16", INK, "normal"), ("", "default step: (64, 8, 16)", INK2, "normal")], d2)
+
+    # 3. permutation_mnk widens N to 16: pairs
+    def d3(hl, note):
+        for w in range(4):
+            hl("Q", 16 * w, 0, 16, 16, BLUE_L, BLUE)
+            hl("S", 16 * w, 0, 16, 8, ORANGE_L, ORANGE)
+            hl("S", 16 * w, 8, 16, 8, ORANGE_L, ORANGE)
+            note("S", 16 * w + 10, 19, f"warp {w}: 2 mma")
+        for i in range(2):
+            for j in range(2):
+                hl("Kt", 8 * i, 8 * j, 8, 8, ORANGE_L, ORANGE, 1)
+        hl("Kt", 0, 0, 16, 16, "none", ORANGE, 2.5)
+        note("Kt", 7, 19, "four 8 × 8 tiles =")
+        note("Kt", 13, 19, "one ldmatrix.x4")
+    panel(L, T2, "3. The step", "permutation_mnk=(64, 16, 16)",
+          ["Sets the step to 64 rows × 16 keys × 16 dims. Only N changes:",
+           "each warp now runs 2 mmas side by side that share one load of K."],
+          [("M", "64  (as in step 2)", INK, "normal"), ("N", "8 × 2 mma = 16", ORANGE, "600"),
+           ("K", "16  (as in step 2)", INK, "normal"), ("", "step: (64, 16, 16)", INK2, "normal")], d3)
+
+    # 4. the step repeated over the kernel's 64 x 64 x 64 tile
+    def d4(hl, note):
+        for r in range(0, 64, 16):
+            for c in range(0, 64, 16):
+                hl("Q", r, c, 16, 16, GREY_L, INK2, 1)
+                hl("S", r, c, 16, 16, GREY_L, INK2, 1)
+                hl("Kt", r, c, 16, 16, GREY_L, INK2, 1)
+        hl("Q", 0, 0, 64, 16, ORANGE_L, ORANGE, 2.5)
+        hl("Kt", 0, 0, 16, 16, ORANGE_L, ORANGE, 2.5)
+        hl("S", 0, 0, 64, 16, ORANGE_L, ORANGE, 2.5)
+    panel(R, T2, "4. The whole tile", "no argument: the kernel's tile is 64 rows × 64 keys × 64 dims",
+          ["CuTe repeats the step (orange) 4 times along keys and 4 times",
+           "along head dims, adding each into the same piece of S."],
+          [("M", "64 ÷ 64 = 1 step", INK, "normal"), ("N", "64 ÷ 16 = 4 steps", INK, "normal"),
+           ("K", "64 ÷ 16 = 4 steps", INK, "normal"), ("", "16 steps × 2 mma", INK2, "normal"),
+           ("", "= 32 mma per warp", INK, "600")], d4)
+    return svg(1010, T2 + 88 + 2 * W + 12 + 36, b)
 
 def ldmatrix_pairs():
+    """Drawn as K transposed (head dims down, keys across), like the tiled_mma figure above it,
+    so each MMA's 8 keys are a column."""
     b = []
     t = 56                                      # one 8 x 8 tile
-    b.append(text(20, 30, "Loading a 16-key × 16-dim piece of K into registers", 15, weight="600"))
+    b.append(text(20, 30, "Loading the 16 × 16 piece of Kᵀ a pair needs into registers", 15, weight="600"))
 
     def piece(x, y, title, sub):
-        b.append(text(x, y - 44, title, 13.5, weight="600"))
-        b.append(text(x, y - 26, sub, 12, INK2))
-        b.append(text(x + t, y - 8, "head dims 0–15", 11, MUTED, "middle"))
-        b.append(text(x - 8, y + t / 2 + 4, "keys 0–7", 11, MUTED, "end"))
-        b.append(text(x - 8, y + 1.5 * t + 4, "keys 8–15", 11, MUTED, "end"))
+        b.append(text(x, y - 52, title, 13.5, weight="600"))
+        b.append(text(x, y - 34, sub, 12, INK2))
+        b.append(text(x + t / 2, y - 8, "keys 0–7", 11, MUTED, "middle"))
+        b.append(text(x + 1.5 * t, y - 8, "keys 8–15", 11, MUTED, "middle"))
+        b.append(text(x - 8, y + t / 2 + 4, "dims 0–7", 11, MUTED, "end"))
+        b.append(text(x - 8, y + 1.5 * t + 4, "dims 8–15", 11, MUTED, "end"))
         for i in range(2):
             for j in range(2):
                 b.append(rect(x + j * t, y + i * t, t, t, "#f6f6f4", GRID, 1))
                 b.append(text(x + j * t + t / 2, y + i * t + t / 2 + 4, "8 × 8", 11, INK2, "middle"))
 
-    # default: two loads of two tiles, one per MMA
-    x, y = 110, 110
+    # default: two loads of two tiles, one per MMA (one column of 8 keys each)
+    x, y = 110, 118
     piece(x, y, "Default (step of 8 keys)", "each MMA gets its own load")
-    b.append(rect(x + 3, y + 3, 2 * t - 6, t - 6, "none", ORANGE, 2.5, 4))
-    b.append(rect(x + 3, y + t + 3, 2 * t - 6, t - 6, "none", AQUA, 2.5, 4))
-    b.append(text(x + 2 * t + 14, y + t / 2 + 4, "load 1 → MMA 1", 12, ORANGE))
-    b.append(text(x + 2 * t + 14, y + 1.5 * t + 4, "load 2 → MMA 2", 12, AQUA))
+    b.append(rect(x + 3, y + 3, t - 6, 2 * t - 6, "none", ORANGE, 2.5, 4))
+    b.append(rect(x + t + 3, y + 3, t - 6, 2 * t - 6, "none", AQUA, 2.5, 4))
+    b.append(text(x + 2 * t + 14, y + t / 2 + 4, "load 1 → MMA 1 (keys 0–7)", 12, ORANGE))
+    b.append(text(x + 2 * t + 14, y + 1.5 * t + 4, "load 2 → MMA 2 (keys 8–15)", 12, AQUA))
     b.append(text(x, y + 2 * t + 26, "2 load instructions", 13, INK, weight="600"))
 
     # (64, 16, 16): one load of four tiles, shared by the pair
@@ -409,9 +497,11 @@ def ldmatrix_pairs():
     b.append(text(x + 2 * t + 14, y + t + 4, "1 load → MMA 1 and 2", 12, BLUE))
     b.append(text(x, y + 2 * t + 26, "1 load instruction", 13, INK, weight="600"))
 
-    b.append(text(20, y + 2 * t + 64, "Same data either way. One load instruction (ldmatrix) can carry up to four 8 × 8 tiles; with a step of", 12.5, INK2))
-    b.append(text(20, y + 2 * t + 82, "8 keys it only ever carries two. For the whole 64 × 64 tile of K: 32 loads per warp instead of 16; the same for V.", 12.5, INK2))
-    return svg(780, y + 2 * t + 98, b)
+    b.append(text(20, y + 2 * t + 64, "Drawn as Kᵀ, as in the figure above: each MMA's 8 keys are a column. In shared memory K is stored with keys as rows,", 12.5, INK2))
+    b.append(text(20, y + 2 * t + 82, "so there each MMA's piece is a row of two tiles instead; the tiles and the loads are the same.", 12.5, INK2))
+    b.append(text(20, y + 2 * t + 108, "One load instruction (ldmatrix) can carry up to four 8 × 8 tiles; with a step of 8 keys it only ever carries two.", 12.5, INK2))
+    b.append(text(20, y + 2 * t + 126, "For the whole 64 × 64 tile of K: 32 loads per warp instead of 16; the same for V.", 12.5, INK2))
+    return svg(800, y + 2 * t + 142, b)
 
 
 def warp_shuffle():
@@ -473,6 +563,66 @@ def warp_shuffle():
     b.append(text(x, ry + 58, "Per lane: 2 shuffles, 2 max.", 12.5, INK, weight="600"))
     b.append(text(x, ry + 76, "No shared memory, no separate wait: every lane ends with 7.", 12, INK2))
     return svg(980, ry + 92, b)
+
+
+def warp_split():
+    # Where row 0 of S lives under (4, 1, 1) and (2, 2, 1), and what its maximum costs. Ownership checked on
+    # the GPU: under (2, 2, 1) warps 0 and 2 take turns every 8 keys of rows 0-15 and 32-47.
+    b = [f'<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>']
+    b.append(text(20, 30, "Where row 0 of S lives, and what its maximum costs", 16, weight="600"))
+    fills = [BLUE_L, ORANGE_L, AQUA_L, "#ece6f6"]
+    strong = [BLUE, ORANGE, AQUA, "#8a6fc4"]
+    px, y0 = 4, 112
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.3" '
+                 f'marker-end="url(#ah2)"/>')
+
+    def box(x, y, w, s, fill):
+        b.append(rect(x, y, w, 30, fill, GRID, 1, 4))
+        b.append(text(x + w / 2, y + 19.5, s, 12, INK, "middle"))
+
+    def grid(x0, owner, head, sub):
+        b.append(text(x0, 64, head, 14, INK, weight="600", family=MONO))
+        b.append(text(x0 + 110, 64, sub, 13, INK2))
+        b.append(text(x0, 84, "64 × 64 tile of S, coloured by the warp that holds each score", 12, MUTED))
+        for br in range(8):
+            for bc in range(8):
+                w = owner(br, bc)
+                b.append(rect(x0 + bc * 32, y0 + br * 32, 32, 32, fills[w], SURF, 1))
+                b.append(text(x0 + bc * 32 + 16, y0 + br * 32 + 20, str(w), 11, MUTED, "middle"))
+        for bc in range(8):   # row 0 itself, in the strong colour of the warp that holds each 8 keys
+            b.append(rect(x0 + bc * 32, y0, 32, px, strong[owner(0, bc)]))
+        b.append(text(x0 - 8, y0 + 5, "row 0 →", 11.5, INK, "end"))
+
+    # left: what the kernel uses
+    L, R, W = 70, 560, 260
+    grid(L, lambda br, bc: br // 2, "(4, 1, 1)", "what the kernel uses")
+    grid(R, lambda br, bc: (br // 2) % 2 + 2 * (bc % 2), "(2, 2, 1)", "the counterexample")
+    ty = y0 + 256 + 26
+    b.append(text(L, ty, "Row 0 is all in warp 0, in lanes 0–3.", 12.5, INK))
+    b.append(text(R, ty, "Row 0 is split: warps 0 and 2 take turns every 8 keys.", 12.5, INK))
+
+    fy = ty + 22
+    box(L, fy, W, "1. two shuffles inside warp 0", BLUE_L)
+    b.append(text(L, fy + 56, "Done: registers only, no waiting.", 12.5, BLUE, weight="600"))
+
+    hw = (W - 10) / 2
+    box(R, fy, hw, "1. shuffles in warp 0", BLUE_L)
+    box(R + hw + 10, fy, hw, "1. shuffles in warp 2", BLUE_L)
+    steps = ["2. both write their max to shared memory", "3. barrier: all 128 threads wait",
+             "4. each reads the other's max"]
+    for i, st in enumerate(steps):
+        yy = fy + 48 + i * 48
+        if i == 0:
+            arrow(R + hw / 2, fy + 32, R + hw / 2, yy - 3)
+            arrow(R + hw * 1.5 + 10, fy + 32, R + hw * 1.5 + 10, yy - 3)
+        else:
+            arrow(R + W / 2, yy - 16, R + W / 2, yy - 3)
+        box(R, yy, W, st, ORANGE_L)
+    b.append(text(R, fy + 48 * 3 + 54, "Steps 2–4 again on every key block.", 12.5, ORANGE, weight="600"))
+    return svg(920, fy + 48 * 3 + 72, b)
 
 
 def tiled_copy():
@@ -1186,6 +1336,7 @@ if __name__ == "__main__":
     (OUT / "tiled_mma.svg").write_text(tiled_mma())
     (OUT / "ldmatrix_pairs.svg").write_text(ldmatrix_pairs())
     (OUT / "warp_shuffle.svg").write_text(warp_shuffle())
+    (OUT / "warp_split.svg").write_text(warp_split())
     (OUT / "tiled_copy.svg").write_text(tiled_copy())
     (OUT / "copy_atoms.svg").write_text(copy_atoms())
     (OUT / "memory_hierarchy.svg").write_text(memory_hierarchy())

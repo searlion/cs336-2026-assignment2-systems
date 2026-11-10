@@ -1,40 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" width="780" height="320" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<rect width="780" height="320" fill="#ffffff"/>
-<text x="20" y="30" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Loading a 16-key × 16-dim piece of K into registers</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 372" width="800" height="372" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="800" height="372" fill="#ffffff"/>
+<text x="20" y="30" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Loading the 16 × 16 piece of Kᵀ a pair needs into registers</text>
 <text x="110" y="66" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Default (step of 8 keys)</text>
 <text x="110" y="84" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">each MMA gets its own load</text>
-<text x="166" y="102" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">head dims 0–15</text>
-<text x="102" y="142.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">keys 0–7</text>
-<text x="102" y="198.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">keys 8–15</text>
-<rect x="110" y="110" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="138.0" y="142.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="166" y="110" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="194.0" y="142.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="110" y="166" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="138.0" y="198.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="166" y="166" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="194.0" y="198.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="113" y="113" width="106" height="50" fill="none" stroke="#eb6834" stroke-width="2.5" rx="4"/>
-<rect x="113" y="169" width="106" height="50" fill="none" stroke="#1baf7a" stroke-width="2.5" rx="4"/>
-<text x="236" y="142.0" font-size="12" fill="#eb6834" text-anchor="start" font-weight="normal">load 1 → MMA 1</text>
-<text x="236" y="198.0" font-size="12" fill="#1baf7a" text-anchor="start" font-weight="normal">load 2 → MMA 2</text>
-<text x="110" y="248" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">2 load instructions</text>
+<text x="138.0" y="110" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">keys 0–7</text>
+<text x="194.0" y="110" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">keys 8–15</text>
+<text x="102" y="150.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">dims 0–7</text>
+<text x="102" y="206.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">dims 8–15</text>
+<rect x="110" y="118" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="138.0" y="150.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="166" y="118" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="194.0" y="150.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="110" y="174" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="138.0" y="206.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="166" y="174" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="194.0" y="206.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="113" y="121" width="50" height="106" fill="none" stroke="#eb6834" stroke-width="2.5" rx="4"/>
+<rect x="169" y="121" width="50" height="106" fill="none" stroke="#1baf7a" stroke-width="2.5" rx="4"/>
+<text x="236" y="150.0" font-size="12" fill="#eb6834" text-anchor="start" font-weight="normal">load 1 → MMA 1 (keys 0–7)</text>
+<text x="236" y="206.0" font-size="12" fill="#1baf7a" text-anchor="start" font-weight="normal">load 2 → MMA 2 (keys 8–15)</text>
+<text x="110" y="256" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">2 load instructions</text>
 <text x="470" y="66" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">permutation_mnk = (64, 16, 16)</text>
 <text x="470" y="84" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">the pair shares one load</text>
-<text x="526" y="102" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">head dims 0–15</text>
-<text x="462" y="142.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">keys 0–7</text>
-<text x="462" y="198.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">keys 8–15</text>
-<rect x="470" y="110" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="498.0" y="142.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="526" y="110" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="554.0" y="142.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="470" y="166" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="498.0" y="198.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="526" y="166" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="554.0" y="198.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
-<rect x="473" y="113" width="106" height="106" fill="none" stroke="#2a78d6" stroke-width="2.5" rx="4"/>
-<text x="596" y="170" font-size="12" fill="#2a78d6" text-anchor="start" font-weight="normal">1 load → MMA 1 and 2</text>
-<text x="470" y="248" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">1 load instruction</text>
-<text x="20" y="286" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Same data either way. One load instruction (ldmatrix) can carry up to four 8 × 8 tiles; with a step of</text>
-<text x="20" y="304" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">8 keys it only ever carries two. For the whole 64 × 64 tile of K: 32 loads per warp instead of 16; the same for V.</text>
+<text x="498.0" y="110" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">keys 0–7</text>
+<text x="554.0" y="110" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">keys 8–15</text>
+<text x="462" y="150.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">dims 0–7</text>
+<text x="462" y="206.0" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">dims 8–15</text>
+<rect x="470" y="118" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="498.0" y="150.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="526" y="118" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="554.0" y="150.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="470" y="174" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="498.0" y="206.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="526" y="174" width="56" height="56" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="554.0" y="206.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">8 × 8</text>
+<rect x="473" y="121" width="106" height="106" fill="none" stroke="#2a78d6" stroke-width="2.5" rx="4"/>
+<text x="596" y="178" font-size="12" fill="#2a78d6" text-anchor="start" font-weight="normal">1 load → MMA 1 and 2</text>
+<text x="470" y="256" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">1 load instruction</text>
+<text x="20" y="294" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Drawn as Kᵀ, as in the figure above: each MMA's 8 keys are a column. In shared memory K is stored with keys as rows,</text>
+<text x="20" y="312" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">so there each MMA's piece is a row of two tiles instead; the tiles and the loads are the same.</text>
+<text x="20" y="338" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">One load instruction (ldmatrix) can carry up to four 8 × 8 tiles; with a step of 8 keys it only ever carries two.</text>
+<text x="20" y="356" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">For the whole 64 × 64 tile of K: 32 loads per warp instead of 16; the same for V.</text>
 </svg>
