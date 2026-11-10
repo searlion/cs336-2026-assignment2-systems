@@ -1,5 +1,5 @@
 # make_svgs.py
-# Writes the eleven explanatory diagrams of the article as plain SVG (no external fonts):
+# Writes the sixteen explanatory diagrams of the article as plain SVG (no external fonts):
 #   images/mma_ownership.svg   who holds which value of a 64 x 64 score tile
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
@@ -11,6 +11,11 @@
 #   images/tiled_copy.svg      the layout of a tiled copy: each make_layout line on a 64 x 64 tile of K
 #   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
 #   images/memory_hierarchy.svg registers, L1 / shared memory, L2 and global memory, fastest to slowest
+#   images/block_grid.svg      how 2,048 blocks cover 32 (sequence, head) problems of 4,096 query rows
+#   images/warp_lanes.svg      a warp's lanes and quads, who holds each row of an MMA result, warps -> block
+#   images/ldmatrix_x4.svg     one ldmatrix.x4: a 16 x 16 piece of K, its four 8 x 8 tiles, who receives each value
+#   images/qkv_tiles.svg       the 64 x 64 tiles: Q, K, V in global memory, shared memory, and S / O in registers
+#   images/cp_async.svg        cp.async: global -> shared without registers, commit_group / wait_group(n), then a barrier
 # The results chart is drawn by plot_results_svg.py from the benchmark files.
 import pathlib
 
@@ -625,6 +630,523 @@ def memory_hierarchy():
     return svg(1010, gy + 92, b)
 
 
+def block_grid():
+    """How the 2,048 blocks cover the work at N = 4096: 32 (sequence, head) problems x 64 slices of Q."""
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(f'<defs><marker id="ah5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "How 2,048 blocks cover the work (N = 4,096 rows, 4 sequences × 8 heads)", 16, weight="600"))
+    top, bot = 116, 332
+
+    # 1. 32 separate problems
+    b.append(text(20, 66, "1. 32 separate problems", 13.5, weight="600"))
+    b.append(text(20, 84, "each (sequence, head) pair has its own Q, K, V", 11.5, INK2))
+    x0, cw, ch = 64, 30, 48
+    for h in range(8):
+        b.append(text(x0 + h * 32 + cw / 2, top - 8, f"h{h}", 10.5, MUTED, "middle"))
+    for sq in range(4):
+        y = top + sq * 56
+        b.append(text(x0 - 8, y + 28, f"seq {sq}", 10.5, MUTED, "end"))
+        for h in range(8):
+            hit = (sq, h) == (0, 7)
+            b.append(rect(x0 + h * 32, y, cw, ch, BLUE_L if hit else GREY_L, BLUE if hit else GRID, 1.5 if hit else 1, 3))
+
+    # 2. one problem's Q, cut into 64 slices
+    qx, qw = 400, 90
+    b.append(text(380, 66, "2. One problem's Q, cut into 64 slices", 13.5, weight="600"))
+    b.append(text(380, 84, "sequence 0, head 7: 4,096 rows × 64 values", 11.5, INK2))
+    b.append(line(x0 + 7 * 32 + cw, top, qx, top, MUTED, 1, "4 3"))
+    b.append(line(x0 + 7 * 32 + cw, top + ch, qx, bot, MUTED, 1, "4 3"))
+    b.append(rect(qx, top, qw, bot - top, BLUE_L, BLUE, 1.5))
+    sh = 24
+    slices = [(top, "block 0: rows 0–63"), (top + sh, "block 1: rows 64–127"),
+              (top + 2 * sh, "block 2: rows 128–191"), (bot - sh, "block 63: rows 4032–4095")]
+    for i, (y, lab) in enumerate(slices):
+        hit = i == 1
+        b.append(rect(qx, y, qw, sh, ORANGE_L if hit else SURF, ORANGE if hit else BLUE, 2 if hit else 1))
+        b.append(text(qx + qw + 10, y + 16, lab, 11.5, ORANGE if hit else INK2, weight="600" if hit else "normal"))
+    b.append(text(qx + qw / 2, (top + 3 * sh + bot - sh) / 2 + 6, "⋮", 18, INK2, "middle"))
+    b.append(text(qx + qw + 10, (top + 3 * sh + bot - sh) / 2 + 4, "one block per 64 rows", 11.5, MUTED))
+
+    # 3. what block 1 reads and writes
+    X = 700
+    b.append(text(X, 66, "3. What block 1 reads and writes", 13.5, weight="600"))
+    b.append(text(X, 84, "only head 7 of sequence 0, nothing else", 11.5, INK2))
+    b.append(line(qx + qw + 150, top + sh + sh / 2, X - 6, top + 30, ORANGE, 1, "4 3"))
+    b.append(rect(X, top + 16, 64, 28, ORANGE_L, ORANGE, 2))
+    b.append(text(X + 32, top + 34, "Q", 12, INK, "middle", "600"))
+    b.append(text(X, top + 62, "reads its own", 11, INK2))
+    b.append(text(X, top + 76, "64 rows of Q", 11, INK2))
+    b.append(rect(X, bot - 72, 64, 28, ORANGE_L, ORANGE, 2))
+    b.append(text(X + 32, bot - 54, "O", 12, INK, "middle", "600"))
+    b.append(text(X, bot - 26, "writes its own", 11, INK2))
+    b.append(text(X, bot - 12, "64 rows of O", 11, INK2))
+    for i, name in enumerate(("K", "V")):
+        kx = 800 + i * 66
+        b.append(text(kx + 25, top - 8, name, 12, INK, "middle", "600"))
+        b.append(rect(kx, top, 50, bot - top, GREY_L, INK2, 1))
+        for j in range(1, 9):
+            b.append(line(kx, top + j * 24, kx + 50, top + j * 24, GRID, 1))
+        b.append(rect(kx, top + 24, 50, 24, AQUA_L, AQUA, 2))
+    ax = 940
+    b.append(f'<line x1="{ax}" y1="{top + 4}" x2="{ax}" y2="{bot - 4}" stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah5)"/>')
+    b.append(text(ax + 8, top + 90, "reads all", 11, INK2))
+    b.append(text(ax + 8, top + 105, "4,096 rows,", 11, INK2))
+    b.append(text(ax + 8, top + 120, "64 at a time", 11, INK2))
+    b.append(text(ax + 8, top + 135, "(green: the", 11, MUTED))
+    b.append(text(ax + 8, top + 150, "current step)", 11, MUTED))
+
+    b.append(text(20, bot + 34, "64 slices per problem × 32 problems = 2,048 blocks. Different blocks of the same head share its K and V; "
+                  "blocks of different heads share nothing.", 12.5, INK2))
+    b.append(text(20, bot + 54, "Why share? A query row gets one score per key of its head (softmax turns the scores into weights). "
+                  "Its output adds up every value", 12.5, INK2))
+    b.append(text(20, bot + 72, "of that head, each multiplied by its key's weight. So all 64 blocks read the head's whole K and V "
+                  "(causal: only up to their rows).", 12.5, INK2))
+    return svg(1030, bot + 88, b)
+
+
+def warp_lanes():
+    """A warp's 32 lanes in 8 quads, which lanes hold which row of an MMA result, and how warps make a block."""
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(f'<defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "A warp, its lanes and its quads", 16, weight="600"))
+    y0 = 104
+
+    # 1. one warp: 32 lanes, 8 quads
+    b.append(text(20, 62, "1. One warp = 32 lanes (threads)", 13.5, weight="600"))
+    b.append(text(20, 80, "all 32 run the same instruction at the same time", 11.5, INK2))
+    x0, cw, ch = 84, 58, 24
+    for q in range(8):
+        y = y0 + q * 28
+        hit = q == 0
+        b.append(text(x0 - 10, y + 16, f"quad {q}", 11, BLUE if hit else MUTED, "end", "600" if hit else "normal"))
+        for c in range(4):
+            b.append(rect(x0 + c * (cw + 4), y, cw, ch, BLUE_L if hit else GREY_L, BLUE if hit else GRID, 1.5 if hit else 1, 4))
+            b.append(text(x0 + c * (cw + 4) + cw / 2, y + 16, f"lane {4 * q + c}", 10.5, INK if hit else INK2, "middle"))
+    b.append(text(20, y0 + 8 * 28 + 18, "A quad = 4 neighbouring lanes. Not a piece of hardware,", 11.5, INK2))
+    b.append(text(20, y0 + 8 * 28 + 34, "just how the multiply instruction hands out its results.", 11.5, INK2))
+
+    # 2. who holds which value of one 16 x 8 MMA result
+    X = 400
+    b.append(text(X, 62, "2. Who holds each value of one multiply's 16 × 8 result", 13.5, weight="600"))
+    b.append(text(X, 80, "rows 0–7 shown; rows 8–15 go to the same lanes again", 11.5, INK2))
+    gx, gw = X + 46, 50
+    for c in range(8):
+        b.append(text(gx + c * gw + gw / 2, y0 - 6, f"col {c}", 10, MUTED, "middle"))
+    for r in range(8):
+        y = y0 + r * 28
+        hit = r == 0
+        b.append(text(gx - 8, y + 16, f"row {r}", 11, BLUE if hit else MUTED, "end", "600" if hit else "normal"))
+        for c in range(8):
+            lane = 4 * r + c // 2
+            b.append(rect(gx + c * gw, y, gw - 2, ch, BLUE if hit else GREY_L, SURF if hit else GRID, 1, 3))
+            b.append(text(gx + c * gw + gw / 2 - 1, y + 16, f"lane {lane}", 9.5, SURF if hit else INK2, "middle"))
+    b.append(text(X, y0 + 8 * 28 + 18, "Row 0 is held only by lanes 0–3 (quad 0), 2 values each. So a row's max or sum", 11.5, INK2))
+    b.append(text(X, y0 + 8 * 28 + 34, "needs just those 4 lanes to swap values (shuffles), not the whole warp.", 11.5, INK2))
+
+    # 3. bigger: warps make a block, blocks run on SMs
+    y = y0 + 8 * 28 + 70
+    b.append(text(20, y, "3. Bigger units", 13.5, weight="600"))
+    bx = 20
+    b.append(rect(bx, y + 14, 4 * 74 + 14, 52, SURF, ORANGE, 1.5, 6))
+    b.append(text(bx + 8, y + 30, "a block = 4 warps = 128 threads", 11, ORANGE, weight="600"))
+    for w in range(4):
+        b.append(rect(bx + 8 + w * 74, y + 36, 68, 22, GREY_L, GRID, 1, 4))
+        b.append(text(bx + 8 + w * 74 + 34, y + 51, f"warp {w}", 11, INK2, "middle"))
+    ax = bx + 4 * 74 + 14
+    b.append(f'<line x1="{ax + 6}" y1="{y + 40}" x2="{ax + 40}" y2="{y + 40}" stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah6)"/>')
+    b.append(text(ax + 50, y + 36, "runs on one SM (streaming multiprocessor), next to other blocks.", 11.5, INK2))
+    b.append(text(ax + 50, y + 52, "This GPU has 56 SMs, each with its own registers, shared memory and tensor cores.", 11.5, INK2))
+    return svg(870, y + 80, b)
+
+
+def ldmatrix_x4():
+    """One ldmatrix.x4: a 16 x 16 piece of the K tile, its four 8 x 8 tiles, who receives each value."""
+    b = []
+    YEL_L = "#fdf3d8"
+    TILE = [(BLUE_L, BLUE), (ORANGE_L, ORANGE), (AQUA_L, AQUA), (YEL_L, "#c9a227")]
+    GREY_L = "#f6f6f4"
+    b.append(text(20, 30, "One ldmatrix.x4: four 8 × 8 tiles from shared memory, handed out to the warp's 32 lanes", 16, weight="600"))
+    y0 = 116
+
+    # 1. the K tile in shared memory, one 16 x 16 piece of it, and that piece's four 8 x 8 tiles
+    b.append(text(20, 64, "1. In shared memory: the block's K tile", 13.5, weight="600"))
+    b.append(text(20, 82, "64 keys × 64 head dims; one 16 × 16 piece = four 8 × 8 tiles", 11.5, INK2))
+    kx, ps = 40, 32
+    b.append(text(kx + 64, y0 - 8, "64 head dims", 10.5, MUTED, "middle"))
+    b.append(f'<text x="{kx - 8}" y="{y0 + 64}" font-size="10.5" fill="{MUTED}" text-anchor="middle" '
+             f'transform="rotate(-90 {kx - 8} {y0 + 64})">64 keys</text>')
+    for r in range(4):
+        for c in range(4):
+            hit = (r, c) == (0, 3)
+            b.append(rect(kx + c * ps, y0 + r * ps, ps, ps, BLUE_L if hit else GREY_L, BLUE if hit else GRID, 2 if hit else 1))
+    zx, cs, ts = 196, 10, 80
+    b.append(line(kx + 4 * ps, y0, zx, y0, MUTED, 1, "4 3"))
+    b.append(line(kx + 4 * ps, y0 + ps, zx, y0 + 2 * ts + 6, MUTED, 1, "4 3"))
+    for t in range(4):
+        tx, ty = zx + (t % 2) * (ts + 6), y0 + (t // 2) * (ts + 6)
+        fill, edge = TILE[t]
+        b.append(rect(tx, ty, ts, ts, fill, edge, 1.5 if t == 0 else 1))
+        for i in range(1, 8):
+            b.append(line(tx + i * cs, ty, tx + i * cs, ty + ts, SURF, 1))
+            b.append(line(tx, ty + i * cs, tx + ts, ty + i * cs, SURF, 1))
+        b.append(rect(tx + 18, ty + 29, 44, 22, SURF, edge, 1, 4))
+        b.append(text(tx + 40, ty + 44, f"tile {t}", 11, INK, "middle", "600"))
+    b.append(text(zx + ts + 3, y0 + 2 * ts + 22, "16 keys × 16 head dims", 10.5, MUTED, "middle"))
+    b.append(text(20, y0 + 2 * ts + 46, "16 × 16 is what a pair of multiplies needs from K", 11.5, INK2))
+    b.append(text(20, y0 + 2 * ts + 62, "(each takes 8 keys × 16 head dims). One instruction", 11.5, INK2))
+    b.append(text(20, y0 + 2 * ts + 78, "reads all four tiles; each value is 16 bits (bf16).", 11.5, INK2))
+
+    # 2. tile 0 zoomed: which lane receives each value
+    X = 400
+    b.append(text(X, 64, "2. Tile 0, zoomed: which lane receives each value", 13.5, weight="600"))
+    b.append(text(X, 82, "row r goes to quad r (lanes 4r to 4r + 3), 2 values each", 11.5, INK2))
+    gx, cw = 452, 40
+    for r in range(8):
+        y = y0 + r * 26
+        hit = r == 0
+        b.append(text(gx - 8, y + 16, f"row {r}", 11, BLUE if hit else MUTED, "end", "600" if hit else "normal"))
+        for c in range(8):
+            lane = 4 * r + c // 2
+            b.append(rect(gx + c * cw, y, cw - 2, 24, BLUE if hit else BLUE_L, SURF, 1, 3))
+            b.append(text(gx + c * cw + cw / 2 - 1, y + 16, f"lane {lane}", 9, SURF if hit else INK2, "middle"))
+    b.append(text(gx, y0 + 8 * 26 + 18, "64 values ÷ 32 lanes = 2 values per lane per tile.", 11.5, INK2))
+
+    # 3. what lane 0 ends with
+    X3 = 800
+    b.append(text(X3, 64, "3. Lane 0 ends with", 13.5, weight="600"))
+    b.append(text(X3, 82, "4 registers, 2 values in each", 11.5, INK2))
+    for t in range(4):
+        fill, edge = TILE[t]
+        y = y0 + t * 40
+        b.append(rect(X3, y, 200, 32, fill, edge, 1, 4))
+        b.append(text(X3 + 10, y + 20, f"reg {t}: tile {t}, row 0, values 0–1", 11, INK))
+    b.append(text(X3, y0 + 4 * 40 + 14, "Every other lane gets its own", 11.5, INK2))
+    b.append(text(X3, y0 + 4 * 40 + 30, "2 values from each tile the", 11.5, INK2))
+    b.append(text(X3, y0 + 4 * 40 + 46, "same way: 8 values in all.", 11.5, INK2))
+
+    yb = y0 + 2 * ts + 112
+    b.append(text(20, yb, "After one instruction, every lane holds exactly the values the multiply (MMA) wants from it, with no extra shuffling.", 12.5, INK2))
+    b.append(text(20, yb + 18, "ldmatrix.trans does the same with each tile's rows and columns swapped, which is what V needs.", 12.5, INK2))
+    return svg(1020, yb + 34, b)
+
+
+def qkv_tiles():
+    """Where the 64 x 64 tiles come from: one head's Q, K, V in global memory, the three tiles in shared memory,
+    and the S and O tiles a step computes."""
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(f'<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "The 64 × 64 tiles: what one block takes from Q, K and V (one head, N = 4,096, D = 64)", 16, weight="600"))
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah7)"/>')
+
+    # 1. global memory: one head's Q, K, V
+    top, h, w = 124, 288, 56
+    b.append(text(20, 64, "1. Global memory: one head", 13.5, weight="600"))
+    b.append(text(20, 82, "4,096 rows × 64 head dims each (not to scale)", 11.5, INK2))
+    for i, name in enumerate("QKV"):
+        x = 36 + i * 84
+        b.append(text(x + w / 2, top - 10, name, 13, INK, "middle", "600"))
+        b.append(rect(x, top, w, h, GREY_L, INK2, 1))
+        for j in range(1, 12):
+            b.append(line(x, top + j * 24, x + w, top + j * 24, GRID, 1))
+        if name == "Q":
+            b.append(rect(x, top + 48, w, 24, ORANGE_L, ORANGE, 2))
+        else:
+            b.append(rect(x, top + 96, w, 24, AQUA_L, AQUA, 2))
+    arrow(296, top + 4, 296, top + h - 4)
+    b.append(f'<text x="312" y="{top + h / 2}" font-size="11" fill="{INK2}" text-anchor="middle" '
+             f'transform="rotate(90 312 {top + h / 2})">64 steps, one per key block</text>')
+    b.append(text(20, top + h + 22, "Orange: this block's 64 query rows.", 11.5, ORANGE))
+    b.append(text(20, top + h + 38, "Green: the 64 keys of the current step.", 11.5, AQUA))
+    b.append(text(20, top + h + 54, "The block steps down K and V, 64 rows at a time.", 11.5, INK2))
+
+    # 2. shared memory: three 64 x 64 tiles
+    X, ts = 350, 84
+    b.append(text(X, 64, "2. Shared memory: 3 tiles = 24,576 bytes", 13.5, weight="600"))
+    b.append(text(X, 82, "each 64 × 64 bf16 values = 8,192 bytes", 11.5, INK2))
+    tiles = [("Q tile", "64 query rows × 64 dims", "loaded once", ORANGE_L, ORANGE),
+             ("K tile", "64 keys × 64 dims", "replaced every step", AQUA_L, AQUA),
+             ("V tile", "64 keys × 64 dims", "replaced every step", AQUA_L, AQUA)]
+    for i, (name, dims, when, fill, edge) in enumerate(tiles):
+        y = 104 + i * (ts + 22)
+        b.append(rect(X, y, ts, ts, fill, edge, 1.5))
+        if i == 0:
+            for wv in range(1, 4):
+                b.append(line(X, y + wv * ts / 4, X + ts, y + wv * ts / 4, edge, 1, "3 2"))
+        b.append(text(X + ts + 12, y + 26, name, 12.5, INK, weight="600"))
+        b.append(text(X + ts + 12, y + 44, dims, 11.5, INK2))
+        b.append(text(X + ts + 12, y + 60, when, 11.5, MUTED))
+    b.append(text(X, 104 + 3 * (ts + 22) + 8, "Q's dashed lines: the 4 warps' 16-row strips.", 11.5, INK2))
+
+    # 3. registers: warp 0's share of one step, S = Q K^T then O += P V
+    X3, ms = 660, 72
+    b.append(text(X3, 64, "3. What each step computes (warp 0 shown)", 13.5, weight="600"))
+    b.append(text(X3, 82, "warp 0 owns rows 0–15; results stay in its registers", 11.5, INK2))
+    xs = [X3 + 10, X3 + 136, X3 + 262]
+
+    def mat(x, y, name, sub, fill, edge, strip):
+        b.append(text(x + ms / 2, y - 8, name, 12, INK, "middle", "600"))
+        if strip:
+            b.append(rect(x, y, ms, ms, GREY_L, GRID, 1))
+            for wv in range(1, 4):
+                b.append(line(x, y + wv * ms / 4, x + ms, y + wv * ms / 4, GRID, 1, "3 2"))
+            b.append(rect(x, y, ms, ms / 4, fill, edge, 1.5))
+        else:
+            b.append(rect(x, y, ms, ms, fill, edge, 1.5))
+        for i, part in enumerate(sub.split("|")):
+            b.append(text(x + ms / 2, y + ms + 15 + 13 * i, part, 10.5, INK2, "middle"))
+
+    def ops(y, o1, o2):
+        b.append(text(xs[0] + ms + 27, y + ms / 2 + 6, o1, 18, INK2, "middle"))
+        b.append(text(xs[1] + ms + 27, y + ms / 2 + 6, o2, 18, INK2, "middle"))
+
+    r1 = 122
+    mat(xs[0], r1, "Q tile", "rows 0–15|× 64 dims", ORANGE_L, ORANGE, True)
+    mat(xs[1], r1, "Kᵀ (K tile, turned)", "64 dims|× all 64 keys", AQUA_L, AQUA, False)
+    mat(xs[2], r1, "S = Q Kᵀ", "rows 0–15|× 64 keys", BLUE_L, BLUE, True)
+    ops(r1, "×", "=")
+
+    # S -> P: softmax along each row
+    r2 = 300
+    sx, px, yl = xs[2] + ms / 2, xs[0] + ms / 2, r1 + ms + 46
+    b.append(f'<path d="M{sx},{r1 + ms + 34} L{sx},{yl} L{px},{yl} L{px},{r2 - 24}" fill="none" '
+             f'stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah7)"/>')
+    b.append(rect((sx + px) / 2 - 92, yl - 10, 184, 20, SURF))
+    b.append(text((sx + px) / 2, yl + 4, "P = softmax(S), along each row", 11.5, INK, "middle", "600"))
+
+    mat(xs[0], r2, "P", "rows 0–15|× 64 keys", BLUE_L, BLUE, True)
+    mat(xs[1], r2, "V tile", "all 64 keys|× 64 dims", AQUA_L, AQUA, False)
+    mat(xs[2], r2, "O", "rows 0–15|× 64 dims", ORANGE_L, ORANGE, True)
+    ops(r2, "×", "+=")
+
+    notes = ["Each score in S says how well a query row matches a key.",
+             "Softmax turns a row of scores into weights; O adds up",
+             "the V rows with those weights. The other 3 warps do the",
+             "same for their 16 rows at the same time, reading the",
+             "same K and V tiles. O builds up over all 64 steps.",
+             "The division by each row's sum happens once, at the end."]
+    for i, t in enumerate(notes):
+        b.append(text(X3, r2 + ms + 60 + 16 * i, t, 11.5, INK2))
+
+    yb = top + h + 154
+    b.append(text(20, yb, "\"64 query rows × 64 keys\" is the tile size: each block owns 64 rows of Q, and each step brings in 64 rows of K and V. "
+                  "D = 64 makes every tile 64 × 64.", 12.5, INK2))
+    return svg(1060, yb + 18, b)
+
+
+def cp_async():
+    """What cp.async does, in three parts: one copy (global -> shared, no registers), groups (start K and V
+    together, wait only for K with commit_group / wait_group(n)), and the barrier that shares the tile."""
+    b = []
+    G, GREY_L, PAUSE = "#fdf3d8", "#f6f6f4", "#e4e3df"
+    STEP = ["", ORANGE, BLUE, AQUA]
+    b.append(f'<defs><marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "cp.async: how one thread loads its part of the K and V tiles", 16, weight="600"))
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.5" marker-end="url(#ah8)"/>')
+
+    def badge(x, y, n):
+        b.append(f'<circle cx="{x}" cy="{y}" r="11" fill="{STEP[n]}"/>')
+        b.append(text(x, y + 4.5, str(n), 12.5, SURF, "middle", "700"))
+
+    def heading(y, n, s, subs):
+        badge(31, y - 5, n)
+        b.append(text(50, y, s, 14, weight="600"))
+        for i, sub in enumerate(subs):
+            b.append(text(50, y + 19 + 16 * i, sub, 12, INK2))
+
+    def box(x, y, w, label, fill, edge=GRID, ink=INK, dash=False, h=30, size=12, family=None):
+        d = ' stroke-dasharray="4 3"' if dash else ""
+        b.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{fill}" stroke="{edge}" stroke-width="1"{d} rx="6"/>')
+        b.append(text(x + w / 2, y + h / 2 + 4.5, label, size, ink, "middle", family=family))
+
+    # 0. the order in the code; the badge under each instruction says which part explains it
+    y = 58
+    b.append(text(20, y, "The order in the code. The number under each step is the part of this figure that explains it.", 12.5, INK2))
+    items = [("cp.async × 4 (K)", 1), ("commit_group", 2), ("cp.async × 4 (V)", 1), ("commit_group", 2),
+             ("wait_group(1)", 2), ("barrier", 3), ("S = Q Kᵀ", 0)]
+    bw, gap, x0 = 114, 13, 22
+    for i, (s, n) in enumerate(items):
+        x = x0 + i * (bw + gap)
+        box(x, y + 14, bw, s, BLUE_L if n == 0 else GREY_L, BLUE if n == 0 else GRID, size=10.5,
+            family=MONO if s.startswith(("cp.", "commit", "wait")) else None)
+        if i + 1 < len(items):
+            arrow(x + bw + 2, y + 29, x + bw + gap - 2, y + 29)
+        if n:
+            badge(x + bw / 2, y + 62, n)
+        else:
+            b.append(text(x + bw / 2, y + 66, "uses K", 11, BLUE, "middle", "600"))
+
+    # 1. one copy's path
+    y = 162
+    heading(y, 1, "One copy: cp.async goes straight to shared memory",
+            ["The K tile is 8,192 bytes = 512 pieces of 16 bytes. Each of the block's 128 threads copies 4 pieces of K,",
+             "and 4 of V, with one cp.async per piece."])
+    bx = [190, 350, 510]
+    for row, (name, skip, note1, note2) in enumerate([
+            ("Normal copy", False, "The thread waits for the data,", "then stores it. No maths meanwhile."),
+            ("cp.async", True, "The thread only starts the copy", "and moves on at once.")]):
+        yy = y + 52 + row * 48
+        b.append(text(50, yy + 20, name, 12.5, INK, weight="600"))
+        box(bx[0], yy, 120, "global memory", G)
+        box(bx[1], yy, 120, "registers", GREY_L if skip else BLUE_L, MUTED if skip else GRID, MUTED if skip else INK, skip)
+        box(bx[2], yy, 120, "shared memory", AQUA_L)
+        if skip:
+            b.append(f'<path d="M{bx[0] + 60},{yy + 31} C{bx[0] + 100},{yy + 54} {bx[2] + 20},{yy + 54} {bx[2] + 58},{yy + 34}" '
+                     f'fill="none" stroke="{AQUA}" stroke-width="2" marker-end="url(#ah8)"/>')
+            b.append(text(bx[1] + 60, yy + 62, "straight to shared memory", 11, AQUA, "middle", "600"))
+        else:
+            arrow(bx[0] + 122, yy + 15, bx[1] - 4, yy + 15)
+            arrow(bx[1] + 122, yy + 15, bx[2] - 4, yy + 15)
+        b.append(text(670, yy + 12, note1, 12, INK2))
+        b.append(text(670, yy + 28, note2, 12, INK2))
+
+    # 2. groups: start K and V together, wait only for K
+    y = 360
+    heading(y, 2, "Groups: start K, then V straight after, and wait only for K",
+            ["A thread starts its instructions one at a time, in order, but does not wait for one to finish before starting",
+             "the next. So it starts K's copies, then V's right after, and both move at the same time. commit_group puts the",
+             "copies started so far into one group. wait_group(n) pauses the thread until at most n of its groups are still moving."])
+    cx = [50, 320, 420, 540]
+    hy = y + 78
+    for x, h in zip(cx, ["What the thread does", "K group", "V group", "What happens"]):
+        b.append(text(x, hy, h, 11.5, MUTED, weight="600"))
+    # each row is one moment; the K and V columns say where that group's 4 copies are at that moment
+    rows = [
+        ("start 4 K copies, commit_group", "moving", "not started", False,
+         ["K's 4 copies become group 1.", "The thread does not wait."]),
+        ("start 4 V copies, commit_group", "moving", "moving", False,
+         ["V's 4 copies become group 2. Both groups", "now move at once; still no waiting."]),
+        ("wait_group(1)", "moving", "moving", True,
+         ["2 groups moving: it waits until only 1 is left.", "The THREAD pauses; K and V keep moving."]),
+        ("wakes up: wait_group(1) is done", "landed", "moving", False,
+         ["K lands, so only 1 group (V) is still moving.", "The thread goes on to the next instruction."]),
+        ("barrier, then S = Q Kᵀ", "calculating", "landed", False,
+         ["The barrier waits for threads, not copies, so V", "keeps moving, and lands while the thread uses K."]),
+        ("wait_group(0), barrier, then O += P V", "done", "calculating", False,
+         ["V has landed, so wait_group(0) lets it calculate", "with V. K is done; its space can take the next K."]),
+    ]
+    rh = 44
+    for i, (does, k_state, v_state, paused, note) in enumerate(rows):
+        ry = hy + 10 + i * rh
+        b.append(rect(32, ry, 856, rh - 4, "#f0efec" if paused else SURF, GRID, 1, 6))
+        if paused:
+            b.append(rect(32, ry, 6, rh - 4, INK2, rx=2))
+        b.append(text(cx[0], ry + 25, does, 12 if len(does) < 34 else 11, MUTED if does.startswith("(") else INK,
+                      family=MONO if does.startswith(("start", "wait")) else None))
+        for gx, st in ((cx[1], k_state), (cx[2], v_state)):
+            if st == "moving":
+                box(gx, ry + 7, 88, "moving", ORANGE, ORANGE, SURF, h=26, size=11)
+            elif st == "calculating":
+                box(gx, ry + 7, 88, "calculating", BLUE_L, BLUE, INK, h=26, size=11)
+            elif st == "done":
+                box(gx, ry + 7, 88, "done", GREY_L, MUTED, INK2, h=26, size=11)
+            elif st == "landed":
+                box(gx, ry + 7, 88, "landed ✓", SURF, AQUA, AQUA, h=26, size=11)
+            else:
+                box(gx, ry + 7, 88, "not started", SURF, GRID, MUTED, True, h=26, size=11)
+        for k, t in enumerate(note):
+            yk = ry + (25 if len(note) == 1 else 17 + 15 * k)
+            b.append(text(cx[3], yk, t, 11.5, INK if paused else INK2, weight="600" if paused and k == 1 else "normal"))
+    yy = hy + 10 + len(rows) * rh + 18
+    b.append(text(50, yy, "K and V are the same size, so each moves for 3 steps; V is one step behind because it was started one step later.",
+                  12, INK2))
+    yy += 22
+    b.append(text(50, yy, "n is how many of the newest groups may still be moving; every older group must be done. "
+                  "So wait_group(1) means \"K done,", 12, INK2))
+    b.append(text(50, yy + 16, "V may still be moving\". wait_group(0) would wait for every group. "
+                  "So the group the thread needs first must be the", 12, INK2))
+    b.append(text(50, yy + 32, "oldest one: that is why K is started first. The three timelines below compare the choices.",
+                  12, INK2))
+
+    # why two groups, and why K first: three small timelines
+    y2 = yy + 66
+    b.append(text(50, y2, "Why two groups, and why K first? Three ways to load K and V", 13, weight="600"))
+    u = 19
+
+    def timeline(x, y, title, call, mode, caption, best=False):
+        b.append(text(x, y, title, 12, BLUE if best else INK, weight="600"))
+        b.append(text(x, y + 16, call, 11, INK2, family=MONO))
+        ry = y + 30
+        b.append(text(x, ry + 17, "moving", 11, MUTED))
+        b.append(text(x, ry + 51, "thread", 11, MUTED))
+        tx = x + 52
+        # K and V are the same size, so each takes the same time (4 units); the one started second starts and
+        # lands 1.5 units later (it queues behind the first)
+        dur, lag = 4, 1.5
+        if mode == "one":
+            b.append(rect(tx, ry, (dur + lag) * u - 2, 26, ORANGE, rx=4))
+            b.append(text(tx + (dur + lag) / 2 * u, ry + 17.5, "K and V", 10.5, SURF, "middle"))
+            land = dur + lag
+        else:
+            first, second = ("K", "V") if mode == "kfirst" else ("V", "K")
+            land = dur if mode == "kfirst" else dur + lag
+            for row, g in enumerate((first, second)):
+                x0g = row * lag
+                b.append(rect(tx + x0g * u, ry + 14 * row, dur * u - 2, 12, ORANGE, rx=3))
+                end = x0g + dur
+                lx = (land + end) / 2 if x0g < land < end else x0g + dur / 2   # keep the label off the dashed line
+                b.append(text(tx + lx * u, ry + 14 * row + 10, g, 9.5, SURF, "middle", "600"))
+        b.append(rect(tx, ry + 34, land * u - 2, 26, PAUSE, rx=4))
+        b.append(text(tx + land * u / 2, ry + 51.5, "paused", 11, INK2, "middle"))
+        b.append(rect(tx + land * u, ry + 34, 4 * u - 2, 26, BLUE_L, rx=4))
+        b.append(text(tx + land * u + 2 * u, ry + 51.5, "S = Q Kᵀ", 10.5, INK, "middle"))
+        b.append(line(tx + land * u - 1, ry - 4, tx + land * u - 1, ry + 64, INK, 1.5, "4 3"))
+        for i, c in enumerate(caption):
+            b.append(text(x, ry + 84 + 16 * i, c, 11.5, INK2))
+
+    timeline(50, y2 + 26, "One group for K and V", "wait_group(0)", "one",
+             ["S = Q Kᵀ waits for V too,", "although it does not use V."])
+    timeline(340, y2 + 26, "V first, then K", "wait_group(0)", "vfirst",
+             ["Now K is the newest group, so it", "lands last, and the only way to wait", "for it is wait_group(0). No better",
+              "than one group."])
+    timeline(630, y2 + 26, "K first, then V (as above)", "wait_group(1)", "kfirst",
+             ["S = Q Kᵀ starts as soon as K", "has landed; V finishes while", "the thread computes."], best=True)
+    b.append(text(50, y2 + 230, "K and V are the same size (8 KB per tile), so their bars are the same length. "
+                  "The one started second lands a little later, because its", 11.5, INK2))
+    b.append(text(50, y2 + 246, "copies queue behind the first one's. That gap is the time the K-first order saves: "
+                  "small when memory is idle, larger when it is busy.", 11.5, INK2))
+
+    # 3. waiting for everyone's copies
+    y = y2 + 290
+    heading(y, 3, "Barrier: wait for every thread's copies",
+            ["wait_group only knows about this thread's own copies. The other 127 threads copied the rest of the tile."])
+    ty, tw, sh = y + 44, 150, 22
+    owners = ["thread 0", "thread 1", "thread 2", "thread 3"]
+
+    def tile(x, mine_only, title, cap1, cap2):
+        for i, who in enumerate(owners):
+            ok = (not mine_only) or i == 0
+            b.append(rect(x, ty + i * sh, tw, sh, AQUA_L if ok else GREY_L, AQUA if ok else GRID, 1))
+            b.append(text(x + tw / 2, ty + i * sh + 15, f"{who}'s K pieces" if ok else f"{who}'s K pieces: ready?",
+                          11, INK if ok else MUTED, "middle"))
+        b.append(text(x + tw / 2, ty + 4 * sh + 20, title, 12, INK, "middle", "600"))
+        b.append(text(x + tw / 2, ty + 4 * sh + 36, cap1, 11.5, INK2, "middle"))
+        b.append(text(x + tw / 2, ty + 4 * sh + 52, cap2, 11.5, INK2, "middle"))
+
+    tile(190, True, "After wait_group (thread 0's view)", "its own K pieces have landed;", "the others' may not have")
+    bx0 = 470
+    b.append(rect(bx0 - 4, ty - 8, 8, 4 * sh + 16, INK, rx=2))
+    arrow(190 + tw + 10, ty + 2 * sh, bx0 - 10, ty + 2 * sh)
+    arrow(bx0 + 10, ty + 2 * sh, 640 - 10, ty + 2 * sh)
+    b.append(text(bx0, ty + 4 * sh + 20, "barrier (sync_threads)", 12, INK, "middle", "600"))
+    b.append(text(bx0, ty + 4 * sh + 36, "every thread pauses here until", 11.5, INK2, "middle"))
+    b.append(text(bx0, ty + 4 * sh + 52, "all 128 threads have arrived", 11.5, INK2, "middle"))
+    tile(640, False, "After the barrier", "every thread can read", "the whole K tile")
+    b.append(text(50, ty + 4 * sh + 82, "4 threads shown. Every thread did its own wait_group before reaching the barrier, "
+                  "so all 512 pieces of K have landed.", 12, INK2))
+    return svg(920, ty + 4 * sh + 98, b)
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     (OUT / "mma_ownership.svg").write_text(mma_ownership())
@@ -638,4 +1160,9 @@ if __name__ == "__main__":
     (OUT / "tiled_copy.svg").write_text(tiled_copy())
     (OUT / "copy_atoms.svg").write_text(copy_atoms())
     (OUT / "memory_hierarchy.svg").write_text(memory_hierarchy())
+    (OUT / "block_grid.svg").write_text(block_grid())
+    (OUT / "warp_lanes.svg").write_text(warp_lanes())
+    (OUT / "ldmatrix_x4.svg").write_text(ldmatrix_x4())
+    (OUT / "qkv_tiles.svg").write_text(qkv_tiles())
+    (OUT / "cp_async.svg").write_text(cp_async())
     print("wrote", *sorted(p.name for p in OUT.glob("*.svg")))
