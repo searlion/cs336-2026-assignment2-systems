@@ -1,6 +1,6 @@
 # make_svgs.py
-# Writes the sixteen explanatory diagrams of the article as plain SVG (no external fonts):
-#   images/mma_ownership.svg   who holds which value of a 64 x 64 score tile
+# Writes the eighteen explanatory diagrams of the article as plain SVG (no external fonts):
+#   images/mma_ownership.svg   thread 0 through the partition code and the k loop, line by line
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
@@ -8,6 +8,7 @@
 #   images/tiled_mma.svg       what (16, 8, 16), (4, 1, 1) and permutation (64, 16, 16) each cover of S = Q K^T
 #   images/ldmatrix_pairs.svg  why permutation_mnk N = 16 halves the loads of K and V
 #   images/warp_shuffle.svg    a quad's row maximum through shared memory against two warp shuffles
+#   images/shuffle_args.svg    each argument of shuffle_sync_bfly, then both lines of quad_reduce traced on quad 0
 #   images/warp_split.svg      where row 0 of S lives under (4, 1, 1) and (2, 2, 1), and its maximum's cost
 #   images/tiled_copy.svg      the layout of a tiled copy: each make_layout line on a 64 x 64 tile of K
 #   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
@@ -50,55 +51,285 @@ def line(x1, y1, x2, y2, stroke=INK2, sw=1, dash=None):
 
 # ---------------------------------------------------------------------------------------------
 def mma_ownership():
-    # What thread 0 gets from each partition line of the code, checked on the GPU with the real
-    # tiled MMA: Q rows 0 and 8, K rows 0, 8, ..., 56, S rows 0 and 8; head dims / keys with c % 8 in {0, 1}.
-    px, n = 4, 64
-    side = px * n
-    xs, y0 = (40, 360, 680), 126
-    W = 1040
-    b = [text(20, 30, "What thread 0 gets from each line of the code", 16, weight="600")]
-    b.append(text(20, 52, "Blue: the values thread 0 works on. Every one of the 128 threads gets its own share "
-                          "the same way.", 12.5, INK2))
-    mine = lambda r, c, keys: (r % 8 == 0 if keys else r in (0, 8)) and c % 8 in (0, 1)
-    panels = [
-        ("sQ", "Q tile: 64 rows × 64 head dims", "tSsQ = partition_A(sQ)", "32 values: rows 0 and 8", False, True),
-        ("sK", "K tile: 64 keys × 64 head dims", "tSsK = partition_B(sK)", "128 values: keys 0, 8, 16, …, 56", True, True),
-        ("acc_S", "S tile: 64 rows × 64 keys", "acc_S = make_rmem_tensor(…)", "32 values: rows 0 and 8, in registers",
-         False, False),
-    ]
-    for x0, (name, cap, code, note, keys, kband) in zip(xs, panels):
-        b.append(text(x0, y0 - 48, name, 14, INK, weight="600", family=MONO))
-        b.append(text(x0, y0 - 30, cap, 12.5, INK2))
+    # Follows thread 0 through the partition code and the k loop, one section per code line.
+    # Checked on the GPU with CuTe DSL (thread 0, row-major 64 x 64 tiles):
+    #   tSsQ ((2,2,2),1,4):((1,512,8),0,16)   tSsK ((2,2),8,4):((1,8),512,16)   acc_S ((2,2),1,8)
+    # Lane layout of mma.m16n8k16 (PTX ISA), lane L = 4 * g + t:
+    #   Q (A): rows g, g + 8; dims 2t, 2t + 1, 2t + 8, 2t + 9     (4 registers of 2 bf16)
+    #   K (B): key g; dims 2t, 2t + 1, 2t + 8, 2t + 9              (2 registers of 2 bf16)
+    #   S (C): rows g, g + 8; keys 2t, 2t + 1                      (4 fp32 registers)
+    import textwrap
+    W, TX, TW = 1040, 640, 58
+    FAINT, PIECE = "#ecebe6", "#eaf1fb"
+    b = [text(20, 30, "Following thread 0 through the code", 17, weight="600"),
+         text(20, 52, "Blue: values thread 0 holds. Light blue: lanes 1–3, the other three threads of its "
+                      "quad. Every thread gets its own share the same way.", 12.5, INK2)]
+
+    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW, weight="normal"):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, ln, size, fill, weight=weight))
+            y += lh
+        return y + 8
+
+    def shape_table(y, name, shape, rows, total):
+        b.append(text(TX, y, f"{name} has shape {shape}:", 12.5, INK, weight="600"))
+        y += 22
+        for num, what in rows:
+            b.append(text(TX + 14, y, num, 13, BLUE if num != "4" or "across" not in what else ORANGE,
+                          "end", "700"))
+            b.append(text(TX + 26, y, what, 12.5, INK2))
+            y += 19
+        b.append(text(TX + 26, y, total, 12.5, INK, weight="600"))
+        return y + 28
+
+    def header(y, n, title, code):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        h = 21 * len(code) + 12
+        b.append(rect(20, y, W - 40, h, "#f6f6f4", GRID, rx=4))
+        for i, c in enumerate(code):
+            code_part, _, comment = c.partition("  #")
+            yy = y + 21 + 21 * i
+            ind = len(code_part) - len(code_part.lstrip(" "))
+            b.append(text(34 + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK, family=MONO))
+            if comment:
+                b.append(text(34 + 7.53 * (len(code_part) + 2), yy, "#" + comment, 12.5, MUTED, family=MONO))
+        return y + h + 34
+
+    def lane_cell(x, y, cs, lane, label=True):
+        fill = BLUE if lane == 0 else BLUE_L
+        b.append(rect(x + 1, y + 1, cs - 2, cs - 2, fill, rx=1.5))
+        if label:
+            b.append(text(x + cs / 2, y + cs - 3.5, str(lane), 9, SURF if lane == 0 else INK, "middle", "600"))
+
+    def blank(x, y, rows, cols, cs):
+        for r in range(rows):
+            for c in range(cols):
+                b.append(rect(x + c * cs + 1, y + r * cs + 1, cs - 2, cs - 2, FAINT, rx=1.5))
+
+    # ---- 1: the instruction ----------------------------------------------------------------
+    y = header(98, 1, "The instruction decides who holds what",
+               ["tiled_mma = cute.make_tiled_mma(warp.MmaF16BF16Op(…, (16, 8, 16)), (4, 1, 1), …)  # idea 2",
+                "thr_mma = tiled_mma.get_slice(tidx)  # the rule, for thread tidx (here 0)"])
+    cs = 12
+    qx, kx, sx, gy = 56, 286, 516, y + 34
+    b.append(text(qx, gy - 20, "Q piece: 16 rows × 16 dims", 12, INK, weight="600"))
+    b.append(text(kx, gy - 20, "K piece: 8 keys × 16 dims", 12, INK, weight="600"))
+    b.append(text(sx, gy - 20, "S piece: 16 × 8", 12, INK, weight="600"))
+    blank(qx, gy, 16, 16, cs)
+    blank(kx, gy, 8, 16, cs)
+    blank(sx, gy, 16, 8, cs)
+    for r in (0, 8):
+        for c in range(16):
+            lane_cell(qx + c * cs, gy + r * cs, cs, (c % 8) // 2)
+        for c in range(8):
+            lane_cell(sx + c * cs, gy + r * cs, cs, c // 2)
+        b.append(text(qx - 5, gy + r * cs + 10, f"row {r}", 9.5, INK2, "end"))
+        b.append(text(sx - 5, gy + r * cs + 10, str(r), 9.5, INK2, "end"))
+    for c in range(16):
+        lane_cell(kx + c * cs, gy, cs, (c % 8) // 2)
+    b.append(text(kx - 5, gy + 10, "key 0", 9.5, INK2, "end"))
+    # lane 0's registers: pairs of neighbours
+    for x0, rows in ((qx, (0, 8)), (kx, (0,))):
+        for r in rows:
+            for c0 in (0, 8):
+                b.append(rect(x0 + c0 * cs - 0.5, gy + r * cs - 0.5, 2 * cs + 1, cs + 1, "none", INK, 1.4, rx=2))
+    for x0, n in ((qx, 16), (kx, 16), (sx, 8)):
+        for c in (0, 1, 8, 9) if n == 16 else (0, 1):
+            b.append(text(x0 + c * cs + cs / 2, gy - 1, str(c), 8, MUTED, "middle"))
+    b.append(rect(qx, gy + 16 * cs + 12, 2 * cs, cs, "none", INK, 1.4, rx=2))
+    b.append(text(qx + 2 * cs + 8, gy + 16 * cs + 22, "outlined: one 32-bit register holds 2 bf16 values", 11, INK))
+    b.append(text(kx, gy + 8 * cs + 22, "per instruction, lane 0 holds:", 11.5, INK2))
+    for i, s in enumerate(("8 values of Q (4 registers)", "4 values of K (2 registers)", "4 values of S")):
+        b.append(text(kx, gy + 8 * cs + 42 + 17 * i, s, 12, INK, weight="600"))
+    pic_bottom = gy + 16 * cs + 40
+    ty = para(y, "Idea 2 picked one tensor-core instruction, (16, 8, 16). One warp multiplies a 16 × 16 piece "
+                 "of Q by a piece of K with 8 keys, and gets a 16 × 8 piece of S.")
+    ty = para(ty, "The instruction also fixes which lane (thread of the warp) holds which value. NVIDIA defines "
+                  "this as part of the instruction, and CuTe has the table built in. No line of our code writes "
+                  "it out: choosing the instruction is enough.")
+    ty = para(ty, "The cells show lane numbers for lanes 0–3. Lanes 4–31 hold the other rows and keys the "
+                  "same way.")
+    ty = para(ty, "Why pairs side by side? A register is 32 bits and a bf16 value is 16 bits, so the "
+                  "instruction takes Q and K two values at a time: neighbours along the head dims.")
+    ty = para(ty, "get_slice(0) picks lane 0 of warp 0. (4, 1, 1) gave warp 0 rows 0–15 of the tile.")
+    y = max(pic_bottom, ty) + 46
+
+    # ---- 2, 3, 4: the partitions ---------------------------------------------------------------
+    px, side = 4, 256
+
+    def tile(x0, y0, name, cap, row_step, col_step, owner, light=None, warp_rows=False):
+        b.append(text(x0, y0 - 30, name, 12.5, INK, weight="600", family=MONO))
+        b.append(text(x0 + 8 * len(name) + 10, y0 - 30, cap, 12, INK2))
         b.append(rect(x0, y0, side, side, "#f6f6f4", GRID))
-        if kband:   # the four 16-wide bands the loop walks through, one per step k
-            for kk in range(4):
-                if kk:
-                    b.append(line(x0 + kk * 16 * px, y0 - 4, x0 + kk * 16 * px, y0 + side, MUTED, 1, "3 3"))
-                b.append(text(x0 + (kk + 0.5) * 16 * px, y0 - 9, f"k = {kk}", 11, MUTED, "middle"))
-        for r in range(n):
-            for c in range(n):
-                if mine(r, c, keys):
+        if warp_rows:
+            b.append(rect(x0, y0, side, 16 * px, PIECE))
+            for w in range(4):
+                b.append(text(x0 + side + 8, y0 + (16 * w + 9) * px, f"warp {w}", 10.5,
+                              INK if w == 0 else MUTED, weight="600" if w == 0 else "normal"))
+        # piece boundaries
+        rows_to = 16 if warp_rows else 64
+        for c in range(col_step, 64, col_step):
+            b.append(line(x0 + c * px, y0, x0 + c * px, y0 + rows_to * px, INK2, 0.8, "3 2"))
+        for r in range(row_step, rows_to + (1 if warp_rows else 0), row_step):
+            b.append(line(x0, y0 + r * px, x0 + side, y0 + r * px, INK2, 0.8, "3 2"))
+        for r in range(64):
+            for c in range(64):
+                if owner(r, c):
                     b.append(rect(x0 + c * px, y0 + r * px, px, px, BLUE))
-                elif name == "acc_S" and r in (0, 8):
+                elif light and light(r, c):
                     b.append(rect(x0 + c * px, y0 + r * px, px, px, BLUE_L))
-        b.append(text(x0, y0 + side + 24, code, 12.5, INK, family=MONO))
-        b.append(text(x0, y0 + side + 43, note, 12.5, INK2))
-    # S panel: say who holds the light blue
-    sx = xs[2]
-    b.append(line(sx + side + 4, y0 + 2, sx + side + 14, y0 + 2, MUTED))
-    b.append(line(sx + side + 4, y0 + 8 * px + 2, sx + side + 14, y0 + 8 * px + 2, MUTED))
-    b.append(line(sx + side + 14, y0 + 2, sx + side + 14, y0 + 8 * px + 2, MUTED))
-    b.append(text(sx + side + 18, y0 + 4 * px + 2, "light: lanes 1–3", 11, INK2))
-    b.append(text(sx + side + 18, y0 + 4 * px + 16, "(same quad)", 11, INK2))
-    # bottom: the fragments and the loop
-    by = y0 + side + 82
-    b.append(line(20, by - 20, W - 20, by - 20, GRID))
-    b.append(text(20, by, "make_fragment_A/B", 12.5, INK, family=MONO))
-    b.append(text(200, by, "allocate registers for the blue values of Q and K: 32 and 128 values.", 12.5, INK2))
-    b.append(text(20, by + 22, "loop step k", 12.5, INK, family=MONO))
-    b.append(text(200, by + 22, "[None, None, k] picks band k: copy those Q and K values into registers, "
-                                "then gemm adds Q·Kᵀ into acc_S.", 12.5, INK2))
-    return svg(W, by + 40, b)
+
+    def band_labels(x0, y0, step=16, label="k"):
+        for kk in range(64 // step):
+            b.append(text(x0 + (kk + 0.5) * step * px, y0 - 8, f"{label} = {kk}" if step == 16 else str(kk),
+                          10.5, ORANGE, "middle"))
+
+    # 2: Q
+    y = header(y, 2, "My values of Q", ["tSsQ = thr_mma.partition_A(sQ)  # sQ: the 64 x 64 Q tile in shared memory"])
+    gy = y + 40
+    tile(56, gy, "sQ", "64 rows × 64 head dims", 16, 16, lambda r, c: r in (0, 8) and c % 8 in (0, 1),
+         warp_rows=True)
+    band_labels(56, gy)
+    b.append(text(56, gy + side + 22, "dashed: the 4 Q pieces of warp 0, one per k", 11, INK2))
+    ty = para(y, "partition_A lays the 16 × 16 Q piece from step 1 over the whole 64 × 64 tile. Warp 0's "
+                 "rows 0–15 are 1 piece tall and 4 pieces across the 64 head dims. In each piece thread 0 gets "
+                 "the same 8 spots as in step 1.")
+    ty = shape_table(ty, "tSsQ", "(8, 1, 4)", [("8", "values per piece (step 1)"),
+                                               ("1", "piece down: warp 0's 16 rows"),
+                                               ("4", "pieces across: 64 head dims ÷ 16")],
+                     "8 × 1 × 4 = 32 values")
+    ty = para(ty, "tSsQ copies nothing. It only records where thread 0's 32 values sit in shared memory, "
+                  "grouped by piece.")
+    ty = para(ty, "CuTe prints the shape as ((2, 2, 2), 1, 4). The (2, 2, 2) is the same 8, split by "
+                  "direction: the pair, row 0 or row 8, dims +0 or +8.", 11.5, MUTED, 17)
+    y = max(gy + side + 30, ty) + 46
+
+    # 3: K
+    y = header(y, 3, "My values of K", ["tSsK = thr_mma.partition_B(sK)"])
+    gy = y + 40
+    tile(56, gy, "sK", "64 keys × 64 head dims", 8, 16, lambda r, c: r % 8 == 0 and c % 8 in (0, 1))
+    band_labels(56, gy)
+    for n in range(8):
+        b.append(text(56 + side + 8, gy + (8 * n + 5) * px, f"keys {8 * n}–{8 * n + 7}", 10.5, MUTED))
+    b.append(text(56, gy + side + 22, "dashed: 8 K pieces down × 4 across", 11, INK2))
+    ty = para(y, "A K piece is 8 keys × 16 head dims. Covering the 64 keys takes 8 pieces down, and the "
+                 "64 head dims 4 across. In each piece thread 0 gets the same 4 spots as in step 1: "
+                 "the piece's first key, dims +0, +1, +8, +9.")
+    ty = shape_table(ty, "tSsK", "(4, 8, 4)", [("4", "values per piece (step 1)"),
+                                               ("8", "pieces down: 64 keys ÷ 8"),
+                                               ("4", "pieces across: 64 head dims ÷ 16")],
+                     "4 × 8 × 4 = 128 values")
+    ty = para(ty, "Why more than Q? Each warp scores its own rows against all 64 keys, so K is not divided "
+                  "between warps. Lane 0 of every warp (threads 0, 32, 64, 96) holds these same 128.")
+    ty = para(ty, "Printed as ((2, 2), 8, 4): the 4 split into the pair and dims +0 or +8.", 11.5, MUTED, 17)
+    y = max(gy + side + 30, ty) + 46
+
+    # 4: registers
+    y = header(y, 4, "Registers to hold them, and my part of S",
+               ["tSrQ = thr_mma.make_fragment_A(tSsQ)  # same shape as tSsQ: (8, 1, 4)",
+                "tSrK = thr_mma.make_fragment_B(tSsK)  # same shape as tSsK: (4, 8, 4)",
+                "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), cutlass.Float32)"])
+    gy = y + 40
+    tile(56, gy, "acc_S", "64 rows × 64 keys, in registers", 16, 8,
+         lambda r, c: r in (0, 8) and c % 8 in (0, 1), lambda r, c: r in (0, 8), warp_rows=True)
+    for n in range(8):
+        b.append(text(56 + (8 * n + 4) * px, gy - 8, str(n), 10.5, MUTED, "middle"))
+    b.append(text(56, gy + side + 22, "dashed: warp 0's 8 S pieces, one per K piece", 11, INK2))
+    ty = para(y, "make_fragment_A and make_fragment_B set aside thread 0's registers for those values, "
+                 "with the same shapes. Nothing is copied yet; the loop does that.")
+    ty = para(y if False else ty, "acc_S is thread 0's part of the 64 × 64 score tile S, in registers, "
+                                  "laid out by S pieces the same way:")
+    ty = shape_table(ty, "acc_S", "(4, 1, 8)", [("4", "values per S piece (step 1)"),
+                                                ("1", "piece down: warp 0's 16 rows"),
+                                                ("8", "pieces across: 64 keys ÷ 8")],
+                     "4 × 1 × 8 = 32 values, set to 0 per key block")
+    ty = para(ty, "Light blue: lanes 1–3 hold the rest of rows 0 and 8. A row of S is spread over these 4 "
+                  "threads, which the softmax will have to combine.")
+    y = max(gy + side + 30, ty) + 46
+
+    # ---- 5: the loop -------------------------------------------------------------------------
+    y = header(y, 5, "The loop: one band of 16 head dims per step",
+               ["for k in range(4):  # 4 = the last number of both shapes",
+                "    cute.autovec_copy(tSsQ[None, None, k], tSrQ[None, None, k])  # ① Q: shared -> registers",
+                "    cute.autovec_copy(tSsK[None, None, k], tSrK[None, None, k])  # ② K: shared -> registers",
+                "    cute.gemm(tiled_mma, acc_S, tSrQ[None, None, k], tSrK[None, None, k], acc_S)  # ③"])
+    cs = 8
+    cw = 4 * cs   # one K chip: 4 values
+    x0, gy = 56, y + 40
+
+    def chip(x, yy, rows, cols, on):
+        for r in range(rows):
+            for c in range(cols):
+                b.append(rect(x + c * cs + 0.5, yy + r * cs + 0.5, cs - 1, cs - 1, BLUE if on else BLUE_L))
+
+    # tSsQ as 4 chips of 8, tSsK as 8 x 4 chips of 4; k = 1 picked
+    b.append(text(x0, gy - 12, "tSsQ  (8, 1, 4)", 12, INK, weight="600", family=MONO))
+    for kk in range(4):
+        cx = x0 + kk * (cw + 12)
+        chip(cx, gy, 2, 4, kk == 1)
+        b.append(text(cx + cw / 2, gy + 2 * cs + 13, f"k={kk}", 9.5, ORANGE if kk == 1 else MUTED, "middle"))
+    b.append(rect(x0 + (cw + 12) - 3, gy - 3, cw + 6, 2 * cs + 6, "none", ORANGE, 1.6, rx=2))
+    ky = gy + 64
+    b.append(text(x0, ky - 12, "tSsK  (4, 8, 4)", 12, INK, weight="600", family=MONO))
+    for n in range(8):
+        for kk in range(4):
+            chip(x0 + kk * (cw + 12), ky + n * (cs + 6), 1, 4, kk == 1)
+    for kk in range(4):
+        b.append(text(x0 + kk * (cw + 12) + cw / 2, ky + 8 * (cs + 6) + 9, f"k={kk}", 9.5,
+                      ORANGE if kk == 1 else MUTED, "middle"))
+    b.append(rect(x0 + (cw + 12) - 3, ky - 3, cw + 6, 8 * (cs + 6) - 6 + 6, "none", ORANGE, 1.6, rx=2))
+    b.append(text(x0, ky + 8 * (cs + 6) + 30, "orange: [None, None, 1]", 11.5, ORANGE, weight="600"))
+    b.append(text(x0, ky + 8 * (cs + 6) + 47, "Q: all 8 × 1 = 8 values", 11.5, INK2))
+    b.append(text(x0, ky + 8 * (cs + 6) + 63, "K: all 4 × 8 = 32 values", 11.5, INK2))
+
+    # gemm at k = 1: 8 instructions, one per K piece
+    gx = 270
+    b.append(text(gx, gy - 12, "③ gemm at k = 1: 8 instructions", 12, INK, weight="600"))
+    b.append(text(gx, gy + 10, "Q chip (same for all 8)", 10.5, MUTED))
+    chip(gx + 140, gy, 2, 4, True)
+    for n in range(8):
+        yy = ky + n * (cs + 6)
+        chip(gx, yy, 1, 4, True)
+        b.append(text(gx + cw + 6, yy + 7.5, f"→ mma {n} →", 10, INK2))
+        sxp = gx + cw + 76
+        for r in range(2):
+            for c in range(2):
+                b.append(rect(sxp + c * cs + 0.5, yy + r * 4 + 0.5, cs - 1, 3.5, BLUE))
+        b.append(text(sxp + 2 * cs + 6, yy + 7.5, f"S piece {n}", 10, INK2))
+    b.append(text(gx, ky - 12 + 0, "K piece n (4)", 10.5, MUTED))
+    b.append(text(gx + cw + 76, ky - 12, "adds into 4 of acc_S", 10.5, MUTED))
+    # accumulation over steps
+    ay = ky + 8 * (cs + 6) + 26
+    b.append(text(gx, ay, "S[0, 0] after each step sums head dims:", 11.5, INK, weight="600"))
+    for kk in range(4):
+        yy = ay + 12 + 16 * kk
+        b.append(text(gx, yy + 9, f"k={kk}", 10, INK2))
+        for d in range(4):
+            fill = ORANGE if d == kk else ORANGE_L if d < kk else "#f6f6f4"
+            b.append(rect(gx + 30 + d * 44, yy, 44, 10, fill, GRID, 0.5))
+        b.append(text(gx + 30 + 4 * 44 + 6, yy + 9, f"0–{16 * kk + 15}", 10, INK2))
+    pic_bottom = ay + 12 + 16 * 4 + 10
+
+    ty = para(y, "for k in range(4): the 4 is the last number of both shapes, the pieces across the head "
+                 "dims. Step k covers head dims 16k to 16k + 15.")
+    ty = para(ty, "[None, None, k] gives one entry per number of the shape. None means “all of these”, "
+                  "like : in NumPy, and k picks one. So it takes everything of piece-column k: 8 × 1 = 8 "
+                  "values of Q, 4 × 8 = 32 of K.")
+    ty = para(ty, "① ② autovec_copy copies those values from shared memory into the same places in tSrQ and "
+                  "tSrK.")
+    ty = para(ty, "③ gemm runs 8 instructions, one per K piece n. Each takes thread 0's 8 Q values and the "
+                  "4 values of K piece n, and adds into the 4 values of S piece n. 8 × 4 = all 32 of acc_S.")
+    ty = para(ty, "Each instruction runs on the whole warp at once. S[0, 0] needs 16 products per step and "
+                  "thread 0 holds only 4 of them; lanes 1–3 supply the rest (step 1). No thread computes a "
+                  "score alone.")
+    ty = para(ty, "acc_S is both input and output, so each step adds its 16 head dims. After k = 3 every "
+                  "score sums all 64.")
+    y = max(pic_bottom, ty) + 20
+    return svg(W, y, b)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -563,6 +794,176 @@ def warp_shuffle():
     b.append(text(x, ry + 58, "Per lane: 2 shuffles, 2 max.", 12.5, INK, weight="600"))
     b.append(text(x, ry + 76, "No shared memory, no separate wait: every lane ends with 7.", 12, INK2))
     return svg(980, ry + 92, b)
+
+
+def shuffle_args():
+    """One line of quad_reduce taken apart argument by argument, then both lines traced on quad 0.
+    Semantics from the PTX ISA (shfl.sync): partner j = lane ^ b; c[4:0] = clamp, c[12:8] = segment mask;
+    maxLane = (lane & segmask) | (clamp & ~segmask); if j > maxLane the lane reads its own value."""
+    import textwrap
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(f'<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
+             f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{BLUE}"/></marker></defs>')
+    b.append(text(20, 30, "One shuffle, argument by argument", 16, weight="600"))
+
+    def badge(x, y, n, r=9):
+        b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{BLUE}"/>')
+        b.append(text(x, y + 4, str(n), 11, SURF, "middle", "700"))
+
+    # the code line, each argument boxed and numbered (textLength pins the monospace width)
+    fs, cw, cy = 15, 9.0, 86
+    segs = [("v = ", 0), ("op(v, ", 1), ("cute.arch.", 0), ("shuffle_sync_bfly", 2), ("(", 0), ("v", 3),
+            (", ", 0), ("offset=2", 4), (", ", 0), ("mask=-1", 5), (", ", 0), ("mask_and_clamp=31", 6), ("))", 0)]
+    x = 490 - cw * sum(len(s) for s, _ in segs) / 2
+    b.append(rect(x - 14, cy - 44, cw * sum(len(s) for s, _ in segs) + 28, 62, GREY_L, GRID, 1, 6))
+    for s, n in segs:
+        wpx = cw * len(s)
+        if n:
+            hl = wpx - (cw if n == 1 else 0)            # box "op(v" without the ", "
+            b.append(rect(x - 2, cy - 15, hl + 4, 21, BLUE_L, BLUE, 1, 3))
+            badge(x + hl / 2, cy - 27, n)
+        b.append(f'<text x="{x}" y="{cy}" font-size="{fs}" fill="{INK}" font-family="{MONO}" xml:space="preserve" '
+                 f'textLength="{wpx}" lengthAdjust="spacingAndGlyphs">{s}</text>')
+        x += wpx
+
+    # one card per argument
+    CW, CH, X0, X1, Y0 = 460, 184, 20, 500, 126
+
+    def card(col, row, n, name, body, draw=None):
+        x, y = (X0, X1)[col], Y0 + row * (CH + 14)
+        b.append(rect(x, y, CW, CH, SURF, GRID, 1, 6))
+        badge(x + 20, y + 22, n)
+        b.append(text(x + 38, y + 27, name, 13.5, INK, weight="600", family=MONO))
+        ty = y + 50
+        for para in body:
+            for ln in textwrap.wrap(para, 70):
+                b.append(text(x + 16, ty, ln, 11.5, INK2))
+                ty += 16
+            ty += 4
+        if draw:
+            draw(x + 16, ty + 4)
+
+    def lane_row(x, y, n, partner=None, cw_=40, quads=False):
+        for i in range(n):
+            b.append(rect(x + i * cw_, y, cw_ - 4, 20, BLUE_L if (i < 4) else GREY_L, GRID, 1, 3))
+            b.append(text(x + i * cw_ + (cw_ - 4) / 2, y + 14, str(i), 10.5, INK2, "middle"))
+        if partner:
+            for i in range(n):
+                j = partner(i)
+                if j > i:
+                    x1, x2 = x + i * cw_ + (cw_ - 4) / 2, x + j * cw_ + (cw_ - 4) / 2
+                    h = 14 + 12 * (i % 2)               # 1-3 arcs above 0-2, so the arrows stay apart
+                    b.append(f'<path d="M{x1},{y - 2} C{x1},{y - h} {x2},{y - h} {x2},{y - 2}" fill="none" '
+                             f'stroke="{BLUE}" stroke-width="1.3" marker-start="url(#ah7)" marker-end="url(#ah7)"/>')
+
+    def draw_op(x, y):
+        b.append(text(x, y + 14, "lane 0:", 11.5, MUTED))
+        b.append(text(x + 60, y + 14, "fmax(3, 2) = 3", 12.5, INK, family=MONO))
+        b.append(text(x + 190, y + 14, "my v, then my partner's", 11.5, MUTED))
+
+    def draw_bfly(x, y):
+        b.append(text(x, y + 14, "partner =", 11.5, MUTED))
+        modes = [("bfly", "lane ^ offset", True), ("idx", "offset", False),
+                 ("up", "lane − offset", False), ("down", "lane + offset", False)]
+        for i, (m, f, on) in enumerate(modes):
+            xx = x + 64 + i * 88
+            b.append(rect(xx, y, 82, 36, BLUE_L if on else GREY_L, BLUE if on else GRID, 1, 4))
+            b.append(text(xx + 41, y + 15, m, 11, INK if on else INK2, "middle", "600", MONO))
+            b.append(text(xx + 41, y + 29, f, 10, INK2, "middle"))
+
+    def draw_v(x, y):
+        b.append(text(x, y + 14, "sends", 11.5, MUTED))
+        b.append(rect(x + 44, y, 40, 20, BLUE_L, BLUE, 1, 3))
+        b.append(text(x + 64, y + 14, "v", 12, INK, "middle", family=MONO))
+        b.append(f'<line x1="{x + 92}" y1="{y + 10}" x2="{x + 150}" y2="{y + 10}" stroke="{BLUE}" stroke-width="1.3" '
+                 f'marker-start="url(#ah7)" marker-end="url(#ah7)"/>')
+        b.append(text(x + 121, y + 32, "one instruction", 10, MUTED, "middle"))
+        b.append(rect(x + 158, y, 120, 20, GREY_L, GRID, 1, 3))
+        b.append(text(x + 218, y + 14, "partner's v", 11.5, INK2, "middle"))
+        b.append(text(x + 290, y + 14, "returned", 11.5, MUTED))
+
+    def draw_offset(x, y):
+        b.append(text(x, y + 40, "offset=2", 11, INK2, family=MONO))
+        lane_row(x + 70, y + 26, 8, lambda i: i ^ 2, 44)
+        b.append(text(x, y + 60, "1 = 0b01 ^ 0b10 = 0b11 = 3. Lanes 4–7 pair up the same way.", 11, MUTED))
+
+    def draw_mask(x, y):
+        for i in range(32):
+            xx = x + i * 12 + (i // 4) * 4
+            b.append(rect(xx, y, 10, 16, BLUE, "none", 0, 2))
+        b.append(text(x, y + 32, "bit:  0 … 31, one per lane, all 1 (lanes 0–3 = quad 0, …, 28–31 = quad 7)", 10.5, MUTED))
+
+    def draw_clamp(x, y):
+        bits = "0000000011111"                       # bits 12 .. 0 of 31
+        for i, c in enumerate(bits):
+            bit = 12 - i
+            xx = x + i * 30
+            seg, clamp = 8 <= bit <= 12, bit <= 4
+            b.append(rect(xx, y, 26, 22, BLUE_L if clamp else (GREY_L if seg else SURF), GRID, 1, 2))
+            b.append(text(xx + 13, y + 15, c, 12, INK if clamp else INK2, "middle", family=MONO))
+            b.append(text(xx + 13, y - 4, str(bit), 9, MUTED, "middle"))
+        b.append(line(x, y + 28, x + 5 * 30 - 4, y + 28, INK2))
+        b.append(text(x + 73, y + 42, "segment mask = 0", 10.5, INK2, "middle"))
+        b.append(line(x + 8 * 30, y + 28, x + 13 * 30 - 4, y + 28, BLUE))
+        b.append(text(x + 313, y + 42, "clamp = 31", 10.5, BLUE, "middle"))
+
+    card(0, 0, 1, "op(v, …)", [
+        "Combines my own value (this first v) with the one my partner sent, and stores the result back in v. "
+        "The kernel passes cute.arch.fmax for the row maximum and + for the row sum."], draw_op)
+    card(1, 0, 2, "shuffle_sync_bfly", [
+        "The PTX instruction shfl.sync in bfly (butterfly) mode. The mode decides whose register each lane reads. "
+        "In butterfly mode lanes swap in pairs; the name comes from the crossed pairs of the FFT's butterfly diagram."], draw_bfly)
+    card(0, 1, 3, "v", [
+        "The value this lane sends, a Float32 in a register: here the maximum of its own 16 scores of the row. Every lane sends "
+        "its v and gets its partner's back, all in one instruction, without touching memory."], draw_v)
+    card(1, 1, 4, "offset=2", [
+        "In butterfly mode the partner is lane ^ offset. 2 = 0b10 flips bit 1: 0↔2, 1↔3. The next line's offset=1 "
+        "flips bit 0: 0↔1, 2↔3. Bits 2–4 never change, so a partner is always in the same quad."], draw_offset)
+    card(0, 2, 5, "mask=-1", [
+        "Which lanes take part, one bit per lane. -1 is 0xFFFFFFFF: all 32. The .sync means each of them must reach "
+        "this instruction; the hardware waits for them. All 8 quads swap at once."], draw_mask)
+    card(1, 2, 6, "mask_and_clamp=31", [
+        "Two numbers packed in one integer. Bits 0–4, the clamp: the highest lane a partner may be; past it, a "
+        "lane gets its own v back. Bits 8–12, the segment mask: split the warp into groups (0: one group of 32). "
+        "lane ^ 2 never passes 31, so 31 means: the whole warp, no clamping."], draw_clamp)
+
+    # trace both lines of quad_reduce on quad 0
+    ty = Y0 + 3 * (CH + 14) + 16
+    b.append(text(20, ty, "Both lines of quad_reduce on quad 0, for the maximum of row 0", 13.5, weight="600"))
+    b.append(text(20, ty + 18, "Each lane starts with the maximum of its own 16 scores. Quads 1–7 do the same "
+                  "at the same time, on rows 1–7.", 11.5, INK2))
+    cols = ["", "lane 0", "lane 1", "lane 2", "lane 3"]
+    rows = [("", "v (own maximum)", [3, 7, 2, 5], False),
+            ("offset=2", "partner = lane ^ 2", [2, 3, 0, 1], False),
+            ("", "received", [2, 5, 3, 7], False),
+            ("", "v = fmax(v, received)", [3, 7, 3, 7], True),
+            ("offset=1", "partner = lane ^ 1", [1, 0, 3, 2], False),
+            ("", "received", [7, 3, 7, 3], False),
+            ("", "v = fmax(v, received)", [7, 7, 7, 7], True)]
+    gx, lw, colw, rh = 20, 250, 80, 24
+    y = ty + 44
+    for i, c in enumerate(cols[1:]):
+        b.append(text(gx + lw + i * colw + colw / 2, y, c, 11, MUTED, "middle"))
+    y += 8
+    for k, (step, lab, vals, res) in enumerate(rows):
+        if step:
+            b.append(line(gx, y, gx + lw + 4 * colw, y, GRID))
+            b.append(text(gx, y + 16, step, 11.5, BLUE, weight="600", family=MONO))
+        b.append(text(gx + 80, y + 16, lab, 11.5, INK if res else INK2, weight="600" if res else "normal"))
+        for i, v in enumerate(vals):
+            cx = gx + lw + i * colw + 6
+            b.append(rect(cx, y + 2, colw - 12, rh - 4, BLUE_L if res else GREY_L, BLUE if res else GRID, 1, 3))
+            b.append(text(cx + (colw - 12) / 2, y + 16, str(v), 12, INK, "middle"))
+        y += rh
+    nx = gx + lw + 4 * colw + 30
+    b.append(text(nx, ty + 70, "After line 1, lanes 0 and 2 hold max(lanes 0, 2),", 11.5, INK2))
+    b.append(text(nx, ty + 86, "and lanes 1 and 3 hold max(lanes 1, 3).", 11.5, INK2))
+    b.append(text(nx, ty + 142, "After line 2 every lane holds 7, the maximum", 11.5, INK2))
+    b.append(text(nx, ty + 158, "of the row: 2 shuffles for 4 lanes.", 11.5, INK2))
+    b.append(text(nx, ty + 190, "For the row sum, op is + and the same two", 11.5, INK2))
+    b.append(text(nx, ty + 206, "swaps leave every lane with 3 + 7 + 2 + 5.", 11.5, INK2))
+    return svg(980, y + 20, b)
 
 
 def warp_split():
@@ -1336,6 +1737,7 @@ if __name__ == "__main__":
     (OUT / "tiled_mma.svg").write_text(tiled_mma())
     (OUT / "ldmatrix_pairs.svg").write_text(ldmatrix_pairs())
     (OUT / "warp_shuffle.svg").write_text(warp_shuffle())
+    (OUT / "shuffle_args.svg").write_text(shuffle_args())
     (OUT / "warp_split.svg").write_text(warp_split())
     (OUT / "tiled_copy.svg").write_text(tiled_copy())
     (OUT / "copy_atoms.svg").write_text(copy_atoms())
