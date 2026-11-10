@@ -250,62 +250,91 @@ def gpu_hierarchy():
 
 def layouts():
     b = []
-    GREY_L = "#f6f6f4"
     cw, ch = 46, 28
+    C_A, C_B, C_C = "#2a78d6", "#c4501f", "#0f7f58"     # text colours: first row counter, second row counter, column
+    tsp = lambda s, c: f'<tspan fill="{c}" font-weight="700">{s}</tspan>'
 
-    def cell(x, y, s, fill=SURF, ink=INK, size=12):
-        b.append(rect(x, y, cw, ch, fill, GRID, 1))
-        b.append(text(x + cw / 2, y + 18, s, size, ink, "middle"))
+    def cell(x, y, s, fill=SURF, w=cw):
+        b.append(rect(x, y, w, ch, fill, GRID, 1))
+        b.append(text(x + w / 2, y + 18, s, 12, INK, "middle"))
 
-    def arrow(x1, y1, x2, y2, label, lx, ly, anchor="middle"):
-        b.append(line(x1, y1, x2, y2, INK2, 1.5))
-        if x1 == x2:
-            b.append(f'<path d="M{x2 - 5},{y2 - 6} L{x2},{y2} L{x2 + 5},{y2 - 6}" fill="none" stroke="{INK2}" stroke-width="1.5"/>')
-        else:
-            b.append(f'<path d="M{x2 - 6},{y2 - 5} L{x2},{y2} L{x2 - 6},{y2 + 5}" fill="none" stroke="{INK2}" stroke-width="1.5"/>')
-        b.append(text(lx, ly, label, 12, INK2, anchor))
+    def counters(x, y, rows):
+        # a small table: counter | values it takes | what one step adds to the offset
+        b.append(text(x, y, "counter", 11.5, MUTED))
+        b.append(text(x + 120, y, "counts", 11.5, MUTED))
+        b.append(text(x + 230, y, "each step adds", 11.5, MUTED))
+        b.append(line(x, y + 7, x + 340, y + 7, GRID))
+        for k, (name, color, vals, step) in enumerate(rows):
+            yy = y + 26 + 22 * k
+            b.append(text(x, yy, name, 12.5, color, weight="600"))
+            b.append(text(x + 120, yy, vals, 12.5, INK))
+            b.append(text(x + 230, yy, step, 12.5, color, weight="600", family=MONO))
 
-    # left: (64, 64):(64, 1), row-major; show rows 0-2 and 63, columns 0-3 and 63
-    x0, y0 = 70, 110
-    b.append(text(20, 30, "(64, 64):(64, 1)", 15, weight="600", family=MONO))
-    b.append(text(20, 50, "64 rows × 64 columns, row-major (corner shown)", 12.5, INK2))
-    b.append(text(20, 68, "offset = 64·r + 1·c", 12.5, INK, family=MONO))
+    b.append(text(20, 26, "Every number in a grid is an offset: where that element sits in memory, counting from 0.", 13, INK2))
+    b.append(text(20, 46, "Before the colon is the shape (how many of each); after it is the stride (how far one step moves). "
+                  "Read them in pairs, by position.", 13, INK2))
+
+    # ---- example 1: (64, 64):(64, 1), an ordinary row-major table
+    y = 92
+    b.append(text(20, y, "Example 1", 15, weight="600"))
+    b.append(text(110, y, f"({tsp(64, C_A)}, {tsp(64, C_C)}):({tsp(64, C_A)}, {tsp(1, C_C)})", 15, INK, family=MONO))
+    b.append(text(20, y + 22, "An ordinary 64 × 64 table, stored one row after another.", 12.5, INK2))
+    counters(20, y + 56, [("r  (row)", C_A, "0 to 63", "+64"), ("c  (column)", C_C, "0 to 63", "+1")])
+    b.append(text(20, y + 136, f"offset = {tsp('64', C_A)}·r + {tsp('1', C_C)}·c", 13, INK, family=MONO))
+
+    gx, gy = 520, y + 10
     cols, rows = [0, 1, 2, 3, None, 63], [0, 1, 2, None, 63]
     for j, c in enumerate(cols):
-        b.append(text(x0 + j * cw + cw / 2, y0 - 8, "…" if c is None else f"c={c}", 11.5, MUTED, "middle"))
+        b.append(text(gx + j * cw + cw / 2, gy - 8, "…" if c is None else f"c={c}", 11.5, C_C, "middle"))
     for i, r in enumerate(rows):
-        y = y0 + i * ch
-        b.append(text(x0 - 8, y + 18, "⋮" if r is None else f"r={r}", 11.5, MUTED, "end"))
+        yy = gy + i * ch
+        b.append(text(gx - 8, yy + 18, "⋮" if r is None else f"r={r}", 11.5, C_A, "end"))
         for j, c in enumerate(cols):
             if r is None or c is None:
-                b.append(text(x0 + j * cw + cw / 2, y + 18, "⋮" if r is None and c is not None else "…" if c is None and r is not None else "", 12, MUTED, "middle"))
+                s = "⋮" if r is None and c is not None else "…" if c is None and r is not None else ""
+                b.append(text(gx + j * cw + cw / 2, yy + 18, s, 12, MUTED, "middle"))
             else:
-                cell(x0 + j * cw, y, str(64 * r + c))
-    gy = y0 + len(rows) * ch
-    arrow(x0, gy + 18, x0 + 3 * cw, gy + 18, "next column: +1", x0 + 1.5 * cw, gy + 36)
-    arrow(x0 + 6 * cw + 16, y0 + 4, x0 + 6 * cw + 16, y0 + 2 * ch + 24, "next row:", x0 + 6 * cw + 24, y0 + ch + 10, "start")
-    b.append(text(x0 + 6 * cw + 24, y0 + ch + 26, "+64", 12, INK2))
+                cell(gx + j * cw, yy, str(64 * r + c))
+    b.append(rect(gx + 3 * cw, gy + 2 * ch, cw, ch, "none", INK, 2.5))
+    b.append(text(gx, gy + 5 * ch + 22, f"Outlined: row 2, column 3  →  {tsp(64, C_A)}·2 + {tsp(1, C_C)}·3 = 131", 12.5, INK))
 
-    # right: ((2, 2), 8):((1, 16), 2), the row index is itself two modes (i0, i1)
-    x1 = 540
-    b.append(text(x1 - 60, 30, "((2, 2), 8):((1, 16), 2)", 15, weight="600", family=MONO))
-    b.append(text(x1 - 60, 50, "4 rows × 8 columns; each row index is a pair (i0, i1)", 12.5, INK2))
-    b.append(text(x1 - 60, 68, "offset = 1·i0 + 16·i1 + 2·c", 12.5, INK, family=MONO))
+    b.append(line(20, 296, 900, 296, GRID))
+
+    # ---- example 2: ((2, 2), 8):((1, 16), 2), the row number is split into two counters
+    y = 332
+    b.append(text(20, y, "Example 2", 15, weight="600"))
+    b.append(text(110, y, f"(({tsp(2, C_A)}, {tsp(2, C_B)}), {tsp(8, C_C)}):(({tsp(1, C_A)}, {tsp(16, C_B)}), {tsp(2, C_C)})",
+                  15, INK, family=MONO))
+    b.append(text(20, y + 22, "4 rows × 8 columns. The inner (2, 2) means the row number is", 12.5, INK2))
+    b.append(text(20, y + 40, "counted by two counters, i0 and i1, each 0 or 1, like the two", 12.5, INK2))
+    b.append(text(20, y + 58, "digits of a number: row = i0 + 2·i1. The inner (1, 16) gives", 12.5, INK2))
+    b.append(text(20, y + 76, "each counter its own step.", 12.5, INK2))
+    counters(20, y + 110, [("i0  (row, inner)", C_A, "0, 1", "+1"), ("i1  (row, outer)", C_B, "0, 1", "+16"),
+                          ("c  (column)", C_C, "0 to 7", "+2")])
+    b.append(text(20, y + 212, f"offset = {tsp('1', C_A)}·i0 + {tsp('16', C_B)}·i1 + {tsp('2', C_C)}·c", 13, INK, family=MONO))
+
+    gx, gy, lw = 548, y + 46, 30
+    b.append(text(gx - 1.5 * lw, gy - 8, "i0", 11.5, C_A, "middle", "600"))
+    b.append(text(gx - 0.5 * lw, gy - 8, "i1", 11.5, C_B, "middle", "600"))
     for c in range(8):
-        b.append(text(x1 + c * cw + cw / 2, y0 - 8, f"c={c}", 11.5, MUTED, "middle"))
-    for i in range(4):
-        i0, i1 = i % 2, i // 2
-        y = y0 + i * ch
-        b.append(text(x1 - 8, y + 18, f"({i0}, {i1})", 11.5, MUTED, "end"))
+        b.append(text(gx + c * 44 + 22, gy - 8, f"c={c}", 11.5, C_C, "middle"))
+    for r in range(4):
+        i0, i1 = r % 2, r // 2
+        yy = gy + r * ch
+        b.append(text(gx - 2 * lw - 12, yy + 18, f"row {r}", 12, INK, "end"))
+        b.append(text(gx - 1.5 * lw, yy + 18, str(i0), 12, C_A, "middle", "600"))
+        b.append(text(gx - 0.5 * lw, yy + 18, str(i1), 12, C_B, "middle", "600"))
         for c in range(8):
-            cell(x1 + c * cw, y, str(i0 + 16 * i1 + 2 * c), ORANGE_L if i1 == 0 else AQUA_L)
-    gy = y0 + 4 * ch
-    arrow(x1, gy + 18, x1 + 3 * cw, gy + 18, "next column: +2", x1 + 1.5 * cw, gy + 36)
-    b.append(text(x1 + 4 * cw, gy + 23, "next i0: +1", 12, INK2))
-    b.append(text(x1 + 4 * cw, gy + 39, "next i1: +16", 12, INK2))
-    b.append(text(x1 - 60, gy + 64, "Orange rows (i1 = 0) take offsets 0–15, green rows (i1 = 1) take 16–31;", 12, INK2))
-    b.append(text(x1 - 60, gy + 80, "within each colour, one row takes the even offsets and the other the odd.", 12, INK2))
-    return svg(920, gy + 96, b)
+            cell(gx + c * 44, yy, str(i0 + 16 * i1 + 2 * c), ORANGE_L if i1 else SURF, 44)
+    b.append(rect(gx + 2 * 44, gy + 3 * ch, 44, ch, "none", INK, 2.5))
+    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 22,
+                  f"Outlined: row 3, column 2  →  i0 = 1, i1 = 1, c = 2", 12.5, INK))
+    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 40,
+                  f"offset = {tsp(1, C_A)}·1 + {tsp(16, C_B)}·1 + {tsp(2, C_C)}·2 = 21", 12.5, INK))
+    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 72, "Rows 0 and 1 interleave (even and odd offsets 0–15);", 12.5, INK2))
+    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 90, "the shaded rows 2 and 3 do the same, 16 further on.", 12.5, INK2))
+    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 108, "A single row stride could not describe this.", 12.5, INK2))
+    return svg(920, gy + 4 * ch + 126, b)
 
 
 def tiled_mma():
