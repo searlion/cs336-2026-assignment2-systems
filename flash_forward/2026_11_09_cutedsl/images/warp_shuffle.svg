@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 346" width="980" height="346" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="980" height="346" fill="#ffffff"/>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The maximum of one row, held by the 4 lanes of a quad (values 3, 7, 2, 5)</text>
+<text x="40" y="64" font-size="13.5" fill="#eb6834" text-anchor="start" font-weight="600">Without shuffles: through shared memory</text>
+<rect x="40" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="68.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
+<text x="68.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="118" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="146.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<text x="146.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="196" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="224.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">2</text>
+<text x="224.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="274" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="302.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">5</text>
+<text x="302.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 3</text>
+<rect x="34" y="166" width="302" height="38" fill="#fbe0d5" stroke="none" stroke-width="1" rx="6"/>
+<rect x="40" y="170" width="56" height="30" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="2"/>
+<text x="68.0" y="190" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
+<line x1="68.0" y1="128" x2="68.0" y2="164" stroke="#52514e" stroke-width="1.3" marker-end="url(#ah)"/>
+<rect x="118" y="170" width="56" height="30" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="2"/>
+<text x="146.0" y="190" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<line x1="146.0" y1="128" x2="146.0" y2="164" stroke="#52514e" stroke-width="1.3" marker-end="url(#ah)"/>
+<rect x="196" y="170" width="56" height="30" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="2"/>
+<text x="224.0" y="190" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">2</text>
+<line x1="224.0" y1="128" x2="224.0" y2="164" stroke="#52514e" stroke-width="1.3" marker-end="url(#ah)"/>
+<rect x="274" y="170" width="56" height="30" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="2"/>
+<text x="302.0" y="190" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">5</text>
+<line x1="302.0" y1="128" x2="302.0" y2="164" stroke="#52514e" stroke-width="1.3" marker-end="url(#ah)"/>
+<text x="346" y="190" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">shared memory</text>
+<text x="346" y="156" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">1. write</text>
+<text x="346" y="222" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">2. wait for all 4</text>
+<line x1="68.0" y1="204" x2="68.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="146.0" y1="204" x2="68.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="224.0" y1="204" x2="68.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="302.0" y1="204" x2="68.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="68.0" y1="204" x2="146.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="146.0" y1="204" x2="146.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="224.0" y1="204" x2="146.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="302.0" y1="204" x2="146.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="68.0" y1="204" x2="224.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="146.0" y1="204" x2="224.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="224.0" y1="204" x2="224.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="302.0" y1="204" x2="224.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="68.0" y1="204" x2="302.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="146.0" y1="204" x2="302.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="224.0" y1="204" x2="302.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="302.0" y1="204" x2="302.0" y2="252" stroke="#d6d5d0" stroke-width="1"/>
+<rect x="40" y="254" width="56" height="30" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="68.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="118" y="254" width="56" height="30" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="146.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="196" y="254" width="56" height="30" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="224.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="274" y="254" width="56" height="30" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="302.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<text x="346" y="274" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">3. read all 4, max</text>
+<text x="40" y="312" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Per lane: 1 store, 1 wait, 3 loads, 3 max.</text>
+<text x="40" y="330" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Shared memory and a wait, on every row, every key block.</text>
+<text x="520" y="64" font-size="13.5" fill="#2a78d6" text-anchor="start" font-weight="600">With shuffles: lane to lane, in registers</text>
+<rect x="520" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="548.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
+<text x="548.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="598" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="626.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<text x="626.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="676" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="704.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">2</text>
+<text x="704.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="754" y="96" width="56" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="782.0" y="116" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">5</text>
+<text x="782.0" y="90" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 3</text>
+<line x1="548.0" y1="128" x2="704.0" y2="172" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="626.0" y1="128" x2="782.0" y2="172" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="704.0" y1="128" x2="548.0" y2="172" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="782.0" y1="128" x2="626.0" y2="172" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<rect x="520" y="175" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="548.0" y="195" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
+<rect x="598" y="175" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="626.0" y="195" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="676" y="175" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="704.0" y="195" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
+<rect x="754" y="175" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="782.0" y="195" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<text x="826" y="156" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">1. swap with</text>
+<text x="826" y="171" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">lane xor 2, max</text>
+<line x1="548.0" y1="207" x2="626.0" y2="251" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="626.0" y1="207" x2="548.0" y2="251" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="704.0" y1="207" x2="782.0" y2="251" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<line x1="782.0" y1="207" x2="704.0" y2="251" stroke="#2a78d6" stroke-width="1.3" marker-end="url(#ah)"/>
+<rect x="520" y="254" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="548.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="598" y="254" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="626.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="676" y="254" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="704.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<rect x="754" y="254" width="56" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="782.0" y="274" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="normal">7</text>
+<text x="826" y="235" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">2. swap with</text>
+<text x="826" y="250" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">lane xor 1, max</text>
+<text x="520" y="312" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Per lane: 2 shuffles, 2 max.</text>
+<text x="520" y="330" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">No shared memory, no separate wait: every lane ends with 7.</text>
+</svg>

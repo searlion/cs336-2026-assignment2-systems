@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010 460" width="1010" height="460" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1010" height="460" fill="#ffffff"/>
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">Where data lives on the GPU: small and fast at the top, big and slow at the bottom</text>
+<rect x="40" y="62" width="250" height="196" fill="#ffffff" stroke="#2a78d6" stroke-width="1.5" rx="8"/>
+<text x="52" y="84" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">SM 0</text>
+<rect x="52" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="72" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t0</text>
+<rect x="98" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="118" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t1</text>
+<rect x="144" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="164" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t2</text>
+<rect x="190" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="210" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t3</text>
+<text x="254" y="120" font-size="14" fill="#52514e" text-anchor="middle" font-weight="normal">…</text>
+<text x="52" y="148" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Registers: each thread (t) has its own</text>
+<rect x="52" y="190" width="108" height="54" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="106" y="213" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">L1 cache</text>
+<text x="106" y="230" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">fills itself</text>
+<rect x="166" y="190" width="112" height="54" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="4"/>
+<text x="222" y="213" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Shared memory</text>
+<text x="222" y="230" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">your code fills it</text>
+<line x1="106" y1="157" x2="106" y2="187" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="222" y1="157" x2="222" y2="187" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<rect x="340" y="62" width="250" height="196" fill="#ffffff" stroke="#2a78d6" stroke-width="1.5" rx="8"/>
+<text x="352" y="84" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">SM 55</text>
+<rect x="352" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="372" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t0</text>
+<rect x="398" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="418" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t1</text>
+<rect x="444" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="464" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t2</text>
+<rect x="490" y="98" width="40" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="510" y="119" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">t3</text>
+<text x="554" y="120" font-size="14" fill="#52514e" text-anchor="middle" font-weight="normal">…</text>
+<text x="352" y="148" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Registers: each thread (t) has its own</text>
+<rect x="352" y="190" width="108" height="54" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="406" y="213" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">L1 cache</text>
+<text x="406" y="230" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">fills itself</text>
+<rect x="466" y="190" width="112" height="54" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="4"/>
+<text x="522" y="213" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Shared memory</text>
+<text x="522" y="230" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">your code fills it</text>
+<line x1="406" y1="157" x2="406" y2="187" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="522" y1="157" x2="522" y2="187" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<text x="315" y="166" font-size="18" fill="#52514e" text-anchor="middle" font-weight="normal">…</text>
+<text x="315" y="186" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">56 SMs</text>
+<line x1="106" y1="261" x2="106" y2="293" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="222" y1="261" x2="222" y2="293" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="406" y1="261" x2="406" y2="293" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="522" y1="261" x2="522" y2="293" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<rect x="40" y="296" width="550" height="40" fill="#fbe0d5" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="315" y="321" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">L2 cache: 48 MB, one for the whole GPU, fills itself</text>
+<line x1="130" y1="339" x2="130" y2="365" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="315" y1="339" x2="315" y2="365" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<line x1="500" y1="339" x2="500" y2="365" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<rect x="40" y="368" width="550" height="44" fill="#f6f6f4" stroke="#52514e" stroke-width="1" rx="6"/>
+<text x="315" y="395" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Global memory (DRAM): 12 GB, the GPU's main memory</text>
+<text x="630" y="106" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Registers</text>
+<text x="630" y="124" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Fastest. Only that one thread can use them.</text>
+<text x="630" y="140" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">65,536 per SM, split among its threads.</text>
+<text x="630" y="208" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">L1 cache and shared memory</text>
+<text x="630" y="226" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Very fast. Only threads on this SM see them.</text>
+<text x="630" y="242" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">One 128 KB store per SM, split between the</text>
+<text x="630" y="258" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">two; shared memory gets up to 100 KB.</text>
+<text x="630" y="310" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">L2 cache</text>
+<text x="630" y="328" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Slower. Every SM sees it.</text>
+<text x="630" y="384" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Global memory</text>
+<text x="630" y="402" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Slowest, but holds everything: Q, K, V, O.</text>
+<text x="975" y="72" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">faster</text>
+<text x="975" y="86" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">smaller</text>
+<line x1="975" y1="97" x2="975" y2="375" stroke="#52514e" stroke-width="1.4" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+<text x="975" y="396" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">slower</text>
+<text x="975" y="410" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">bigger</text>
+<text x="20" y="444" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Arrows: the paths data takes. Caches (L1, L2) keep recently used data by themselves; shared memory and registers hold only what the program puts there.</text>
+</svg>

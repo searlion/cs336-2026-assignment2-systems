@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 516" width="900" height="516" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="900" height="516" fill="#ffffff"/>
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The atom of a tiled copy: the instruction that carries each piece</text>
+<text x="20" y="50" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Who copies what stays the same; the instruction changes, and with it the speed.</text>
+<text x="20" y="76" font-size="13" fill="#2a78d6" text-anchor="start" font-weight="600">Copy 1: K and V tiles, global memory → shared memory, with the layout above</text>
+<rect x="20" y="88" width="420" height="168" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="8"/>
+<text x="34" y="112" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">CopyUniversalOp: plain load, then store</text>
+<text x="426" y="112" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">Rounds 0–3</text>
+<rect x="34" y="126" width="84" height="26" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="76" y="143" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">global</text>
+<line x1="120" y1="139" x2="146" y2="139" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah3)"/>
+<rect x="148" y="126" width="84" height="26" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="190" y="143" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">registers</text>
+<line x1="234" y1="139" x2="260" y2="139" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah3)"/>
+<rect x="262" y="126" width="84" height="26" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="304" y="143" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared</text>
+<text x="34" y="178" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">+ simple: nothing else to manage</text>
+<text x="34" y="195" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">− the thread stalls until the data arrives,</text>
+<text x="46" y="212" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">then stores it; no maths meanwhile</text>
+<rect x="460" y="88" width="420" height="168" fill="#ffffff" stroke="#2a78d6" stroke-width="1.5" rx="8"/>
+<text x="474" y="112" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">CopyG2SOp: cp.async</text>
+<text x="866" y="112" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">Rounds 4–5</text>
+<rect x="474" y="126" width="84" height="26" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="516" y="143" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">global</text>
+<line x1="560" y1="139" x2="586" y2="139" stroke="#52514e" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ah3)"/>
+<rect x="588" y="126" width="84" height="26" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="630" y="143" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared</text>
+<text x="474" y="178" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">+ skips registers; the thread starts the copy</text>
+<text x="486" y="195" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">and goes back to maths at once</text>
+<text x="474" y="212" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">− you must commit, wait and sync yourself;</text>
+<text x="486" y="229" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">a wrong order reads stale data</text>
+<text x="20" y="290" font-size="13" fill="#2a78d6" text-anchor="start" font-weight="600">Copy 2: operands, shared memory → registers, with a layout taken from the tiled MMA</text>
+<rect x="20" y="302" width="420" height="168" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="8"/>
+<text x="34" y="326" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">plain loads</text>
+<text x="426" y="326" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">Rounds 0–1</text>
+<rect x="34" y="340" width="84" height="26" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="76" y="357" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared</text>
+<line x1="120" y1="353" x2="146" y2="353" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah3)"/>
+<rect x="148" y="340" width="84" height="26" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="190" y="357" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">registers</text>
+<text x="34" y="392" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">+ works for any layout</text>
+<text x="34" y="409" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">− 224 small loads per key block per thread;</text>
+<text x="46" y="426" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">the load/store unit becomes the busiest unit</text>
+<rect x="460" y="302" width="420" height="168" fill="#ffffff" stroke="#2a78d6" stroke-width="1.5" rx="8"/>
+<text x="474" y="326" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">LdMatrix8x8x16bOp: ldmatrix</text>
+<text x="866" y="326" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">Rounds 2–5</text>
+<rect x="474" y="340" width="84" height="26" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="516" y="357" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared</text>
+<line x1="560" y1="353" x2="586" y2="353" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah3)"/>
+<rect x="588" y="340" width="84" height="26" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="630" y="357" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">registers</text>
+<text x="474" y="392" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">+ 40 loads: each carries four 8 × 8 tiles and gives</text>
+<text x="486" y="409" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">each lane exactly the values the multiply needs</text>
+<text x="474" y="426" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">− 16-bit values in 8 × 8 tiles only</text>
+<text x="20" y="500" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Blue border: the choice the final kernel uses, and the one Triton makes by itself.</text>
+</svg>

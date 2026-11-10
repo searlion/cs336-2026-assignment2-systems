@@ -1,10 +1,16 @@
 # make_svgs.py
-# Writes the five explanatory diagrams of the article as plain SVG (no external fonts):
+# Writes the eleven explanatory diagrams of the article as plain SVG (no external fonts):
 #   images/mma_ownership.svg   who holds which value of a 64 x 64 score tile
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
 #   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
+#   images/tiled_mma.svg       how a 64 x 64 score tile is split into warps, MMA instructions and pairs
+#   images/ldmatrix_pairs.svg  why permutation_mnk N = 16 halves the loads of K and V
+#   images/warp_shuffle.svg    a quad's row maximum through shared memory against two warp shuffles
+#   images/tiled_copy.svg      the layout of a tiled copy: each make_layout line on a 64 x 64 tile of K
+#   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
+#   images/memory_hierarchy.svg registers, L1 / shared memory, L2 and global memory, fastest to slowest
 # The results chart is drawn by plot_results_svg.py from the benchmark files.
 import pathlib
 
@@ -297,6 +303,328 @@ def layouts():
     return svg(920, gy + 96, b)
 
 
+def tiled_mma():
+    b = []
+    WARP = [BLUE_L, "#f6f6f4", BLUE_L, "#f6f6f4"]
+    b.append(text(20, 30, "How a 64 × 64 score tile S = Q Kᵀ is split into MMA instructions", 16, weight="600"))
+    x0, y0, px = 150, 84, 5                     # 5 px per element: the tile is 320 x 320
+    b.append(text(x0 + 160, y0 - 12, "64 keys (one key block)", 12.5, INK2, "middle"))
+    for w in range(4):
+        y = y0 + 80 * w
+        b.append(rect(x0, y, 320, 80, WARP[w], GRID, 1))
+        b.append(text(x0 - 10, y + 36, f"warp {w}", 12.5, INK, "end"))
+        b.append(text(x0 - 10, y + 52, f"rows {16 * w}–{16 * w + 15}", 11.5, MUTED, "end"))
+        for c in range(1, 8):
+            b.append(line(x0 + 40 * c, y, x0 + 40 * c, y + 80, INK2 if c % 2 == 0 else GRID, 1))
+    b.append(rect(x0, y0, 320, 320, "none", INK2, 1))
+    # one instruction (warp 0, last piece) and one pair (warp 2, last two pieces)
+    b.append(rect(x0 + 280, y0, 40, 80, "none", INK, 2.5))
+    b.append(rect(x0 + 240, y0 + 160, 80, 80, "none", ORANGE, 2.5))
+
+    tx = x0 + 350
+    lines1 = [("Black: one MMA instruction, (16, 8, 16)", INK, "600"),
+              ("16 rows × 8 keys of S. One instruction adds up", INK2, "normal"),
+              ("16 of the 64 head dimensions, so 4 in a row", INK2, "normal"),
+              ("finish the piece.", INK2, "normal")]
+    for i, (t, c, wgt) in enumerate(lines1):
+        b.append(text(tx, y0 + 18 + 17 * i, t, 12.5, c, weight=wgt))
+    lines2 = [("A warp's strip is 8 pieces: 8 × 4 = 32", INK, "600"),
+              ("instructions per key block, one after another.", INK2, "normal"),
+              ("The 4 warps run at the same time.", INK2, "normal")]
+    for i, (t, c, wgt) in enumerate(lines2):
+        b.append(text(tx, y0 + 100 + 17 * i, t, 12.5, c, weight=wgt))
+    lines3 = [("Orange: a pair, 16 rows × 16 keys", ORANGE, "600"),
+              ("Both pieces need the same 16 × 16 piece of K,", INK2, "normal"),
+              ("so one ldmatrix.x4 loads it once for both.", INK2, "normal"),
+              ("CuTe works through each strip a pair at a time.", INK2, "normal")]
+    for i, (t, c, wgt) in enumerate(lines3):
+        b.append(text(tx, y0 + 178 + 17 * i, t, 12.5, c, weight=wgt))
+    b.append(text(20, y0 + 350, "64 × 64 is the kernel's tile size (64 query rows × 64 keys), not the instruction's. "
+                  "16 × 8 is the instruction's: it takes 4 × 8 = 32 pieces to cover the tile.", 12.5, INK2))
+    return svg(870, y0 + 366, b)
+
+def ldmatrix_pairs():
+    b = []
+    t = 56                                      # one 8 x 8 tile
+    b.append(text(20, 30, "Loading a 16-key × 16-dim piece of K into registers", 15, weight="600"))
+
+    def piece(x, y, title, sub):
+        b.append(text(x, y - 44, title, 13.5, weight="600"))
+        b.append(text(x, y - 26, sub, 12, INK2))
+        b.append(text(x + t, y - 8, "head dims 0–15", 11, MUTED, "middle"))
+        b.append(text(x - 8, y + t / 2 + 4, "keys 0–7", 11, MUTED, "end"))
+        b.append(text(x - 8, y + 1.5 * t + 4, "keys 8–15", 11, MUTED, "end"))
+        for i in range(2):
+            for j in range(2):
+                b.append(rect(x + j * t, y + i * t, t, t, "#f6f6f4", GRID, 1))
+                b.append(text(x + j * t + t / 2, y + i * t + t / 2 + 4, "8 × 8", 11, INK2, "middle"))
+
+    # default: two loads of two tiles, one per MMA
+    x, y = 110, 110
+    piece(x, y, "Default (step of 8 keys)", "each MMA gets its own load")
+    b.append(rect(x + 3, y + 3, 2 * t - 6, t - 6, "none", ORANGE, 2.5, 4))
+    b.append(rect(x + 3, y + t + 3, 2 * t - 6, t - 6, "none", AQUA, 2.5, 4))
+    b.append(text(x + 2 * t + 14, y + t / 2 + 4, "load 1 → MMA 1", 12, ORANGE))
+    b.append(text(x + 2 * t + 14, y + 1.5 * t + 4, "load 2 → MMA 2", 12, AQUA))
+    b.append(text(x, y + 2 * t + 26, "2 load instructions", 13, INK, weight="600"))
+
+    # (64, 16, 16): one load of four tiles, shared by the pair
+    x = 470
+    piece(x, y, "permutation_mnk = (64, 16, 16)", "the pair shares one load")
+    b.append(rect(x + 3, y + 3, 2 * t - 6, 2 * t - 6, "none", BLUE, 2.5, 4))
+    b.append(text(x + 2 * t + 14, y + t + 4, "1 load → MMA 1 and 2", 12, BLUE))
+    b.append(text(x, y + 2 * t + 26, "1 load instruction", 13, INK, weight="600"))
+
+    b.append(text(20, y + 2 * t + 64, "Same data either way. One load instruction (ldmatrix) can carry up to four 8 × 8 tiles; with a step of", 12.5, INK2))
+    b.append(text(20, y + 2 * t + 82, "8 keys it only ever carries two. For the whole 64 × 64 tile of K: 32 loads per warp instead of 16; the same for V.", 12.5, INK2))
+    return svg(780, y + 2 * t + 98, b)
+
+
+def warp_shuffle():
+    b = []
+    b.append(f'<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "The maximum of one row, held by the 4 lanes of a quad (values 3, 7, 2, 5)", 15, weight="600"))
+    w, h, gap = 56, 30, 78
+
+    def lanes(x, y, vals, fill="#f6f6f4", label=True):
+        for i, v in enumerate(vals):
+            b.append(rect(x + i * gap, y, w, h, fill, GRID, 1, 4))
+            b.append(text(x + i * gap + w / 2, y + 20, str(v), 13, INK, "middle"))
+            if label:
+                b.append(text(x + i * gap + w / 2, y - 6, f"lane {i}", 11, MUTED, "middle"))
+
+    def arrow(x1, y1, x2, y2, color=INK2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="1.3" marker-end="url(#ah)"/>')
+
+    # without shuffles: through shared memory
+    x = 40
+    b.append(text(x, 64, "Without shuffles: through shared memory", 13.5, ORANGE, weight="600"))
+    lanes(x, 96, [3, 7, 2, 5])
+    sy = 170
+    b.append(rect(x - 6, sy - 4, 3 * gap + w + 12, h + 8, ORANGE_L, "none", 1, 6))
+    for i, v in enumerate([3, 7, 2, 5]):
+        b.append(rect(x + i * gap, sy, w, h, SURF, GRID, 1, 2))
+        b.append(text(x + i * gap + w / 2, sy + 20, str(v), 13, INK, "middle"))
+        arrow(x + i * gap + w / 2, 96 + h + 2, x + i * gap + w / 2, sy - 6)
+    b.append(text(x + 4 * gap - 6, sy + 20, "shared memory", 11.5, ORANGE))
+    b.append(text(x + 4 * gap - 6, 96 + h + 30, "1. write", 11.5, INK2))
+    b.append(text(x + 4 * gap - 6, sy + h + 22, "2. wait for all 4", 11.5, INK2))
+    ry = 254
+    for i in range(4):
+        for j in range(4):
+            if j != i or True:
+                b.append(f'<line x1="{x + j * gap + w / 2}" y1="{sy + h + 4}" x2="{x + i * gap + w / 2}" y2="{ry - 2}" '
+                         f'stroke="{GRID}" stroke-width="1"/>')
+    lanes(x, ry, [7, 7, 7, 7], ORANGE_L, label=False)
+    b.append(text(x + 4 * gap - 6, ry + 20, "3. read all 4, max", 11.5, INK2))
+    b.append(text(x, ry + 58, "Per lane: 1 store, 1 wait, 3 loads, 3 max.", 12.5, INK, weight="600"))
+    b.append(text(x, ry + 76, "Shared memory and a wait, on every row, every key block.", 12, INK2))
+
+    # with shuffles: register to register
+    x = 520
+    b.append(text(x, 64, "With shuffles: lane to lane, in registers", 13.5, BLUE, weight="600"))
+    lanes(x, 96, [3, 7, 2, 5])
+    y2 = 175
+    for i in range(4):
+        arrow(x + i * gap + w / 2, 96 + h + 2, x + (i ^ 2) * gap + w / 2, y2 - 3, BLUE)
+    lanes(x, y2, [3, 7, 3, 7], BLUE_L, label=False)
+    b.append(text(x + 4 * gap - 6, 96 + h + 30, "1. swap with", 11.5, INK2))
+    b.append(text(x + 4 * gap - 6, 96 + h + 45, "lane xor 2, max", 11.5, INK2))
+    for i in range(4):
+        arrow(x + i * gap + w / 2, y2 + h + 2, x + (i ^ 1) * gap + w / 2, ry - 3, BLUE)
+    lanes(x, ry, [7, 7, 7, 7], BLUE_L, label=False)
+    b.append(text(x + 4 * gap - 6, y2 + h + 30, "2. swap with", 11.5, INK2))
+    b.append(text(x + 4 * gap - 6, y2 + h + 45, "lane xor 1, max", 11.5, INK2))
+    b.append(text(x, ry + 58, "Per lane: 2 shuffles, 2 max.", 12.5, INK, weight="600"))
+    b.append(text(x, ry + 76, "No shared memory, no separate wait: every lane ends with 7.", 12, INK2))
+    return svg(980, ry + 92, b)
+
+
+def tiled_copy():
+    """The layout half of a tiled copy: each make_layout line, and what it means on a 64 x 64 tile of K."""
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(text(20, 30, "The layout of a tiled copy: which thread copies which 16 bytes of a 64 × 64 tile of K", 15, weight="600"))
+
+    # code line 1 and the 16 x 8 thread grid it describes
+    b.append(text(20, 64, "make_layout((16, 8), stride=(8, 1))", 13, BLUE, weight="600", family=MONO))
+    b.append(text(20, 84, "The block's 128 threads (4 warps × 32 threads) as a 16 × 8 grid: thread = 8 · row + 1 · column", 12, INK2))
+    x0, y0, cw, ch = 74, 124, 40, 18
+    for c in range(8):
+        b.append(text(x0 + c * cw + cw / 2, y0 - 6, f"col {c}", 10.5, MUTED, "middle"))
+    for r in range(16):
+        b.append(text(x0 - 6, y0 + r * ch + 13, f"row {r}", 10.5, MUTED, "end"))
+        for c in range(8):
+            hi = (r, c) == (2, 3)
+            base = GREY_L if (r // 4) % 2 == 0 else "#eef4fc"
+            b.append(rect(x0 + c * cw, y0 + r * ch, cw, ch, ORANGE_L if hi else base, ORANGE if hi else GRID, 2 if hi else 1))
+            b.append(text(x0 + c * cw + cw / 2, y0 + r * ch + 13, f"t{8 * r + c}", 9.5, INK, "middle"))
+    gx, gy = x0 + 8 * cw, y0 + 16 * ch
+    for w in range(4):
+        wy = y0 + 4 * w * ch
+        b.append(line(gx + 6, wy + 2, gx + 6, wy + 4 * ch - 2, INK2, 1.5))
+        b.append(text(gx + 12, wy + 2 * ch + 4, f"warp {w}", 11, INK2))
+    b.append(text(x0, gy + 22, "Each grid row covers one row of K: 64 values in 8 pieces, one piece per thread.", 11.5, INK2))
+
+    # callout for thread 19
+    X = 490
+    cy = y0 + 2 * ch + ch / 2
+    b.append(text(X, cy - 4, "row 2, column 3  →  8 · 2 + 3 = thread 19", 12.5, ORANGE, weight="600"))
+    b.append(text(X, cy + 14, "so thread 19 copies the 4th piece of row 2", 12, INK2))
+
+    # code line 2 and the 8 values of one piece
+    y2 = 218
+    b.append(text(X, y2, "make_layout((1, 8))", 13, BLUE, weight="600", family=MONO))
+    b.append(text(X, y2 + 20, "each thread's piece: 1 row × 8 values", 12, INK2))
+    for v in range(8):
+        b.append(rect(X + v * 46, y2 + 34, 46, 26, ORANGE_L, ORANGE if v in (0, 7) else GRID, 1))
+        b.append(text(X + v * 46 + 23, y2 + 51, f"{24 + v}", 11, INK, "middle"))
+    b.append(text(X, y2 + 78, "thread 19's piece: values 24–31 of row 2", 12, INK2))
+    b.append(text(X, y2 + 94, "8 bf16 values × 2 bytes = 16 bytes, one copy instruction", 12, INK2))
+
+    # together
+    y3 = 352
+    b.append(text(X, y3, "Together", 13, INK, weight="600"))
+    b.append(text(X, y3 + 20, "One step: 16 rows × (8 threads × 8 values) = 16 rows × 64 values.", 12, INK2))
+    b.append(text(X, y3 + 38, "The tile has 64 rows, so CuTe repeats the step 4 times:", 12, INK2))
+    b.append(text(X, y3 + 56, "thread 19 also copies values 24–31 of rows 18, 34 and 50.", 12, INK2))
+    return svg(900, gy + 40, b)
+
+
+def copy_atoms():
+    """The atom half of a tiled copy: the same pieces, carried by different instructions."""
+    b = []
+    b.append(f'<defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "The atom of a tiled copy: the instruction that carries each piece", 15, weight="600"))
+    b.append(text(20, 50, "Who copies what stays the same; the instruction changes, and with it the speed.", 12.5, INK2))
+    G, R, S = "#fdf3d8", BLUE_L, AQUA_L
+
+    def path(x, y, nodes, dash=False):
+        for j, (lab, fill) in enumerate(nodes):
+            b.append(rect(x, y, 84, 26, fill, GRID, 1, 6))
+            b.append(text(x + 42, y + 17, lab, 11, INK, "middle"))
+            if j + 1 < len(nodes):
+                d = ' stroke-dasharray="5 4"' if dash else ""
+                b.append(f'<line x1="{x + 86}" y1="{y + 13}" x2="{x + 112}" y2="{y + 13}" stroke="{INK2}" '
+                         f'stroke-width="1.5"{d} marker-end="url(#ah3)"/>')
+            x += 114
+
+    def card(x, y, title, rounds, nodes, dash, pros, cons, good):
+        b.append(rect(x, y, 420, 168, SURF, BLUE if good else GRID, 1.5 if good else 1, 8))
+        b.append(text(x + 14, y + 24, title, 12.5, INK, weight="600"))
+        b.append(text(x + 406, y + 24, rounds, 11, MUTED, "end"))
+        path(x + 14, y + 38, nodes, dash)
+        yy = y + 90
+        for items, sign, col in ((pros, "+ ", AQUA), (cons, "− ", ORANGE)):
+            for t in items:
+                cont = t.startswith("  ")
+                b.append(text(x + (26 if cont else 14), yy, t.strip() if cont else sign + t, 11.5, col))
+                yy += 17
+
+    y = 76
+    b.append(text(20, y, "Copy 1: K and V tiles, global memory → shared memory, with the layout above", 13, BLUE, weight="600"))
+    card(20, y + 12, "CopyUniversalOp: plain load, then store", "Rounds 0–3",
+         [("global", G), ("registers", R), ("shared", S)], False,
+         ["simple: nothing else to manage"],
+         ["the thread stalls until the data arrives,", "  then stores it; no maths meanwhile"], False)
+    card(460, y + 12, "CopyG2SOp: cp.async", "Rounds 4–5",
+         [("global", G), ("shared", S)], True,
+         ["skips registers; the thread starts the copy", "  and goes back to maths at once"],
+         ["you must commit, wait and sync yourself;", "  a wrong order reads stale data"], True)
+
+    y = 290
+    b.append(text(20, y, "Copy 2: operands, shared memory → registers, with a layout taken from the tiled MMA", 13, BLUE, weight="600"))
+    card(20, y + 12, "plain loads", "Rounds 0–1",
+         [("shared", S), ("registers", R)], False,
+         ["works for any layout"],
+         ["224 small loads per key block per thread;", "  the load/store unit becomes the busiest unit"], False)
+    card(460, y + 12, "LdMatrix8x8x16bOp: ldmatrix", "Rounds 2–5",
+         [("shared", S), ("registers", R)], False,
+         ["40 loads: each carries four 8 × 8 tiles and gives", "  each lane exactly the values the multiply needs"],
+         ["16-bit values in 8 × 8 tiles only"], True)
+    b.append(text(20, y + 210, "Blue border: the choice the final kernel uses, and the one Triton makes by itself.", 12, INK2))
+    return svg(900, y + 226, b)
+
+
+def memory_hierarchy():
+    """Registers, L1 / shared memory, L2 and global memory: where each sits and who can see it."""
+    b = []
+    GREY_L = "#f6f6f4"
+    b.append(f'<defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
+             f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b.append(text(20, 30, "Where data lives on the GPU: small and fast at the top, big and slow at the bottom", 16, weight="600"))
+
+    def arrow2(x, y1, y2):                     # double-headed: data moves both ways
+        b.append(f'<line x1="{x}" y1="{y1 + 3}" x2="{x}" y2="{y2 - 3}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-start="url(#ah4)" marker-end="url(#ah4)"/>')
+
+    top = 62
+
+    def sm(x, name):
+        b.append(rect(x, top, 250, 196, SURF, BLUE, 1.5, 8))
+        b.append(text(x + 12, top + 22, name, 13.5, weight="600"))
+        for i, t in enumerate(["t0", "t1", "t2", "t3", "…"]):
+            bx = x + 12 + i * 46
+            if t == "…":
+                b.append(text(bx + 18, top + 58, "…", 14, INK2, "middle"))
+            else:
+                b.append(rect(bx, top + 36, 40, 32, BLUE_L, BLUE, 1, 4))
+                b.append(text(bx + 20, top + 57, t, 11.5, INK, "middle", family=MONO))
+        b.append(text(x + 12, top + 86, "Registers: each thread (t) has its own", 11.5, INK2))
+        y = top + 128
+        b.append(rect(x + 12, y, 108, 54, GREY_L, GRID, 1, 4))
+        b.append(text(x + 66, y + 23, "L1 cache", 12.5, INK, "middle", "600"))
+        b.append(text(x + 66, y + 40, "fills itself", 11, MUTED, "middle"))
+        b.append(rect(x + 126, y, 112, 54, AQUA_L, AQUA, 1, 4))
+        b.append(text(x + 182, y + 23, "Shared memory", 12.5, INK, "middle", "600"))
+        b.append(text(x + 182, y + 40, "your code fills it", 11, MUTED, "middle"))
+        arrow2(x + 66, top + 92, y)
+        arrow2(x + 182, top + 92, y)
+        return x + 66, x + 182
+
+    cols = sm(40, "SM 0") + sm(340, "SM 55")
+    b.append(text(315, top + 104, "…", 18, INK2, "middle"))
+    b.append(text(315, top + 124, "56 SMs", 11, MUTED, "middle"))
+
+    l2y, gy = 296, 368
+    for cx in cols:
+        arrow2(cx, top + 196, l2y)
+    b.append(rect(40, l2y, 550, 40, ORANGE_L, ORANGE, 1, 6))
+    b.append(text(315, l2y + 25, "L2 cache: 48 MB, one for the whole GPU, fills itself", 12.5, INK, "middle", "600"))
+    for cx in (130, 315, 500):
+        arrow2(cx, l2y + 40, gy)
+    b.append(rect(40, gy, 550, 44, GREY_L, INK2, 1, 6))
+    b.append(text(315, gy + 27, "Global memory (DRAM): 12 GB, the GPU's main memory", 12.5, INK, "middle", "600"))
+
+    # right: one note per level, level with it
+    nx = 630
+    notes = [
+        (top + 44, "Registers", ["Fastest. Only that one thread can use them.", "65,536 per SM, split among its threads."]),
+        (top + 146, "L1 cache and shared memory", ["Very fast. Only threads on this SM see them.", "One 128 KB store per SM, split between the",
+                                                   "two; shared memory gets up to 100 KB."]),
+        (l2y + 14, "L2 cache", ["Slower. Every SM sees it."]),
+        (gy + 16, "Global memory", ["Slowest, but holds everything: Q, K, V, O."]),
+    ]
+    for y, head, lines in notes:
+        b.append(text(nx, y, head, 13, INK, weight="600"))
+        for i, s in enumerate(lines):
+            b.append(text(nx, y + 18 + 16 * i, s, 12, INK2))
+
+    # speed / size scale on the far right
+    ax = 975
+    b.append(text(ax, top + 10, "faster", 11.5, INK2, "middle"))
+    b.append(text(ax, top + 24, "smaller", 11.5, INK2, "middle"))
+    arrow2(ax, top + 32, gy + 10)
+    b.append(text(ax, gy + 28, "slower", 11.5, INK2, "middle"))
+    b.append(text(ax, gy + 42, "bigger", 11.5, INK2, "middle"))
+
+    b.append(text(20, gy + 76, "Arrows: the paths data takes. Caches (L1, L2) keep recently used data by themselves; "
+                  "shared memory and registers hold only what the program puts there.", 12, INK2))
+    return svg(1010, gy + 92, b)
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     (OUT / "mma_ownership.svg").write_text(mma_ownership())
@@ -304,4 +632,10 @@ if __name__ == "__main__":
     (OUT / "pipeline.svg").write_text(pipeline())
     (OUT / "gpu_hierarchy.svg").write_text(gpu_hierarchy())
     (OUT / "layouts.svg").write_text(layouts())
+    (OUT / "tiled_mma.svg").write_text(tiled_mma())
+    (OUT / "ldmatrix_pairs.svg").write_text(ldmatrix_pairs())
+    (OUT / "warp_shuffle.svg").write_text(warp_shuffle())
+    (OUT / "tiled_copy.svg").write_text(tiled_copy())
+    (OUT / "copy_atoms.svg").write_text(copy_atoms())
+    (OUT / "memory_hierarchy.svg").write_text(memory_hierarchy())
     print("wrote", *sorted(p.name for p in OUT.glob("*.svg")))
