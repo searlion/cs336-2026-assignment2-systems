@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 584" width="1060" height="584" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1060" height="584" fill="#ffffff"/>
+<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">The 64 × 64 tiles: what one block takes from Q, K and V (one head, N = 4,096, D = 64)</text>
+<text x="20" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">1. Global memory: one head</text>
+<text x="20" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">4,096 rows × 64 head dims each (not to scale)</text>
+<text x="64.0" y="114" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">Q</text>
+<rect x="36" y="124" width="56" height="288" fill="#f6f6f4" stroke="#52514e" stroke-width="1" rx="0"/>
+<line x1="36" y1="148" x2="92" y2="148" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="172" x2="92" y2="172" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="196" x2="92" y2="196" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="220" x2="92" y2="220" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="244" x2="92" y2="244" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="268" x2="92" y2="268" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="292" x2="92" y2="292" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="316" x2="92" y2="316" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="340" x2="92" y2="340" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="364" x2="92" y2="364" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="36" y1="388" x2="92" y2="388" stroke="#d6d5d0" stroke-width="1"/>
+<rect x="36" y="172" width="56" height="24" fill="#fbe0d5" stroke="#eb6834" stroke-width="2" rx="0"/>
+<text x="148.0" y="114" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">K</text>
+<rect x="120" y="124" width="56" height="288" fill="#f6f6f4" stroke="#52514e" stroke-width="1" rx="0"/>
+<line x1="120" y1="148" x2="176" y2="148" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="172" x2="176" y2="172" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="196" x2="176" y2="196" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="220" x2="176" y2="220" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="244" x2="176" y2="244" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="268" x2="176" y2="268" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="292" x2="176" y2="292" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="316" x2="176" y2="316" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="340" x2="176" y2="340" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="364" x2="176" y2="364" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="120" y1="388" x2="176" y2="388" stroke="#d6d5d0" stroke-width="1"/>
+<rect x="120" y="220" width="56" height="24" fill="#d1efe4" stroke="#1baf7a" stroke-width="2" rx="0"/>
+<text x="232.0" y="114" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">V</text>
+<rect x="204" y="124" width="56" height="288" fill="#f6f6f4" stroke="#52514e" stroke-width="1" rx="0"/>
+<line x1="204" y1="148" x2="260" y2="148" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="172" x2="260" y2="172" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="196" x2="260" y2="196" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="220" x2="260" y2="220" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="244" x2="260" y2="244" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="268" x2="260" y2="268" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="292" x2="260" y2="292" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="316" x2="260" y2="316" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="340" x2="260" y2="340" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="364" x2="260" y2="364" stroke="#d6d5d0" stroke-width="1"/>
+<line x1="204" y1="388" x2="260" y2="388" stroke="#d6d5d0" stroke-width="1"/>
+<rect x="204" y="220" width="56" height="24" fill="#d1efe4" stroke="#1baf7a" stroke-width="2" rx="0"/>
+<line x1="296" y1="128" x2="296" y2="408" stroke="#52514e" stroke-width="1.4" marker-end="url(#ah7)"/>
+<text x="312" y="268.0" font-size="11" fill="#52514e" text-anchor="middle" transform="rotate(90 312 268.0)">64 steps, one per key block</text>
+<text x="20" y="434" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="normal">Orange: this block's 64 query rows.</text>
+<text x="20" y="450" font-size="11.5" fill="#1baf7a" text-anchor="start" font-weight="normal">Green: the 64 keys of the current step.</text>
+<text x="20" y="466" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The block steps down K and V, 64 rows at a time.</text>
+<text x="350" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">2. Shared memory: 3 tiles = 24,576 bytes</text>
+<text x="350" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">each 64 × 64 bf16 values = 8,192 bytes</text>
+<rect x="350" y="104" width="84" height="84" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.5" rx="0"/>
+<line x1="350" y1="125.0" x2="434" y2="125.0" stroke="#eb6834" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="350" y1="146.0" x2="434" y2="146.0" stroke="#eb6834" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="350" y1="167.0" x2="434" y2="167.0" stroke="#eb6834" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="446" y="130" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Q tile</text>
+<text x="446" y="148" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">64 query rows × 64 dims</text>
+<text x="446" y="164" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="normal">loaded once</text>
+<rect x="350" y="210" width="84" height="84" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="446" y="236" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">K tile</text>
+<text x="446" y="254" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">64 keys × 64 dims</text>
+<text x="446" y="270" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="normal">replaced every step</text>
+<rect x="350" y="316" width="84" height="84" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="446" y="342" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">V tile</text>
+<text x="446" y="360" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">64 keys × 64 dims</text>
+<text x="446" y="376" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="normal">replaced every step</text>
+<text x="350" y="430" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Q's dashed lines: the 4 warps' 16-row strips.</text>
+<text x="660" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. What each step computes (warp 0 shown)</text>
+<text x="660" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 0 owns rows 0–15; results stay in its registers</text>
+<text x="706.0" y="114" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">Q tile</text>
+<rect x="670" y="122" width="72" height="72" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="670" y1="140.0" x2="742" y2="140.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="670" y1="158.0" x2="742" y2="158.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="670" y1="176.0" x2="742" y2="176.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="670" y="122" width="72" height="18.0" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.5" rx="0"/>
+<text x="706.0" y="209" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">rows 0–15</text>
+<text x="706.0" y="222" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× 64 dims</text>
+<text x="832.0" y="114" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">Kᵀ (K tile, turned)</text>
+<rect x="796" y="122" width="72" height="72" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="832.0" y="209" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">64 dims</text>
+<text x="832.0" y="222" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× all 64 keys</text>
+<text x="958.0" y="114" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">S = Q Kᵀ</text>
+<rect x="922" y="122" width="72" height="72" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="922" y1="140.0" x2="994" y2="140.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="922" y1="158.0" x2="994" y2="158.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="922" y1="176.0" x2="994" y2="176.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="922" y="122" width="72" height="18.0" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="0"/>
+<text x="958.0" y="209" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">rows 0–15</text>
+<text x="958.0" y="222" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× 64 keys</text>
+<text x="769" y="164.0" font-size="18" fill="#52514e" text-anchor="middle" font-weight="normal">×</text>
+<text x="895" y="164.0" font-size="18" fill="#52514e" text-anchor="middle" font-weight="normal">=</text>
+<path d="M958.0,228 L958.0,240 L706.0,240 L706.0,276" fill="none" stroke="#52514e" stroke-width="1.4" marker-end="url(#ah7)"/>
+<rect x="740.0" y="230" width="184" height="20" fill="#ffffff" stroke="none" stroke-width="1" rx="0"/>
+<text x="832.0" y="244" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">P = softmax(S), along each row</text>
+<text x="706.0" y="292" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">P</text>
+<rect x="670" y="300" width="72" height="72" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="670" y1="318.0" x2="742" y2="318.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="670" y1="336.0" x2="742" y2="336.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="670" y1="354.0" x2="742" y2="354.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="670" y="300" width="72" height="18.0" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="0"/>
+<text x="706.0" y="387" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">rows 0–15</text>
+<text x="706.0" y="400" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× 64 keys</text>
+<text x="832.0" y="292" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">V tile</text>
+<rect x="796" y="300" width="72" height="72" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="832.0" y="387" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">all 64 keys</text>
+<text x="832.0" y="400" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× 64 dims</text>
+<text x="958.0" y="292" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">O</text>
+<rect x="922" y="300" width="72" height="72" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="922" y1="318.0" x2="994" y2="318.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="922" y1="336.0" x2="994" y2="336.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="922" y1="354.0" x2="994" y2="354.0" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="922" y="300" width="72" height="18.0" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.5" rx="0"/>
+<text x="958.0" y="387" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">rows 0–15</text>
+<text x="958.0" y="400" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">× 64 dims</text>
+<text x="769" y="342.0" font-size="18" fill="#52514e" text-anchor="middle" font-weight="normal">×</text>
+<text x="895" y="342.0" font-size="18" fill="#52514e" text-anchor="middle" font-weight="normal">+=</text>
+<text x="660" y="432" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Each score in S says how well a query row matches a key.</text>
+<text x="660" y="448" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Softmax turns a row of scores into weights; O adds up</text>
+<text x="660" y="464" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">the V rows with those weights. The other 3 warps do the</text>
+<text x="660" y="480" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">same for their 16 rows at the same time, reading the</text>
+<text x="660" y="496" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">same K and V tiles. O builds up over all 64 steps.</text>
+<text x="660" y="512" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The division by each row's sum happens once, at the end.</text>
+<text x="20" y="566" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">"64 query rows × 64 keys" is the tile size: each block owns 64 rows of Q, and each step brings in 64 rows of K and V. D = 64 makes every tile 64 × 64.</text>
+</svg>

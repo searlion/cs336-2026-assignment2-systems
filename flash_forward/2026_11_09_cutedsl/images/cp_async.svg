@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 1338" width="920" height="1338" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="920" height="1338" fill="#ffffff"/>
+<defs><marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">cp.async: how one thread loads its part of the K and V tiles</text>
+<text x="20" y="58" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The order in the code. The number under each step is the part of this figure that explains it.</text>
+<rect x="22" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="79.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cp.async × 4 (K)</text>
+<line x1="138" y1="87" x2="147" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="79.0" cy="120" r="11" fill="#eb6834"/>
+<text x="79.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<rect x="149" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="206.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">commit_group</text>
+<line x1="265" y1="87" x2="274" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="206.0" cy="120" r="11" fill="#2a78d6"/>
+<text x="206.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<rect x="276" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="333.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cp.async × 4 (V)</text>
+<line x1="392" y1="87" x2="401" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="333.0" cy="120" r="11" fill="#eb6834"/>
+<text x="333.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<rect x="403" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="460.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">commit_group</text>
+<line x1="519" y1="87" x2="528" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="460.0" cy="120" r="11" fill="#2a78d6"/>
+<text x="460.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<rect x="530" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="587.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(1)</text>
+<line x1="646" y1="87" x2="655" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="587.0" cy="120" r="11" fill="#2a78d6"/>
+<text x="587.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<rect x="657" y="72" width="114" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="714.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">barrier</text>
+<line x1="773" y1="87" x2="782" y2="87" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<circle cx="714.0" cy="120" r="11" fill="#1baf7a"/>
+<text x="714.0" y="124.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<rect x="784" y="72" width="114" height="30" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="6"/>
+<text x="841.0" y="91.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q Kᵀ</text>
+<text x="841.0" y="124" font-size="11" fill="#2a78d6" text-anchor="middle" font-weight="600">uses K</text>
+<circle cx="31" cy="157" r="11" fill="#eb6834"/>
+<text x="31" y="161.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<text x="50" y="162" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">One copy: cp.async goes straight to shared memory</text>
+<text x="50" y="181" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">The K tile is 8,192 bytes = 512 pieces of 16 bytes. Each of the block's 128 threads copies 4 pieces of K,</text>
+<text x="50" y="197" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">and 4 of V, with one cp.async per piece.</text>
+<text x="50" y="234" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Normal copy</text>
+<rect x="190" y="214" width="120" height="30" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="250.0" y="233.5" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">global memory</text>
+<rect x="350" y="214" width="120" height="30" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="410.0" y="233.5" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">registers</text>
+<rect x="510" y="214" width="120" height="30" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="570.0" y="233.5" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared memory</text>
+<line x1="312" y1="229" x2="346" y2="229" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<line x1="472" y1="229" x2="506" y2="229" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<text x="670" y="226" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">The thread waits for the data,</text>
+<text x="670" y="242" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">then stores it. No maths meanwhile.</text>
+<text x="50" y="282" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">cp.async</text>
+<rect x="190" y="262" width="120" height="30" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="250.0" y="281.5" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">global memory</text>
+<rect x="350" y="262" width="120" height="30" fill="#f6f6f4" stroke="#8a8984" stroke-width="1" stroke-dasharray="4 3" rx="6"/>
+<text x="410.0" y="281.5" font-size="12" fill="#8a8984" text-anchor="middle" font-weight="normal">registers</text>
+<rect x="510" y="262" width="120" height="30" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="570.0" y="281.5" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="normal">shared memory</text>
+<path d="M250,293 C290,316 530,316 568,296" fill="none" stroke="#1baf7a" stroke-width="2" marker-end="url(#ah8)"/>
+<text x="410" y="324" font-size="11" fill="#1baf7a" text-anchor="middle" font-weight="600">straight to shared memory</text>
+<text x="670" y="274" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">The thread only starts the copy</text>
+<text x="670" y="290" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">and moves on at once.</text>
+<circle cx="31" cy="355" r="11" fill="#2a78d6"/>
+<text x="31" y="359.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<text x="50" y="360" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Groups: start K, then V straight after, and wait only for K</text>
+<text x="50" y="379" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">A thread starts its instructions one at a time, in order, but does not wait for one to finish before starting</text>
+<text x="50" y="395" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">the next. So it starts K's copies, then V's right after, and both move at the same time. commit_group puts the</text>
+<text x="50" y="411" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">copies started so far into one group. wait_group(n) pauses the thread until at most n of its groups are still moving.</text>
+<text x="50" y="438" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="600">What the thread does</text>
+<text x="320" y="438" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="600">K group</text>
+<text x="420" y="438" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="600">V group</text>
+<text x="540" y="438" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="600">What happens</text>
+<rect x="32" y="448" width="856" height="40" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="50" y="473" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">start 4 K copies, commit_group</text>
+<rect x="320" y="455" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="364.0" y="472.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<rect x="420" y="455" width="88" height="26" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="4 3" rx="6"/>
+<text x="464.0" y="472.5" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">not started</text>
+<text x="540" y="465" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">K's 4 copies become group 1.</text>
+<text x="540" y="480" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The thread does not wait.</text>
+<rect x="32" y="492" width="856" height="40" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="50" y="517" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">start 4 V copies, commit_group</text>
+<rect x="320" y="499" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="364.0" y="516.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<rect x="420" y="499" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="464.0" y="516.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<text x="540" y="509" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">V's 4 copies become group 2. Both groups</text>
+<text x="540" y="524" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">now move at once; still no waiting.</text>
+<rect x="32" y="536" width="856" height="40" fill="#f0efec" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<rect x="32" y="536" width="6" height="40" fill="#52514e" stroke="none" stroke-width="1" rx="2"/>
+<text x="50" y="561" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(1)</text>
+<rect x="320" y="543" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="364.0" y="560.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<rect x="420" y="543" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="464.0" y="560.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<text x="540" y="553" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">2 groups moving: it waits until only 1 is left.</text>
+<text x="540" y="568" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600">The THREAD pauses; K and V keep moving.</text>
+<rect x="32" y="580" width="856" height="40" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="50" y="605" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal">wakes up: wait_group(1) is done</text>
+<rect x="320" y="587" width="88" height="26" fill="#ffffff" stroke="#1baf7a" stroke-width="1" rx="6"/>
+<text x="364.0" y="604.5" font-size="11" fill="#1baf7a" text-anchor="middle" font-weight="normal">landed ✓</text>
+<rect x="420" y="587" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>
+<text x="464.0" y="604.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
+<text x="540" y="597" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">K lands, so only 1 group (V) is still moving.</text>
+<text x="540" y="612" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The thread goes on to the next instruction.</text>
+<rect x="32" y="624" width="856" height="40" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="50" y="649" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal">barrier, then S = Q Kᵀ</text>
+<rect x="320" y="631" width="88" height="26" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="6"/>
+<text x="364.0" y="648.5" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">calculating</text>
+<rect x="420" y="631" width="88" height="26" fill="#ffffff" stroke="#1baf7a" stroke-width="1" rx="6"/>
+<text x="464.0" y="648.5" font-size="11" fill="#1baf7a" text-anchor="middle" font-weight="normal">landed ✓</text>
+<text x="540" y="641" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The barrier waits for threads, not copies, so V</text>
+<text x="540" y="656" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">keeps moving, and lands while the thread uses K.</text>
+<rect x="32" y="668" width="856" height="40" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<text x="50" y="693" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(0), barrier, then O += P V</text>
+<rect x="320" y="675" width="88" height="26" fill="#f6f6f4" stroke="#8a8984" stroke-width="1" rx="6"/>
+<text x="364.0" y="692.5" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">done</text>
+<rect x="420" y="675" width="88" height="26" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="6"/>
+<text x="464.0" y="692.5" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">calculating</text>
+<text x="540" y="685" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">V has landed, so wait_group(0) lets it calculate</text>
+<text x="540" y="700" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">with V. K is done; its space can take the next K.</text>
+<text x="50" y="730" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">K and V are the same size, so each moves for 3 steps; V is one step behind because it was started one step later.</text>
+<text x="50" y="752" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">n is how many of the newest groups may still be moving; every older group must be done. So wait_group(1) means "K done,</text>
+<text x="50" y="768" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">V may still be moving". wait_group(0) would wait for every group. So the group the thread needs first must be the</text>
+<text x="50" y="784" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">oldest one: that is why K is started first. The three timelines below compare the choices.</text>
+<text x="50" y="818" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Why two groups, and why K first? Three ways to load K and V</text>
+<text x="50" y="844" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">One group for K and V</text>
+<text x="50" y="860" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(0)</text>
+<text x="50" y="891" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">moving</text>
+<text x="50" y="925" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">thread</text>
+<rect x="102" y="874" width="102.5" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
+<text x="154.25" y="891.5" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K and V</text>
+<rect x="102" y="908" width="102.5" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/>
+<text x="154.25" y="925.5" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">paused</text>
+<rect x="206.5" y="908" width="74" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
+<text x="244.5" y="925.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q Kᵀ</text>
+<line x1="205.5" y1="870" x2="205.5" y2="938" stroke="#0b0b0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="50" y="958" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">S = Q Kᵀ waits for V too,</text>
+<text x="50" y="974" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">although it does not use V.</text>
+<text x="340" y="844" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">V first, then K</text>
+<text x="340" y="860" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(0)</text>
+<text x="340" y="891" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">moving</text>
+<text x="340" y="925" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">thread</text>
+<rect x="392.0" y="874" width="74" height="12" fill="#eb6834" stroke="none" stroke-width="1" rx="3"/>
+<text x="430.0" y="884" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="600">V</text>
+<rect x="420.5" y="888" width="74" height="12" fill="#eb6834" stroke="none" stroke-width="1" rx="3"/>
+<text x="458.5" y="898" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="600">K</text>
+<rect x="392" y="908" width="102.5" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/>
+<text x="444.25" y="925.5" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">paused</text>
+<rect x="496.5" y="908" width="74" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
+<text x="534.5" y="925.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q Kᵀ</text>
+<line x1="495.5" y1="870" x2="495.5" y2="938" stroke="#0b0b0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="340" y="958" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Now K is the newest group, so it</text>
+<text x="340" y="974" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">lands last, and the only way to wait</text>
+<text x="340" y="990" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">for it is wait_group(0). No better</text>
+<text x="340" y="1006" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">than one group.</text>
+<text x="630" y="844" font-size="12" fill="#2a78d6" text-anchor="start" font-weight="600">K first, then V (as above)</text>
+<text x="630" y="860" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(1)</text>
+<text x="630" y="891" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">moving</text>
+<text x="630" y="925" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">thread</text>
+<rect x="682.0" y="874" width="74" height="12" fill="#eb6834" stroke="none" stroke-width="1" rx="3"/>
+<text x="720.0" y="884" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="600">K</text>
+<rect x="710.5" y="888" width="74" height="12" fill="#eb6834" stroke="none" stroke-width="1" rx="3"/>
+<text x="772.25" y="898" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="600">V</text>
+<rect x="682" y="908" width="74" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/>
+<text x="720.0" y="925.5" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">paused</text>
+<rect x="758" y="908" width="74" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
+<text x="796" y="925.5" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q Kᵀ</text>
+<line x1="757" y1="870" x2="757" y2="938" stroke="#0b0b0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="630" y="958" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">S = Q Kᵀ starts as soon as K</text>
+<text x="630" y="974" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">has landed; V finishes while</text>
+<text x="630" y="990" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">the thread computes.</text>
+<text x="50" y="1048" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">K and V are the same size (8 KB per tile), so their bars are the same length. The one started second lands a little later, because its</text>
+<text x="50" y="1064" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">copies queue behind the first one's. That gap is the time the K-first order saves: small when memory is idle, larger when it is busy.</text>
+<circle cx="31" cy="1103" r="11" fill="#1baf7a"/>
+<text x="31" y="1107.5" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<text x="50" y="1108" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Barrier: wait for every thread's copies</text>
+<text x="50" y="1127" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">wait_group only knows about this thread's own copies. The other 127 threads copied the rest of the tile.</text>
+<rect x="190" y="1152" width="150" height="22" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<text x="265.0" y="1167" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">thread 0's K pieces</text>
+<rect x="190" y="1174" width="150" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="265.0" y="1189" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">thread 1's K pieces: ready?</text>
+<rect x="190" y="1196" width="150" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="265.0" y="1211" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">thread 2's K pieces: ready?</text>
+<rect x="190" y="1218" width="150" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="265.0" y="1233" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">thread 3's K pieces: ready?</text>
+<text x="265.0" y="1260" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">After wait_group (thread 0's view)</text>
+<text x="265.0" y="1276" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">its own K pieces have landed;</text>
+<text x="265.0" y="1292" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">the others' may not have</text>
+<rect x="466" y="1144" width="8" height="104" fill="#0b0b0b" stroke="none" stroke-width="1" rx="2"/>
+<line x1="350" y1="1196" x2="460" y2="1196" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<line x1="480" y1="1196" x2="630" y2="1196" stroke="#52514e" stroke-width="1.5" marker-end="url(#ah8)"/>
+<text x="470" y="1260" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">barrier (sync_threads)</text>
+<text x="470" y="1276" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">every thread pauses here until</text>
+<text x="470" y="1292" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">all 128 threads have arrived</text>
+<rect x="640" y="1152" width="150" height="22" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<text x="715.0" y="1167" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">thread 0's K pieces</text>
+<rect x="640" y="1174" width="150" height="22" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<text x="715.0" y="1189" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">thread 1's K pieces</text>
+<rect x="640" y="1196" width="150" height="22" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<text x="715.0" y="1211" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">thread 2's K pieces</text>
+<rect x="640" y="1218" width="150" height="22" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<text x="715.0" y="1233" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">thread 3's K pieces</text>
+<text x="715.0" y="1260" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">After the barrier</text>
+<text x="715.0" y="1276" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">every thread can read</text>
+<text x="715.0" y="1292" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">the whole K tile</text>
+<text x="50" y="1322" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">4 threads shown. Every thread did its own wait_group before reaching the barrier, so all 512 pieces of K have landed.</text>
+</svg>

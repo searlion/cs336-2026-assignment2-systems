@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 422" width="1020" height="422" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1020" height="422" fill="#ffffff"/>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">One ldmatrix.x4: four 8 × 8 tiles from shared memory, handed out to the warp's 32 lanes</text>
+<text x="20" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">1. In shared memory: the block's K tile</text>
+<text x="20" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">64 keys × 64 head dims; one 16 × 16 piece = four 8 × 8 tiles</text>
+<text x="104" y="108" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">64 head dims</text>
+<text x="32" y="180" font-size="10.5" fill="#8a8984" text-anchor="middle" transform="rotate(-90 32 180)">64 keys</text>
+<rect x="40" y="116" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="72" y="116" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="104" y="116" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="136" y="116" width="32" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="2" rx="0"/>
+<rect x="40" y="148" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="72" y="148" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="104" y="148" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="136" y="148" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="40" y="180" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="72" y="180" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="104" y="180" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="136" y="180" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="40" y="212" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="72" y="212" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="104" y="212" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="136" y="212" width="32" height="32" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="168" y1="116" x2="196" y2="116" stroke="#8a8984" stroke-width="1" stroke-dasharray="4 3"/>
+<line x1="168" y1="148" x2="196" y2="282" stroke="#8a8984" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="196" y="116" width="80" height="80" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="0"/>
+<line x1="206" y1="116" x2="206" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="126" x2="276" y2="126" stroke="#ffffff" stroke-width="1"/>
+<line x1="216" y1="116" x2="216" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="136" x2="276" y2="136" stroke="#ffffff" stroke-width="1"/>
+<line x1="226" y1="116" x2="226" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="146" x2="276" y2="146" stroke="#ffffff" stroke-width="1"/>
+<line x1="236" y1="116" x2="236" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="156" x2="276" y2="156" stroke="#ffffff" stroke-width="1"/>
+<line x1="246" y1="116" x2="246" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="166" x2="276" y2="166" stroke="#ffffff" stroke-width="1"/>
+<line x1="256" y1="116" x2="256" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="176" x2="276" y2="176" stroke="#ffffff" stroke-width="1"/>
+<line x1="266" y1="116" x2="266" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="186" x2="276" y2="186" stroke="#ffffff" stroke-width="1"/>
+<rect x="214" y="145" width="44" height="22" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="236" y="160" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">tile 0</text>
+<rect x="282" y="116" width="80" height="80" fill="#fbe0d5" stroke="#eb6834" stroke-width="1" rx="0"/>
+<line x1="292" y1="116" x2="292" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="126" x2="362" y2="126" stroke="#ffffff" stroke-width="1"/>
+<line x1="302" y1="116" x2="302" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="136" x2="362" y2="136" stroke="#ffffff" stroke-width="1"/>
+<line x1="312" y1="116" x2="312" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="146" x2="362" y2="146" stroke="#ffffff" stroke-width="1"/>
+<line x1="322" y1="116" x2="322" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="156" x2="362" y2="156" stroke="#ffffff" stroke-width="1"/>
+<line x1="332" y1="116" x2="332" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="166" x2="362" y2="166" stroke="#ffffff" stroke-width="1"/>
+<line x1="342" y1="116" x2="342" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="176" x2="362" y2="176" stroke="#ffffff" stroke-width="1"/>
+<line x1="352" y1="116" x2="352" y2="196" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="186" x2="362" y2="186" stroke="#ffffff" stroke-width="1"/>
+<rect x="300" y="145" width="44" height="22" fill="#ffffff" stroke="#eb6834" stroke-width="1" rx="4"/>
+<text x="322" y="160" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">tile 1</text>
+<rect x="196" y="202" width="80" height="80" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="0"/>
+<line x1="206" y1="202" x2="206" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="212" x2="276" y2="212" stroke="#ffffff" stroke-width="1"/>
+<line x1="216" y1="202" x2="216" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="222" x2="276" y2="222" stroke="#ffffff" stroke-width="1"/>
+<line x1="226" y1="202" x2="226" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="232" x2="276" y2="232" stroke="#ffffff" stroke-width="1"/>
+<line x1="236" y1="202" x2="236" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="242" x2="276" y2="242" stroke="#ffffff" stroke-width="1"/>
+<line x1="246" y1="202" x2="246" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="252" x2="276" y2="252" stroke="#ffffff" stroke-width="1"/>
+<line x1="256" y1="202" x2="256" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="262" x2="276" y2="262" stroke="#ffffff" stroke-width="1"/>
+<line x1="266" y1="202" x2="266" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="196" y1="272" x2="276" y2="272" stroke="#ffffff" stroke-width="1"/>
+<rect x="214" y="231" width="44" height="22" fill="#ffffff" stroke="#1baf7a" stroke-width="1" rx="4"/>
+<text x="236" y="246" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">tile 2</text>
+<rect x="282" y="202" width="80" height="80" fill="#fdf3d8" stroke="#c9a227" stroke-width="1" rx="0"/>
+<line x1="292" y1="202" x2="292" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="212" x2="362" y2="212" stroke="#ffffff" stroke-width="1"/>
+<line x1="302" y1="202" x2="302" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="222" x2="362" y2="222" stroke="#ffffff" stroke-width="1"/>
+<line x1="312" y1="202" x2="312" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="232" x2="362" y2="232" stroke="#ffffff" stroke-width="1"/>
+<line x1="322" y1="202" x2="322" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="242" x2="362" y2="242" stroke="#ffffff" stroke-width="1"/>
+<line x1="332" y1="202" x2="332" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="252" x2="362" y2="252" stroke="#ffffff" stroke-width="1"/>
+<line x1="342" y1="202" x2="342" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="262" x2="362" y2="262" stroke="#ffffff" stroke-width="1"/>
+<line x1="352" y1="202" x2="352" y2="282" stroke="#ffffff" stroke-width="1"/>
+<line x1="282" y1="272" x2="362" y2="272" stroke="#ffffff" stroke-width="1"/>
+<rect x="300" y="231" width="44" height="22" fill="#ffffff" stroke="#c9a227" stroke-width="1" rx="4"/>
+<text x="322" y="246" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">tile 3</text>
+<text x="279" y="298" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">16 keys × 16 head dims</text>
+<text x="20" y="322" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">16 × 16 is what a pair of multiplies needs from K</text>
+<text x="20" y="338" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">(each takes 8 keys × 16 head dims). One instruction</text>
+<text x="20" y="354" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">reads all four tiles; each value is 16 bits (bf16).</text>
+<text x="400" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">2. Tile 0, zoomed: which lane receives each value</text>
+<text x="400" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">row r goes to quad r (lanes 4r to 4r + 3), 2 values each</text>
+<text x="444" y="132" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">row 0</text>
+<rect x="452" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="492" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="532" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="572" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="612" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="652" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="692" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<rect x="732" y="116" width="38" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="132" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<text x="444" y="158" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 1</text>
+<rect x="452" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="492" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="532" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="572" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="612" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="652" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="692" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<rect x="732" y="142" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="158" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<text x="444" y="184" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 2</text>
+<rect x="452" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="492" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="532" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="572" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="612" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="652" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="692" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<rect x="732" y="168" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="184" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<text x="444" y="210" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 3</text>
+<rect x="452" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="492" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="532" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="572" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="612" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="652" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="692" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<rect x="732" y="194" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="210" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<text x="444" y="236" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 4</text>
+<rect x="452" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="492" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="532" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="572" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="612" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="652" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="692" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<rect x="732" y="220" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="236" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<text x="444" y="262" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 5</text>
+<rect x="452" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="492" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="532" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="572" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="612" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="652" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="692" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<rect x="732" y="246" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="262" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<text x="444" y="288" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 6</text>
+<rect x="452" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="492" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="532" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="572" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="612" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="652" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="692" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<rect x="732" y="272" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="288" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<text x="444" y="314" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 7</text>
+<rect x="452" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="471.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="492" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="511.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="532" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="551.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="572" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="591.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="612" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="631.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="652" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="671.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="692" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="711.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<rect x="732" y="298" width="38" height="24" fill="#d4e4f7" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="314" font-size="9" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<text x="452" y="342" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">64 values ÷ 32 lanes = 2 values per lane per tile.</text>
+<text x="800" y="64" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. Lane 0 ends with</text>
+<text x="800" y="82" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">4 registers, 2 values in each</text>
+<rect x="800" y="116" width="200" height="32" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="4"/>
+<text x="810" y="136" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="normal">reg 0: tile 0, row 0, values 0–1</text>
+<rect x="800" y="156" width="200" height="32" fill="#fbe0d5" stroke="#eb6834" stroke-width="1" rx="4"/>
+<text x="810" y="176" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="normal">reg 1: tile 1, row 0, values 0–1</text>
+<rect x="800" y="196" width="200" height="32" fill="#d1efe4" stroke="#1baf7a" stroke-width="1" rx="4"/>
+<text x="810" y="216" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="normal">reg 2: tile 2, row 0, values 0–1</text>
+<rect x="800" y="236" width="200" height="32" fill="#fdf3d8" stroke="#c9a227" stroke-width="1" rx="4"/>
+<text x="810" y="256" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="normal">reg 3: tile 3, row 0, values 0–1</text>
+<text x="800" y="290" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Every other lane gets its own</text>
+<text x="800" y="306" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">2 values from each tile the</text>
+<text x="800" y="322" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">same way: 8 values in all.</text>
+<text x="20" y="388" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">After one instruction, every lane holds exactly the values the multiply (MMA) wants from it, with no extra shuffling.</text>
+<text x="20" y="406" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">ldmatrix.trans does the same with each tile's rows and columns swapped, which is what V needs.</text>
+</svg>

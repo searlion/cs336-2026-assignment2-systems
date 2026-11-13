@@ -858,6 +858,18 @@ def shuffle_args():
                              f'stroke="{BLUE}" stroke-width="1.3" marker-start="url(#ah7)" marker-end="url(#ah7)"/>')
 
     def draw_op(x, y):
+        # the two call sites in the kernel, op highlighted
+        for k, (pre, op, lab) in enumerate([("quad_reduce(…, ", "cute.arch.fmax", "row max"),
+                                            ("quad_reduce(…, ", "lambda x, y: x + y", "row sum")]):
+            yy = y + k * 22
+            b.append(text(x, yy + 14, lab, 11.5, MUTED))
+            px, ccw = x + 60, 7.2                       # textLength pins the monospace width
+            ox = px + ccw * len(pre)
+            b.append(rect(ox - 2, yy, ccw * len(op) + 4, 19, BLUE_L, BLUE, 1, 3))
+            for s, sx in [(pre, px), (op, ox), (")", ox + ccw * len(op))]:
+                b.append(f'<text x="{sx}" y="{yy + 14}" font-size="12" fill="{INK}" font-family="{MONO}" '
+                         f'xml:space="preserve" textLength="{ccw * len(s)}" lengthAdjust="spacingAndGlyphs">{s}</text>')
+        y += 52
         b.append(text(x, y + 14, "lane 0:", 11.5, MUTED))
         b.append(text(x + 60, y + 14, "fmax(3, 2) = 3", 12.5, INK, family=MONO))
         b.append(text(x + 190, y + 14, "my v, then my partner's", 11.5, MUTED))
@@ -910,7 +922,7 @@ def shuffle_args():
 
     card(0, 0, 1, "op(v, …)", [
         "Combines my own value (this first v) with the one my partner sent, and stores the result back in v. "
-        "The kernel passes cute.arch.fmax for the row maximum and + for the row sum."], draw_op)
+        "op is quad_reduce's second argument, chosen where the kernel calls it:"], draw_op)
     card(1, 0, 2, "shuffle_sync_bfly", [
         "The PTX instruction shfl.sync in bfly (butterfly) mode. The mode decides whose register each lane reads. "
         "In butterfly mode lanes swap in pairs; the name comes from the crossed pairs of the FFT's butterfly diagram."], draw_bfly)
