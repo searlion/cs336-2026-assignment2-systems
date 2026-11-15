@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 910" width="1040" height="910" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1040" height="910" fill="#ffffff"/>
+<defs><marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+<text x="20" y="30" font-size="17" fill="#0b0b0b" text-anchor="start" font-weight="600">Round 3: P stops making a round trip through shared memory</text>
+<text x="20" y="52" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">One pass of the loop. P = softmax(S) is computed in registers; the next multiply, O += P·V, needs P as its A operand, also in registers.</text>
+<line x1="20" y1="74" x2="1020" y2="74" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="95" r="11" fill="#0b0b0b"/>
+<text x="31" y="100" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<text x="50" y="100" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">What happens to P, before and after</text>
+<text x="50" y="132" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="700">v2 (Round 2): P goes out to shared memory and comes back</text>
+<rect x="50" y="146" width="140" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="120.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">S = Q·Kᵀ</text>
+<text x="120.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">registers, fp32</text>
+<rect x="220" y="146" width="150" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="295.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">softmax, to bf16</text>
+<text x="295.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">rP: P in registers</text>
+<line x1="192" y1="172" x2="217" y2="172" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="400" y="146" width="120" height="52" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.2" rx="6"/>
+<text x="460.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">16 STS</text>
+<text x="460.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">write P out</text>
+<line x1="372" y1="172" x2="397" y2="172" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="550" y="146" width="130" height="52" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.2" rx="6"/>
+<text x="615.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">sP</text>
+<text x="615.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">shared memory, 8 KB</text>
+<line x1="522" y1="172" x2="547" y2="172" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="710" y="146" width="120" height="52" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.2" rx="6"/>
+<text x="770.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">4 LDSM</text>
+<text x="770.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">read P back</text>
+<line x1="682" y1="172" x2="707" y2="172" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="860" y="146" width="150" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="935.0" y="167" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">O += P·V</text>
+<text x="935.0" y="185" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">cute.gemm reads P</text>
+<line x1="832" y1="172" x2="857" y2="172" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<text x="50" y="250" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="700">v3 (Round 3): P stays where it is</text>
+<rect x="50" y="264" width="140" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="120.0" y="285" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">S = Q·Kᵀ</text>
+<text x="120.0" y="303" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">registers, fp32</text>
+<rect x="220" y="264" width="150" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="295.0" y="285" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">softmax, to bf16</text>
+<text x="295.0" y="303" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">rP: P in registers</text>
+<line x1="192" y1="290" x2="217" y2="290" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="400" y="264" width="430" height="52" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.2" rx="6"/>
+<text x="615.0" y="285" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">as_a_operand(rP)</text>
+<text x="615.0" y="303" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">the same registers, read as the A operand: 0 instructions</text>
+<line x1="372" y1="290" x2="397" y2="290" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<rect x="860" y="264" width="150" height="52" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1.2" rx="6"/>
+<text x="935.0" y="285" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700">O += P·V</text>
+<text x="935.0" y="303" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">cute.gemm reads P</text>
+<line x1="832" y1="290" x2="857" y2="290" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahp)"/>
+<text x="50" y="348" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Why v2 needed the trip: the multiply S = Q·Kᵀ leaves each lane its values of S in the accumulator's order, and O += P·V asks each lane</text>
+<text x="50" y="366" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">for its values of P in the A operand's order. Writing P to shared memory and reading it back with the A-operand copy (s2r_A) reorders it.</text>
+<text x="50" y="390" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">Why v3 can skip it: each lane already holds exactly the values of P that the A operand asks it for; only the grouping into registers differs.</text>
+<text x="50" y="408" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">as_a_operand just relabels the registers, so no data moves. The figure after the code checks this, register by register.</text>
+<line x1="20" y1="440" x2="1020" y2="440" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="461" r="11" fill="#0b0b0b"/>
+<text x="31" y="466" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<text x="50" y="466" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The code change, v2 → v3 (inside the loop)</text>
+<rect x="40" y="494" width="960" height="210" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="5"/>
+<text x="54" y="516" font-size="13" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"> </text>
+<text x="74.0" y="516" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">rP.store(acc_S.load().to(self.dtype))</text>
+<text x="650" y="516" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># P as bf16, in registers</text>
+<rect x="41" y="522" width="958" height="22" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
+<text x="54" y="538" font-size="13" fill="#eb6834" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">-</text>
+<text x="74.0" y="538" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.autovec_copy(rP, tPsP)</text>
+<text x="650" y="538" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 16 STS: P to shared memory</text>
+<rect x="41" y="544" width="958" height="22" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
+<text x="54" y="560" font-size="13" fill="#eb6834" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">-</text>
+<text x="74.0" y="560" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.sync_warp()</text>
+<text x="650" y="560" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># wait until the warp's P is written</text>
+<rect x="41" y="566" width="958" height="22" fill="#d1efe4" stroke="none" stroke-width="1" rx="0"/>
+<text x="54" y="582" font-size="13" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">+</text>
+<text x="74.0" y="582" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tOrP = as_a_operand(rP)</text>
+<text x="650" y="582" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># same registers, new view: 0 instructions</text>
+<text x="54" y="604" font-size="13" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"> </text>
+<text x="74.0" y="604" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">for k in range(4):</text>
+<rect x="41" y="610" width="958" height="22" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
+<text x="54" y="626" font-size="13" fill="#eb6834" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">-</text>
+<text x="104.12" y="626" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(ops.s2r_A, ops.sP[None, None, k], ops.rP[None, None, k])</text>
+<text x="650" y="626" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 4 LDSM: P back</text>
+<text x="54" y="648" font-size="13" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"> </text>
+<text x="104.12" y="648" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(ops.s2r_V, ops.sVt[None, None, k], ops.rVt[None, None, k])</text>
+<text x="650" y="648" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># V, as before</text>
+<text x="54" y="670" font-size="13" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"> </text>
+<text x="104.12" y="670" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.gemm(tiled_mma, acc_O, tOrP[None, None, k], tOrVt[None, None, k], acc_O)</text>
+<rect x="41" y="676" width="958" height="22" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
+<text x="54" y="692" font-size="13" fill="#eb6834" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">-</text>
+<text x="74.0" y="692" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.sync_warp()</text>
+<text x="650" y="692" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># wait before the next pass overwrites sP</text>
+<text x="50" y="726" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Outside the loop, v3 also drops the 8 KB buffer sP and the separate A-operand registers that v2 loaded P into.</text>
+<line x1="20" y1="758" x2="1020" y2="758" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="779" r="11" fill="#0b0b0b"/>
+<text x="31" y="784" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<text x="50" y="784" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">What it saves, per pass of the loop</text>
+<rect x="50" y="808" width="69.39999999999999" height="28" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="14"/>
+<text x="84.69999999999999" y="827" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">−16 STS</text>
+<rect x="129.39999999999998" y="808" width="69.39999999999999" height="28" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="14"/>
+<text x="164.09999999999997" y="827" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">−4 LDSM</text>
+<rect x="208.79999999999995" y="808" width="61.199999999999996" height="28" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="14"/>
+<text x="239.39999999999995" y="827" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">−2 NOP</text>
+<rect x="279.99999999999994" y="808" width="61.199999999999996" height="28" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="14"/>
+<text x="310.59999999999997" y="827" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">+1 MOV</text>
+<text x="359.19999999999993" y="827" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="700">= 342 → 321 instructions</text>
+<text x="50" y="864" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Shared memory per block: 32 KB → 24 KB (no sP).</text>
+<text x="50" y="882" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Time at N = 4096: about 1% faster (2.19 → 2.17 ms). The round trip was already conflict-free and only 20 of 342 instructions, so it was cheap.</text>
+</svg>
