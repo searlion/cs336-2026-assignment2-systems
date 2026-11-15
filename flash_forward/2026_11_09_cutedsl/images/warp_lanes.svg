@@ -1,243 +1,379 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 478" width="870" height="478" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<rect width="870" height="478" fill="#ffffff"/>
-<defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
-<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">A warp, its lanes and its quads</text>
-<text x="20" y="62" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">1. One warp = 32 lanes (threads)</text>
-<text x="20" y="80" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">all 32 run the same instruction at the same time</text>
-<text x="74" y="120" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">quad 0</text>
-<rect x="84" y="104" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
-<text x="113.0" y="120" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 0</text>
-<rect x="146" y="104" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
-<text x="175.0" y="120" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 1</text>
-<rect x="208" y="104" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
-<text x="237.0" y="120" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 2</text>
-<rect x="270" y="104" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
-<text x="299.0" y="120" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 3</text>
-<text x="74" y="148" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 1</text>
-<rect x="84" y="132" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="148" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
-<rect x="146" y="132" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="148" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
-<rect x="208" y="132" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="148" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
-<rect x="270" y="132" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="148" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
-<text x="74" y="176" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 2</text>
-<rect x="84" y="160" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="176" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
-<rect x="146" y="160" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="176" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
-<rect x="208" y="160" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="176" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
-<rect x="270" y="160" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="176" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
-<text x="74" y="204" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 3</text>
-<rect x="84" y="188" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="204" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
-<rect x="146" y="188" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="204" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
-<rect x="208" y="188" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="204" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
-<rect x="270" y="188" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="204" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
-<text x="74" y="232" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 4</text>
-<rect x="84" y="216" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="232" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
-<rect x="146" y="216" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="232" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
-<rect x="208" y="216" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="232" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
-<rect x="270" y="216" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="232" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
-<text x="74" y="260" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 5</text>
-<rect x="84" y="244" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="260" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
-<rect x="146" y="244" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="260" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
-<rect x="208" y="244" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="260" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
-<rect x="270" y="244" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="260" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
-<text x="74" y="288" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 6</text>
-<rect x="84" y="272" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="288" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
-<rect x="146" y="272" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="288" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
-<rect x="208" y="272" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="288" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
-<rect x="270" y="272" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="288" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
-<text x="74" y="316" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 7</text>
-<rect x="84" y="300" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="113.0" y="316" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
-<rect x="146" y="300" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="175.0" y="316" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
-<rect x="208" y="300" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="237.0" y="316" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
-<rect x="270" y="300" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="299.0" y="316" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
-<text x="20" y="346" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">A quad = 4 neighbouring lanes. Not a piece of hardware,</text>
-<text x="20" y="362" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">just how the multiply instruction hands out its results.</text>
-<text x="400" y="62" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">2. Who holds each value of one multiply's 16 × 8 result</text>
-<text x="400" y="80" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">rows 0–7 shown; rows 8–15 go to the same lanes again</text>
-<text x="471.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 0</text>
-<text x="521.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 1</text>
-<text x="571.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 2</text>
-<text x="621.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 3</text>
-<text x="671.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 4</text>
-<text x="721.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 5</text>
-<text x="771.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 6</text>
-<text x="821.0" y="98" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 7</text>
-<text x="438" y="120" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">row 0</text>
-<rect x="446" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="470.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
-<rect x="496" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="520.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
-<rect x="546" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="570.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
-<rect x="596" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="620.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
-<rect x="646" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="670.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
-<rect x="696" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="720.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
-<rect x="746" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="770.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
-<rect x="796" y="104" width="48" height="24" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
-<text x="820.0" y="120" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
-<text x="438" y="148" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 1</text>
-<rect x="446" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
-<rect x="496" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
-<rect x="546" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
-<rect x="596" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
-<rect x="646" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
-<rect x="696" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
-<rect x="746" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
-<rect x="796" y="132" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="148" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
-<text x="438" y="176" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 2</text>
-<rect x="446" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
-<rect x="496" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
-<rect x="546" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
-<rect x="596" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
-<rect x="646" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
-<rect x="696" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
-<rect x="746" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
-<rect x="796" y="160" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="176" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
-<text x="438" y="204" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 3</text>
-<rect x="446" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
-<rect x="496" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
-<rect x="546" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
-<rect x="596" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
-<rect x="646" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
-<rect x="696" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
-<rect x="746" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
-<rect x="796" y="188" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="204" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
-<text x="438" y="232" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 4</text>
-<rect x="446" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
-<rect x="496" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
-<rect x="546" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
-<rect x="596" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
-<rect x="646" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
-<rect x="696" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
-<rect x="746" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
-<rect x="796" y="216" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="232" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
-<text x="438" y="260" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 5</text>
-<rect x="446" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
-<rect x="496" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
-<rect x="546" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
-<rect x="596" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
-<rect x="646" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
-<rect x="696" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
-<rect x="746" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
-<rect x="796" y="244" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="260" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
-<text x="438" y="288" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 6</text>
-<rect x="446" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
-<rect x="496" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
-<rect x="546" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
-<rect x="596" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
-<rect x="646" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
-<rect x="696" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
-<rect x="746" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
-<rect x="796" y="272" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
-<text x="438" y="316" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 7</text>
-<rect x="446" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="470.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
-<rect x="496" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="520.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
-<rect x="546" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="570.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
-<rect x="596" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="620.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
-<rect x="646" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="670.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
-<rect x="696" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="720.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
-<rect x="746" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="770.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
-<rect x="796" y="300" width="48" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
-<text x="820.0" y="316" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
-<text x="400" y="346" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Row 0 is held only by lanes 0–3 (quad 0), 2 values each. So a row's max or sum</text>
-<text x="400" y="362" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">needs just those 4 lanes to swap values (shuffles), not the whole warp.</text>
-<text x="20" y="398" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. Bigger units</text>
-<rect x="20" y="412" width="310" height="52" fill="#ffffff" stroke="#eb6834" stroke-width="1.5" rx="6"/>
-<text x="28" y="428" font-size="11" fill="#eb6834" text-anchor="start" font-weight="600">a block = 4 warps = 128 threads</text>
-<rect x="28" y="434" width="68" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="62" y="449" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">warp 0</text>
-<rect x="102" y="434" width="68" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="136" y="449" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">warp 1</text>
-<rect x="176" y="434" width="68" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="210" y="449" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">warp 2</text>
-<rect x="250" y="434" width="68" height="22" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="284" y="449" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">warp 3</text>
-<line x1="336" y1="438" x2="370" y2="438" stroke="#52514e" stroke-width="1.4" marker-end="url(#ah6)"/>
-<text x="380" y="434" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">runs on one SM (streaming multiprocessor), next to other blocks.</text>
-<text x="380" y="450" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">This GPU has 56 SMs, each with its own registers, shared memory and tensor cores.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 630" width="900" height="630" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="900" height="630" fill="#ffffff"/>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">From a block down to its lanes: who holds which rows</text>
+<text x="20" y="50" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Blue follows one path: warp 0 of the block, then quad 0 of warp 0.</text>
+<text x="20" y="88" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">1. One block = 4 warps = 128 threads</text>
+<text x="20" y="106" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">it computes 64 rows (tokens); each warp takes 16</text>
+<rect x="40" y="122.0" width="128" height="32.0" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="0"/>
+<text x="182" y="142.0" font-size="11.5" fill="#2a78d6" text-anchor="start" font-weight="600">warp 0: rows 0–15</text>
+<rect x="40" y="154.0" width="128" height="32.0" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="182" y="174.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 1: rows 16–31</text>
+<rect x="40" y="186.0" width="128" height="32.0" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="182" y="206.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 2: rows 32–47</text>
+<rect x="40" y="218.0" width="128" height="32.0" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="182" y="238.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 3: rows 48–63</text>
+<text x="40" y="268" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">the block's 64 × 64 tile</text>
+<text x="20" y="310" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">2. Warp 0 = 32 lanes (threads)</text>
+<text x="20" y="328" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">all 32 run the same instruction at the same time</text>
+<text x="74" y="368" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">quad 0</text>
+<rect x="84" y="352" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
+<text x="113.0" y="368" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="146" y="352" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
+<text x="175.0" y="368" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="208" y="352" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
+<text x="237.0" y="368" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="270" y="352" width="58" height="24" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1.5" rx="4"/>
+<text x="299.0" y="368" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">lane 3</text>
+<text x="74" y="396" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 1</text>
+<rect x="84" y="380" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="396" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="146" y="380" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="396" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="208" y="380" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="396" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="270" y="380" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="396" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<text x="74" y="424" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 2</text>
+<rect x="84" y="408" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="424" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="146" y="408" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="424" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="208" y="408" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="424" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="270" y="408" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="424" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<text x="74" y="452" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 3</text>
+<rect x="84" y="436" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="452" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="146" y="436" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="452" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="208" y="436" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="452" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="270" y="436" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="452" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<text x="74" y="480" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 4</text>
+<rect x="84" y="464" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="480" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="146" y="464" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="480" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="208" y="464" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="480" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="270" y="464" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="480" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<text x="74" y="508" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 5</text>
+<rect x="84" y="492" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="508" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="146" y="492" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="508" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="208" y="492" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="508" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="270" y="492" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="508" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<text x="74" y="536" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 6</text>
+<rect x="84" y="520" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="536" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="146" y="520" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="536" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="208" y="520" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="536" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="270" y="520" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="536" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<text x="74" y="564" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">quad 7</text>
+<rect x="84" y="548" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="113.0" y="564" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="146" y="548" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="175.0" y="564" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="208" y="548" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="237.0" y="564" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="270" y="548" width="58" height="24" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="299.0" y="564" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<text x="20" y="594" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">A quad = 4 neighbouring lanes. Not a piece of hardware,</text>
+<text x="20" y="610" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">just how the multiply instruction hands out its results.</text>
+<text x="420" y="88" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. Who holds each value of warp 0's 16 × 8 multiply result</text>
+<text x="420" y="106" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">one tensor-core multiply: warp 0's 16 rows × 8 columns</text>
+<text x="492.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 0</text>
+<text x="544.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 1</text>
+<text x="596.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 2</text>
+<text x="648.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 3</text>
+<text x="700.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 4</text>
+<text x="752.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 5</text>
+<text x="804.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 6</text>
+<text x="856.0" y="128" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">col 7</text>
+<text x="458" y="150" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">row 0</text>
+<rect x="466" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="491.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="518" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="543.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="570" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="595.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="622" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="647.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="674" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="699.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="726" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="778" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="803.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<rect x="830" y="136" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="855.0" y="150" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<text x="458" y="173" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 1</text>
+<rect x="466" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="518" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="570" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="622" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="674" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="726" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="778" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<rect x="830" y="159" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="173" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<text x="458" y="196" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 2</text>
+<rect x="466" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="518" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="570" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="622" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="674" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="726" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="778" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<rect x="830" y="182" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="196" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<text x="458" y="219" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 3</text>
+<rect x="466" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="518" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="570" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="622" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="674" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="726" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="778" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<rect x="830" y="205" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="219" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<text x="458" y="242" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 4</text>
+<rect x="466" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="518" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="570" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="622" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="674" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="726" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="778" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<rect x="830" y="228" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="242" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<text x="458" y="265" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 5</text>
+<rect x="466" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="518" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="570" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="622" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="674" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="726" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="778" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<rect x="830" y="251" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="265" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<text x="458" y="288" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 6</text>
+<rect x="466" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="518" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="570" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="622" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="674" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="726" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="778" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<rect x="830" y="274" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="288" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<text x="458" y="311" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 7</text>
+<rect x="466" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="518" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="570" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="622" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="674" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="726" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="778" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<rect x="830" y="297" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="311" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<text x="458" y="344" font-size="11" fill="#2a78d6" text-anchor="end" font-weight="600">row 8</text>
+<rect x="466" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="491.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="518" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="543.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 0</text>
+<rect x="570" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="595.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="622" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="647.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 1</text>
+<rect x="674" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="699.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="726" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="751.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 2</text>
+<rect x="778" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="803.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<rect x="830" y="330" width="50" height="20" fill="#2a78d6" stroke="#ffffff" stroke-width="1" rx="3"/>
+<text x="855.0" y="344" font-size="9.5" fill="#ffffff" text-anchor="middle" font-weight="normal">lane 3</text>
+<text x="458" y="367" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 9</text>
+<rect x="466" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="518" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 4</text>
+<rect x="570" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="622" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 5</text>
+<rect x="674" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="726" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 6</text>
+<rect x="778" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<rect x="830" y="353" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="367" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 7</text>
+<text x="458" y="390" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 10</text>
+<rect x="466" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="518" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 8</text>
+<rect x="570" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="622" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 9</text>
+<rect x="674" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="726" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 10</text>
+<rect x="778" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<rect x="830" y="376" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="390" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 11</text>
+<text x="458" y="413" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 11</text>
+<rect x="466" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="518" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 12</text>
+<rect x="570" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="622" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 13</text>
+<rect x="674" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="726" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 14</text>
+<rect x="778" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<rect x="830" y="399" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="413" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 15</text>
+<text x="458" y="436" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 12</text>
+<rect x="466" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="518" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 16</text>
+<rect x="570" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="622" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 17</text>
+<rect x="674" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="726" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 18</text>
+<rect x="778" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<rect x="830" y="422" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="436" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 19</text>
+<text x="458" y="459" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 13</text>
+<rect x="466" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="518" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 20</text>
+<rect x="570" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="622" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 21</text>
+<rect x="674" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="726" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 22</text>
+<rect x="778" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<rect x="830" y="445" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="459" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 23</text>
+<text x="458" y="482" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 14</text>
+<rect x="466" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="518" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 24</text>
+<rect x="570" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="622" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 25</text>
+<rect x="674" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="726" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 26</text>
+<rect x="778" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<rect x="830" y="468" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="482" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 27</text>
+<text x="458" y="505" font-size="11" fill="#8a8984" text-anchor="end" font-weight="normal">row 15</text>
+<rect x="466" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="491.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="518" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="543.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 28</text>
+<rect x="570" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="595.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="622" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="647.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 29</text>
+<rect x="674" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="699.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="726" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="751.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 30</text>
+<rect x="778" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="803.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<rect x="830" y="491" width="50" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<text x="855.0" y="505" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">lane 31</text>
+<text x="420" y="536" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Why two rows per quad: 16 × 8 = 128 values ÷ 32 lanes = 4 per lane.</text>
+<text x="420" y="552" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Each row (8 values) goes to one quad: 4 lanes × 2 neighbouring columns.</text>
+<text x="420" y="568" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">There are 16 rows but only 8 quads, so each quad takes 2 rows: row q</text>
+<text x="420" y="584" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">and row q + 8. A row's max or sum then needs only its quad's 4 lanes</text>
+<text x="420" y="600" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">to swap values (shuffles), not the whole warp.</text>
 </svg>

@@ -5,6 +5,7 @@
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
 #   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
+#   images/mnk_shape.svg       (16, 8, 16) as (M, N, K): three 2-D matrices, and the 16 x 8 x 16 box of work
 #   images/tiled_mma.svg       what (16, 8, 16), (4, 1, 1) and permutation (64, 16, 16) each cover of S = Q K^T
 #   images/ldmatrix_pairs.svg  why permutation_mnk N = 16 halves the loads of K and V
 #   images/warp_shuffle.svg    a quad's row maximum through shared memory against two warp shuffles
@@ -14,7 +15,7 @@
 #   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
 #   images/memory_hierarchy.svg registers, L1 / shared memory, L2 and global memory, fastest to slowest
 #   images/block_grid.svg      how 2,048 blocks cover 32 (sequence, head) problems of 4,096 query rows
-#   images/warp_lanes.svg      a warp's lanes and quads, who holds each row of an MMA result, warps -> block
+#   images/warp_lanes.svg      block -> 4 warps -> warp 0's lanes and quads, who holds each row of an MMA result
 #   images/ldmatrix_x4.svg     one ldmatrix.x4: a 16 x 16 piece of K, its four 8 x 8 tiles, who receives each value
 #   images/qkv_tiles.svg       the 64 x 64 tiles: Q, K, V in global memory, shared memory, and S / O in registers
 #   images/cp_async.svg        cp.async: global -> shared without registers, commit_group / wait_group(n), then a barrier
@@ -538,42 +539,134 @@ def layouts():
 
     b.append(line(20, 296, 900, 296, GRID))
 
-    # ---- example 2: ((2, 2), 8):((1, 16), 2), the row number is split into two counters
+    # ---- example 2: ((2, 2), 8):((1, 16), 2), told in four steps: pair them up, what (2, 2) means,
+    # why it is needed, and the whole table with its memory order.
+    ROW_T = [SURF, "#e3e2dd", ORANGE_L, "#f4b89f"]       # row tints: i1 picks grey or orange, i0 light or dark
     y = 332
     b.append(text(20, y, "Example 2", 15, weight="600"))
     b.append(text(110, y, f"(({tsp(2, C_A)}, {tsp(2, C_B)}), {tsp(8, C_C)}):(({tsp(1, C_A)}, {tsp(16, C_B)}), {tsp(2, C_C)})",
                   15, INK, family=MONO))
-    b.append(text(20, y + 22, "4 rows × 8 columns. The inner (2, 2) means the row number is", 12.5, INK2))
-    b.append(text(20, y + 40, "counted by two counters, i0 and i1, each 0 or 1, like the two", 12.5, INK2))
-    b.append(text(20, y + 58, "digits of a number: row = i0 + 2·i1. The inner (1, 16) gives", 12.5, INK2))
-    b.append(text(20, y + 76, "each counter its own step.", 12.5, INK2))
-    counters(20, y + 110, [("i0  (row, inner)", C_A, "0, 1", "+1"), ("i1  (row, outer)", C_B, "0, 1", "+16"),
-                          ("c  (column)", C_C, "0 to 7", "+2")])
-    b.append(text(20, y + 212, f"offset = {tsp('1', C_A)}·i0 + {tsp('16', C_B)}·i1 + {tsp('2', C_C)}·c", 13, INK, family=MONO))
+    b.append(text(20, y + 22, "A 4 × 8 table whose rows are not evenly spaced in memory. Four steps:", 12.5, INK2))
+    px = 430                                               # left edge of the pictures
 
-    gx, gy, lw = 548, y + 46, 30
-    b.append(text(gx - 1.5 * lw, gy - 8, "i0", 11.5, C_A, "middle", "600"))
-    b.append(text(gx - 0.5 * lw, gy - 8, "i1", 11.5, C_B, "middle", "600"))
-    for c in range(8):
-        b.append(text(gx + c * 44 + 22, gy - 8, f"c={c}", 11.5, C_C, "middle"))
+    def para(x, y, lines, size=12.5, fill=INK2, lh=18):
+        for s in lines:
+            b.append(text(x, y, s, size, fill))
+            y += lh
+        return y
+
+    def step(y, title, lines):
+        b.append(text(20, y, title, 13.5, INK, weight="600"))
+        return para(20, y + 22, lines)
+
+    # (1) pair shape and stride by position
+    T = y + 70
+    step(T, "1. Pair each number with the one in the same place", [
+        "The brackets line up too: (2, 2) pairs with (1, 16),",
+        "and 8 pairs with 2. That gives three pairs, and",
+        "each pair is one counter: the shape number says",
+        "how many values it counts, the stride number how",
+        "far in memory each step of it moves."])
+    cols = [(px + 130, C_A, BLUE_L, "2", "1", "i0", "0 or 1", "+1 a step"),
+            (px + 210, C_B, ORANGE_L, "2", "16", "i1", "0 or 1", "+16 a step"),
+            (px + 320, C_C, AQUA_L, "8", "2", "c", "0 to 7", "+2 a step")]
+    for cx, col, tint, *_ in cols:
+        b.append(rect(cx - 28, T + 14, 56, 70, tint, rx=5))
+    for yy, label, k in ((T + 42, "shape", 3), (T + 74, "stride", 4)):
+        b.append(text(px, yy - 2, label, 12.5, MUTED))
+        for xx, s in ((82, "("), (94, "("), (168, ","), (246, ")"), (256, ","), (360, ")")):
+            b.append(text(px + xx, yy, s, 18, INK2, "middle", family=MONO))
+        for c in cols:
+            b.append(text(c[0], yy, c[k], 18, c[1], "middle", "700", MONO))
+    for x0, x1, s in ((px + 102, px + 238, "the rows: 2 × 2 = 4"), (px + 292, px + 348, "the columns: 8")):
+        b.append(f'<path d="M{x0},{T + 9} V{T + 3} H{x1} V{T + 9}" fill="none" stroke="{INK2}" stroke-width="1"/>')
+        b.append(text((x0 + x1) / 2, T - 4, s, 12, INK2, "middle"))
+    for cx, col, _, _, _, name, vals, stp in cols:
+        b.append(text(cx, T + 104, name, 13, col, "middle", "700"))
+        b.append(text(cx, T + 122, vals, 12, INK2, "middle"))
+        b.append(text(cx, T + 140, stp, 12, col, "middle", "600"))
+
+    # (2) what (2, 2) means: the row number written with two digits
+    T += 190
+    step(T, "2. (2, 2): the row number is written with two digits", [
+        "One counter going 0, 1, 2, 3 is replaced by two",
+        "digits i0 and i1, each 0 or 1, as in binary:",
+        "row = i0 + 2·i1. i0 changes every row, i1 every",
+        "second row. Each digit moves by its own stride,",
+        "so a row starts at 1·i0 + 16·i1."])
+    hx = [px + 20, px + 75, px + 120, px + 165]
+    for x, s, col in zip(hx, ["row", "i0", "i1", "row starts at  1·i0 + 16·i1"], [MUTED, C_A, C_B, MUTED]):
+        b.append(text(x, T, s, 12, col, "middle" if s != hx[3] and x != hx[3] else "start", "600"))
     for r in range(4):
         i0, i1 = r % 2, r // 2
-        yy = gy + r * ch
-        b.append(text(gx - 2 * lw - 12, yy + 18, f"row {r}", 12, INK, "end"))
-        b.append(text(gx - 1.5 * lw, yy + 18, str(i0), 12, C_A, "middle", "600"))
-        b.append(text(gx - 0.5 * lw, yy + 18, str(i1), 12, C_B, "middle", "600"))
-        for c in range(8):
-            cell(gx + c * 44, yy, str(i0 + 16 * i1 + 2 * c), ORANGE_L if i1 else SURF, 44)
-    b.append(rect(gx + 2 * 44, gy + 3 * ch, 44, ch, "none", INK, 2.5))
-    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 22,
-                  f"Outlined: row 3, column 2  →  i0 = 1, i1 = 1, c = 2", 12.5, INK))
-    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 40,
-                  f"offset = {tsp(1, C_A)}·1 + {tsp(16, C_B)}·1 + {tsp(2, C_C)}·2 = 21", 12.5, INK))
-    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 72, "Rows 0 and 1 interleave (even and odd offsets 0–15);", 12.5, INK2))
-    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 90, "the shaded rows 2 and 3 do the same, 16 further on.", 12.5, INK2))
-    b.append(text(gx - 2 * lw - 20, gy + 4 * ch + 108, "A single row stride could not describe this.", 12.5, INK2))
-    return svg(920, gy + 4 * ch + 126, b)
+        yy = T + 12 + 28 * r
+        b.append(rect(px, yy, 400, 26, ROW_T[r], GRID, 1))
+        b.append(text(hx[0], yy + 18, str(r), 13, INK, "middle", "600"))
+        b.append(text(hx[1], yy + 18, str(i0), 13, C_A, "middle", "700"))
+        b.append(text(hx[2], yy + 18, str(i1), 13, C_B, "middle", "700"))
+        b.append(text(hx[3], yy + 18, f"1·{tsp(i0, C_A)} + 16·{tsp(i1, C_B)} = {tsp(i0 + 16 * i1, INK)}",
+                      13, INK2, family=MONO))
 
+    # (3) why: the row starts 0, 1, 16, 17 are not evenly spaced
+    T += 165
+    step(T, "3. Why: no single stride gives 0, 1, 16, 17", [
+        "A single stride s puts the rows at 0, s, 2s, 3s,",
+        "evenly spaced. These rows start +1, +15, +1 apart.",
+        "Two digits, each with its own stride, can say it."])
+    sc, lx = 17, px + 20
+
+    def numline(yy, label, pts, arcs):
+        b.append(text(px, yy - 44, label, 12, MUTED))
+        b.append(line(lx, yy, lx + 25 * sc, yy, GRID, 1.5))
+        for v in range(26):
+            b.append(line(lx + v * sc, yy - 3, lx + v * sc, yy + 3, GRID))
+        for v, fill in pts:
+            b.append(f'<circle cx="{lx + v * sc}" cy="{yy}" r="6" fill="{fill}" stroke="{INK2}" stroke-width="1"/>')
+            b.append(text(lx + v * sc, yy + 20, str(v), 11.5, INK, "middle"))
+        for a, z, s in arcs:
+            b.append(f'<path d="M{lx + a * sc},{yy - 9} Q{lx + (a + z) / 2 * sc},{yy - 30} {lx + z * sc},{yy - 9}" '
+                     f'fill="none" stroke="{INK2}" stroke-width="1"/>')
+            b.append(text(lx + (a + z) / 2 * sc, yy - 24, s, 11.5, INK, "middle", "600"))
+    numline(T + 62, "this layout: where rows 0–3 start", [(0, ROW_T[0]), (1, ROW_T[1]), (16, ROW_T[2]), (17, ROW_T[3])],
+            [(1, 16, "+15")])
+    b.append(text(lx + 0.5 * sc, T + 48, "+1", 11.5, INK, "middle", "600"))
+    b.append(text(lx + 16.5 * sc, T + 48, "+1", 11.5, INK, "middle", "600"))
+    numline(T + 142, "one stride (here 8): always the same gap", [(0, SURF), (8, SURF), (16, SURF), (24, SURF)],
+            [(0, 8, "+8"), (8, 16, "+8"), (16, 24, "+8")])
+
+    # (4) the whole table, and the order it sits in memory
+    T += 200
+    step(T, "4. Add the column: each step in c adds 2", [])
+    b.append(text(20, T + 24, f"offset = {tsp('1', C_A)}·i0 + {tsp('16', C_B)}·i1 + {tsp('2', C_C)}·c", 13, INK, family=MONO))
+    para(20, T + 50, [
+        "Outlined: row 3 (i0 = 1, i1 = 1), column 2:",
+        f"1·1 + 16·1 + 2·2 = 21."])
+    gx, gy, cw2 = px + 50, T + 6, 44
+    for c in range(8):
+        b.append(text(gx + c * cw2 + cw2 / 2, gy - 4, f"c={c}", 11.5, C_C, "middle"))
+    for r in range(4):
+        i0, i1 = r % 2, r // 2
+        yy = gy + 4 + r * ch
+        b.append(text(gx - 8, yy + 18, f"row {r}", 12, INK, "end"))
+        for c in range(8):
+            cell(gx + c * cw2, yy, str(i0 + 16 * i1 + 2 * c), ROW_T[r], cw2)
+    b.append(rect(gx + 2 * cw2, gy + 4 + 3 * ch, cw2, ch, "none", INK, 2.5))
+
+    my, mw = gy + 4 + 4 * ch + 44, 25
+    para(20, my + 4, [
+        "In memory the rows interleave: rows 0 and 1 take",
+        "turns in offsets 0–15, rows 2 and 3 in 16–31.",
+        "Each cell is shaded by the row it belongs to."])
+    for k in range(2):
+        yy = my - 10 + k * 30
+        b.append(text(px + 42, yy + 17, f"{16 * k}–{16 * k + 15}", 11.5, MUTED, "end"))
+        for j in range(16):
+            off = 16 * k + j
+            r = 2 * (off // 16) + off % 2
+            b.append(rect(px + 50 + j * mw, yy, mw, 24, ROW_T[r], GRID, 1))
+            b.append(text(px + 50 + j * mw + mw / 2, yy + 16, str(off), 11, INK, "middle"))
+    b.append(text(px + 50, my + 64, "memory, offset by offset", 11.5, MUTED))
+    return svg(920, my + 80, b)
 
 def tiled_mma():
     """How the three arguments of make_tiled_mma build up, from one instruction to the 64 x 64 x 64 tile.
@@ -605,9 +698,10 @@ def tiled_mma():
             for k in range(gc, 64, gc):
                 b.append(line(x + k * P, y, x + k * P, y + W, FAINT, 1))
 
-        def hl(name, r0, c0, nr, nc, fill, stroke, sw=1.5):
+        def hl(name, r0, c0, nr, nc, fill, stroke, sw=1.5, dash=None):
             x, y, _, _ = mats[name]
-            b.append(rect(x + c0 * P, y + r0 * P, nc * P, nr * P, fill, stroke, sw))
+            r = rect(x + c0 * P, y + r0 * P, nc * P, nr * P, fill, stroke, sw)
+            b.append(r.replace("/>", f' stroke-dasharray="{dash}"/>') if dash else r)
 
         def note(name, r, c, s, fill=INK2):  # text at element (r, c) of a matrix
             x, y, _, _ = mats[name]
@@ -645,16 +739,17 @@ def tiled_mma():
     def d2(hl, note):
         for w in range(4):
             hl("Q", 16 * w, 0, 16, 16, BLUE_L, BLUE)
+            hl("S", 16 * w, 8, 16, 56, "none", BLUE, 1.2, "4 3")   # the rest of this warp's rows: later steps
             hl("S", 16 * w, 0, 16, 8, BLUE_L, BLUE)
-            note("S", 16 * w + 10, 11, f"warp {w}")
+            note("S", 16 * w + 10, 11, f"warp {w}: rows {16 * w}–{16 * w + 15}")
         hl("Kt", 0, 0, 16, 8, BLUE_L, BLUE)
         note("Kt", 7, 11, "the same piece")
         note("Kt", 13, 11, "for all 4 warps")
     panel(R, T1, "2. The warps", "make_tiled_mma(op, (4, 1, 1), ...)",
-          ["Warps along (M, N, K): 4 × 1 × 1. The 4 warps stack along M,",
-           "each doing step 1 on its own 16 rows: a 64 × 8 strip of S."],
-          [("M", "16 × 4 warps = 64", BLUE, "600"), ("N", "8 × 1 = 8", INK, "normal"),
-           ("K", "16 × 1 = 16", INK, "normal"), ("", "default step: (64, 8, 16)", INK2, "normal")], d2)
+          ["4 warps along M, 1 along N: each warp alone owns 16 rows × 64 keys.",
+           "One step does keys 0–7 (solid); later steps do the rest (dashed)."],
+          [("M", "16 × 4 warps = 64", BLUE, "600"), ("N", "8 × 1 warp = 8", INK, "normal"),
+           ("K", "16 × 1 = 16", INK, "normal"), ("", "4 warps: (64, 8, 16)", INK2, "normal")], d2)
 
     # 3. permutation_mnk widens N to 16: pairs
     def d3(hl, note):
@@ -667,13 +762,13 @@ def tiled_mma():
             for j in range(2):
                 hl("Kt", 8 * i, 8 * j, 8, 8, ORANGE_L, ORANGE, 1)
         hl("Kt", 0, 0, 16, 16, "none", ORANGE, 2.5)
-        note("Kt", 7, 19, "four 8 × 8 tiles =")
+        note("Kt", 7, 19, "K for both mmas =")
         note("Kt", 13, 19, "one ldmatrix.x4")
-    panel(L, T2, "3. The step", "permutation_mnk=(64, 16, 16)",
-          ["Sets the step to 64 rows × 16 keys × 16 dims. Only N changes:",
-           "each warp now runs 2 mmas side by side that share one load of K."],
-          [("M", "64  (as in step 2)", INK, "normal"), ("N", "8 × 2 mma = 16", ORANGE, "600"),
-           ("K", "16  (as in step 2)", INK, "normal"), ("", "step: (64, 16, 16)", INK2, "normal")], d3)
+    panel(L, T2, "3. A wider step", "permutation_mnk=(64, 16, 16)",
+          ["Makes each step 16 keys wide, not 8: each warp runs 2 mmas side by side.",
+           "Same math; one load instruction now fetches K for both mmas, not two."],
+          [("M", "64  (as in panel 2)", INK, "normal"), ("N", "8 × 2 mma = 16", ORANGE, "600"),
+           ("K", "16  (as in panel 2)", INK, "normal"), ("", "one step: (64, 16, 16)", INK2, "normal")], d3)
 
     # 4. the step repeated over the kernel's 64 x 64 x 64 tile
     def d4(hl, note):
@@ -692,6 +787,90 @@ def tiled_mma():
            ("K", "64 ÷ 16 = 4 steps", INK, "normal"), ("", "16 steps × 2 mma", INK2, "normal"),
            ("", "= 32 mma per warp", INK, "600")], d4)
     return svg(1010, T2 + 88 + 2 * W + 12 + 36, b)
+
+def mnk_shape():
+    """(16, 8, 16) is (M, N, K): three 2-D matrices that each use two of the numbers, and the
+    16 x 8 x 16 box of multiply-adds that is the only 3-D thing."""
+    b = []
+    c = 11                                       # px per element
+    CM, CN, CK = BLUE, ORANGE, AQUA              # one colour per letter
+    b.append(text(20, 30, "(16, 8, 16) is (M, N, K): three sizes of one matrix multiply, not a 3-D array", 16, weight="600"))
+    b.append(text(20, 50, "C = A · B with A of size M × K, B of size K × N, C of size M × N. "
+                  "Every matrix is 2-D and uses two of the three numbers.", 12.5, INK2))
+
+    def rot(x, y, s, fill, size=12):
+        return (f'<text transform="translate({x},{y}) rotate(-90)" font-size="{size}" fill="{fill}" '
+                f'text-anchor="middle" font-weight="600">{s}</text>')
+
+    def grid(x, y, rows, cols, fill=SURF):
+        b.append(rect(x, y, cols * c, rows * c, fill, GRID, 1))
+        for r in range(1, rows):
+            b.append(line(x, y + r * c, x + cols * c, y + r * c, "#ecebe7", 1))
+        for k in range(1, cols):
+            b.append(line(x + k * c, y, x + k * c, y + rows * c, "#ecebe7", 1))
+        b.append(rect(x, y, cols * c, rows * c, "none", INK2, 1.2))
+
+    def spans(x, y, parts, size=12.5, anchor="start"):   # parts: (text, colour, weight)
+        t = "".join(f'<tspan fill="{f}" font-weight="{w}">{s}</tspan>' for s, f, w in parts)
+        return f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}">{t}</text>'
+
+    # 1. the three matrices
+    b.append(text(20, 88, "1. Three matrices, each 2-D", 14, weight="600"))
+    top, r0, c0 = 140, 5, 5                      # the highlighted value of C is (r0, c0)
+    mats = [(70, 16, 16, "A = piece of Q", "query rows × head dims", ("M", CM), ("K", CK)),
+            (310, 16, 8, "B = piece of Kᵀ", "head dims × keys", ("K", CK), ("N", CN)),
+            (460, 16, 8, "C = piece of S", "query rows × keys", ("M", CM), ("N", CN))]
+    for x, rows, cols, name, what, (rl, rc), (cl, cc) in mats:
+        grid(x, top, rows, cols)
+        b.append(spans(x + cols * c / 2, top - 8, [(f"{cl} = {cols}", cc, "600")], 12, "middle"))
+        b.append(rot(x - 9, top + rows * c / 2, f"{rl} = {rows}", rc))
+        b.append(text(x + cols * c / 2, top + rows * c + 20, name, 12.5, INK, "middle", "600"))
+        b.append(spans(x + cols * c / 2, top + rows * c + 37,
+                       [(rl, rc, "600"), (" × ", INK2, "normal"), (cl, cc, "600"),
+                        (f" = {rows} × {cols}", INK2, "normal")], 12, "middle"))
+        b.append(text(x + cols * c / 2, top + rows * c + 53, what, 11, MUTED, "middle"))
+    b.append(text(272, top + 8 * c + 8, "×", 22, INK2, "middle"))
+    b.append(text(424, top + 8 * c + 8, "=", 22, INK2, "middle"))
+    b.append(rect(70, top + r0 * c, 16 * c, c, AQUA_L, AQUA, 1.5))        # row r0 of A
+    b.append(rect(310 + c0 * c, top, c, 16 * c, AQUA_L, AQUA, 1.5))       # column c0 of B
+    b.append(rect(460 + c0 * c, top + r0 * c, c, c, AQUA, AQUA, 1.5))     # one value of C
+    cy = top + 16 * c + 100
+    for i, s in enumerate(["One value of C (filled) = a row of A times a column of B:",
+                           "16 products added up. That length, K, is the third number.",
+                           "It is the side A and B share, and it is gone from C."]):
+        b.append(text(20, cy + 18 * i, s, 12.5, INK2))
+
+    # 2. the box of work
+    X0 = 640
+    b.append(text(X0 - 20, 88, "2. What is 16 × 8 × 16: the work", 14, weight="600"))
+    dx, dy = 5.5, -3.7                           # one step along K
+    fx, fy = X0 + 20, top - 16 * dy              # front face = C, depth = K
+    ex, ey = 16 * dx, 16 * dy
+    fw, fh = 8 * c, 16 * c
+    top_face = f"{fx},{fy} {fx + fw},{fy} {fx + fw + ex},{fy + ey} {fx + ex},{fy + ey}"
+    side_face = f"{fx + fw},{fy} {fx + fw + ex},{fy + ey} {fx + fw + ex},{fy + fh + ey} {fx + fw},{fy + fh}"
+    b.append(f'<polygon points="{top_face}" fill="#f6f6f4" stroke="{INK2}" stroke-width="1.2"/>')
+    b.append(f'<polygon points="{side_face}" fill="#ecebe7" stroke="{INK2}" stroke-width="1.2"/>')
+    for k in range(1, 16):
+        b.append(line(fx + k * dx, fy + k * dy, fx + fw + k * dx, fy + k * dy, GRID, 0.8))
+        b.append(line(fx + fw + k * dx, fy + k * dy, fx + fw + k * dx, fy + fh + k * dy, GRID, 0.8))
+    px, py = fx + (c0 + 0.5) * c, fy + (r0 + 0.5) * c
+    b.append(line(px, py, px + ex, py + ey, AQUA, 2))
+    for k in range(16):
+        b.append(f'<circle cx="{px + (k + 0.5) * dx:.1f}" cy="{py + (k + 0.5) * dy:.1f}" r="2" fill="{AQUA}"/>')
+    grid(fx, fy, 16, 8, "none")                  # see-through, so the rod runs behind it
+    b.append(rect(fx + c0 * c, fy + r0 * c, c, c, AQUA, AQUA, 1.5))
+    b.append(text(fx + fw / 2, fy + fh + 18, "N = 8", 12, CN, "middle", "600"))
+    b.append(rot(fx - 9, fy + fh / 2, "M = 16", CM))
+    b.append(text(fx + ex / 2 - 6, fy + ey / 2 - 4, "K = 16", 12, CK, "end", "600"))
+    b.append(text(fx + fw + ex + 8, fy + fh / 2 + ey, "front face = C", 11, MUTED))
+    for i, s in enumerate(["Each value of C is a rod of 16 products along K (dots).",
+                           "16 × 8 values × 16 products = 2,048 multiply-adds,",
+                           "all done by one mma instruction. Adding up each",
+                           "rod squashes the box flat into C. No stored array",
+                           "has this shape; it only counts the work."]):
+        b.append(text(X0 - 20, cy + 18 * i, s, 12.5, INK2))
+    return svg(960, cy + 18 * 5 + 16, b)
 
 def ldmatrix_pairs():
     """Drawn as K transposed (head dims down, keys across), like the tiled_mma figure above it,
@@ -811,28 +990,61 @@ def shuffle_args():
         b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{BLUE}"/>')
         b.append(text(x, y + 4, str(n), 11, SURF, "middle", "700"))
 
-    # the code line, each argument boxed and numbered (textLength pins the monospace width)
-    fs, cw, cy = 15, 9.0, 86
-    segs = [("v = ", 0), ("op(v, ", 1), ("cute.arch.", 0), ("shuffle_sync_bfly", 2), ("(", 0), ("v", 3),
-            (", ", 0), ("offset=2", 4), (", ", 0), ("mask=-1", 5), (", ", 0), ("mask_and_clamp=31", 6), ("))", 0)]
-    x = 490 - cw * sum(len(s) for s, _ in segs) / 2
-    b.append(rect(x - 14, cy - 44, cw * sum(len(s) for s, _ in segs) + 28, 62, GREY_L, GRID, 1, 6))
-    for s, n in segs:
-        wpx = cw * len(s)
+    # the code line: op has two arguments, my v (orange) and the whole shuffle call, which evaluates to my
+    # partner's v (green); the pieces of the call are numbered for the cards (textLength pins the monospace width)
+    ORANGE_D, AQUA_D = "#c24e1d", "#12805a"         # darker text shades of ORANGE / AQUA
+    fs, cw, cy = 15, 9.0, 90
+
+    def mono(x, y, s, fill=INK):
+        b.append(f'<text x="{x}" y="{y}" font-size="{fs}" fill="{fill}" font-family="{MONO}" xml:space="preserve" '
+                 f'textLength="{cw * len(s)}" lengthAdjust="spacingAndGlyphs">{s}</text>')
+
+    # (text, role, badge): role "mine" = op's 1st argument, "call" = op's 2nd argument
+    segs = [("v = ", None, 0), ("op", None, 1), ("( ", None, 0), ("v", "mine", 0), (" , ", None, 0),
+            ("cute.arch.", "call", 0), ("shuffle_sync_bfly", "call", 2), ("(", "call", 0), ("v", "call", 3),
+            (", ", "call", 0), ("offset=2", "call", 4), (", ", "call", 0), ("mask=-1", "call", 5),
+            (", ", "call", 0), ("mask_and_clamp=31", "call", 6), (")", "call", 0), (" )", None, 0)]
+    x0 = 490 - cw * sum(len(s) for s, _, _ in segs) / 2
+    pos, x = [], x0
+    for s, role, n in segs:
+        pos.append(x)
+        x += cw * len(s)
+    b.append(rect(x0 - 24, 42, x - x0 + 48, 150, GREY_L, GRID, 1, 6))
+    span = {r: (min(p for p, (_, rr, _) in zip(pos, segs) if rr == r),
+                max(p + cw * len(s) for p, (s, rr, _) in zip(pos, segs) if rr == r)) for r in ("mine", "call")}
+    style = {"mine": (ORANGE_L, ORANGE, ORANGE_D), "call": (AQUA_L, AQUA, AQUA_D)}
+    for r, (a, z) in span.items():                  # the two arguments of op, drawn under everything else
+        b.append(rect(a - 6, cy - 21, z - a + 12, 32, style[r][0], style[r][1], 1.8, 5))
+    for (s, role, n), p in zip(segs, pos):
         if n:
-            hl = wpx - (cw if n == 1 else 0)            # box "op(v" without the ", "
-            b.append(rect(x - 2, cy - 15, hl + 4, 21, BLUE_L, BLUE, 1, 3))
-            badge(x + hl / 2, cy - 27, n)
-        b.append(f'<text x="{x}" y="{cy}" font-size="{fs}" fill="{INK}" font-family="{MONO}" xml:space="preserve" '
-                 f'textLength="{wpx}" lengthAdjust="spacingAndGlyphs">{s}</text>')
-        x += wpx
+            b.append(rect(p - 2, cy - 15, cw * len(s) + 4, 21, BLUE_L, BLUE, 1, 3))
+            badge(p + cw * len(s) / 2, cy - 31, n)
+        mono(p, cy, s)
+    (ma, mz), (ca, cz) = span["mine"], span["call"]
+    b.append(text((ma + mz) / 2, cy + 30, "my v", 12.5, ORANGE_D, "middle", "700"))
+    b.append(text((ma + mz) / 2, cy + 45, "op's 1st argument", 10.5, INK2, "middle"))
+    b.append(text((ca + cz) / 2, cy + 30, "my partner's v: what this whole call returns", 12.5, AQUA_D, "middle", "700"))
+    b.append(text((ca + cz) / 2, cy + 45, "op's 2nd argument. The v inside the call is my v again: the value I send.",
+                  10.5, INK2, "middle"))
+
+    # the same line with lane 0's numbers
+    ey = cy + 82
+    b.append(text(x0, ey, "On lane 0:", 12, MUTED))
+    ex = x0 + 80
+    for s, role in [("v = fmax( ", None), ("3", "mine"), (" , ", None), ("2", "call"), (" ) = 3", None)]:
+        if role:
+            b.append(rect(ex - 5, ey - 16, cw * len(s) + 10, 23, style[role][0], style[role][1], 1.8, 4))
+        mono(ex, ey, s)
+        ex += cw * len(s)
+    b.append(text(ex + 20, ey, "lane 0 sends its 3 and, in the same instruction, lane 2 sends its 2", 12, INK2))
 
     # one card per argument
-    CW, CH, X0, X1, Y0 = 460, 184, 20, 500, 126
+    CW, CH, X0, X1, Y0 = 460, 184, 20, 500, 206
+    RH = [290, 312, 686]                             # taller rows for card 2 (bfly vs down), 4 (XOR), 5 (masks)
 
     def card(col, row, n, name, body, draw=None):
-        x, y = (X0, X1)[col], Y0 + row * (CH + 14)
-        b.append(rect(x, y, CW, CH, SURF, GRID, 1, 6))
+        x, y = (X0, X1)[col], Y0 + sum(RH[:row]) + row * 14
+        b.append(rect(x, y, CW, RH[row], SURF, GRID, 1, 6))
         badge(x + 20, y + 22, n)
         b.append(text(x + 38, y + 27, name, 13.5, INK, weight="600", family=MONO))
         ty = y + 50
@@ -875,14 +1087,32 @@ def shuffle_args():
         b.append(text(x + 190, y + 14, "my v, then my partner's", 11.5, MUTED))
 
     def draw_bfly(x, y):
-        b.append(text(x, y + 14, "partner =", 11.5, MUTED))
-        modes = [("bfly", "lane ^ offset", True), ("idx", "offset", False),
-                 ("up", "lane − offset", False), ("down", "lane + offset", False)]
-        for i, (m, f, on) in enumerate(modes):
-            xx = x + 64 + i * 88
-            b.append(rect(xx, y, 82, 36, BLUE_L if on else GREY_L, BLUE if on else GRID, 1, 4))
-            b.append(text(xx + 41, y + 15, m, 11, INK if on else INK2, "middle", "600", MONO))
-            b.append(text(xx + 41, y + 29, f, 10, INK2, "middle"))
+        # which lanes' values each lane of quad 0 has combined, after each line of quad_reduce
+        groups = [("bfly", "lane ^ offset", [["0", "1", "2", "3"], ["0,2", "1,3", "0,2", "1,3"], ["0–3"] * 4],
+                   "all 4 lanes hold the row max", AQUA_D),
+                  ("down", "lane + offset", [["0", "1", "2", "3"], ["0,2", "1,3", "2", "3"], ["0–3", "1–3", "2,3", "3"]],
+                   "only lane 0 holds the row max", ORANGE_D)]
+        labels = ["start", "offset=2", "offset=1"]
+        for r, lab in enumerate(labels):
+            b.append(text(x, y + 34 + r * 24, lab, 11, BLUE if r else MUTED, weight="600" if r else "normal",
+                          family=MONO if r else None))
+        for g, (mode, rule, rows, verdict, vcol) in enumerate(groups):
+            gx = x + 66 + g * 186
+            b.append(text(gx, y + 10, mode, 12, INK, weight="700", family=MONO))
+            b.append(text(gx + 38, y + 10, "partner = " + rule, 10.5, INK2))
+            for r, cells in enumerate(rows):
+                for i, c in enumerate(cells):
+                    final = r == len(rows) - 1
+                    fill, edge = GREY_L, GRID
+                    if final:
+                        fill, edge = (AQUA_L, AQUA) if c == "0–3" else (ORANGE_L, ORANGE)
+                    cx = gx + i * 42
+                    b.append(rect(cx, y + 20 + r * 24, 38, 20, fill, edge, 1.3 if final else 1, 3))
+                    b.append(text(cx + 19, y + 34 + r * 24, c, 11, INK, "middle"))
+            b.append(text(gx, y + 110, verdict, 11.5, vcol, weight="700"))
+        b.append(text(x, y + 130, "Cells: the lanes whose values this lane has combined. down is shown cut into quads,",
+                      10.5, MUTED))
+        b.append(text(x, y + 144, "so a lane whose partner is past lane 3 keeps its own v.", 10.5, MUTED))
 
     def draw_v(x, y):
         b.append(text(x, y + 14, "sends", 11.5, MUTED))
@@ -896,62 +1126,201 @@ def shuffle_args():
         b.append(text(x + 290, y + 14, "returned", 11.5, MUTED))
 
     def draw_offset(x, y):
-        b.append(text(x, y + 40, "offset=2", 11, INK2, family=MONO))
-        lane_row(x + 70, y + 26, 8, lambda i: i ^ 2, 44)
-        b.append(text(x, y + 60, "1 = 0b01 ^ 0b10 = 0b11 = 3. Lanes 4–7 pair up the same way.", 11, MUTED))
+        # lane ^ offset for the 4 lanes of a quad, in binary, with the flipped bit highlighted
+        def bits(v, flip=None):                      # 2-bit binary, bit `flip` in bold blue
+            out = ""
+            for k in (1, 0):
+                d = str((v >> k) & 1)
+                out += (f'<tspan fill="{BLUE}" font-weight="700">{d}</tspan>' if k == flip else d)
+            return out
+
+        def mono_t(xx, yy, inner, fill=INK):
+            b.append(f'<text x="{xx}" y="{yy}" font-size="12" fill="{fill}" font-family="{MONO}">{inner}</text>')
+
+        cols = [x, x + 54, x + 140, x + 290]
+        b.append(text(cols[0], y + 12, "lane", 10.5, MUTED))
+        b.append(text(cols[1], y + 12, "binary", 10.5, MUTED))
+        for c, off, lab in [(cols[2], 2, "line 1: lane ^ 0b10"), (cols[3], 1, "line 2: lane ^ 0b01")]:
+            mono_t(c, y + 12, f"offset={off}", BLUE)
+            b.append(text(c + 64, y + 12, lab.split(": ")[1], 10.5, MUTED))
+        b.append(line(x, y + 18, x + 420, y + 18, GRID))
+        for i in range(4):
+            ry = y + 36 + i * 20
+            mono_t(cols[0] + 10, ry, str(i))
+            mono_t(cols[1], ry, bits(i))
+            for c, off, k in [(cols[2], 2, 1), (cols[3], 1, 0)]:
+                mono_t(c, ry, f"{bits(i ^ off, k)} = lane {i ^ off}")
+        b.append(text(x, y + 124, "Quad 1 (lanes 4–7) works the same: 5 ^ 2 = 7, 6 ^ 1 = 7. Bits 2–4 of a lane say which",
+                      10.5, MUTED))
+        b.append(text(x, y + 138, "quad it is in, and never flip, so a partner is always in the same quad.", 10.5, MUTED))
 
     def draw_mask(x, y):
-        for i in range(32):
-            xx = x + i * 12 + (i // 4) * 4
-            b.append(rect(xx, y, 10, 16, BLUE, "none", 0, 2))
-        b.append(text(x, y + 32, "bit:  0 … 31, one per lane, all 1 (lanes 0–3 = quad 0, …, 28–31 = quad 7)", 10.5, MUTED))
+        # masks as 32 squares, lane 0 on the left; filled = that lane is listed
+        y += 8                                       # room for the two-line quad labels
+        rows = [("-1", 0xFFFFFFFF, "all 32 ✓", AQUA_D), ("15", 0xF, "quad 0 only ✗", ORANGE_D),
+                ("286331153", 0x11111111, "0, 4, …, 28 ✗", ORANGE_D),
+                ("63281", 0xF731, "0, 4–5, 8–10,\n12–15 ✗", ORANGE_D), ("1", 1, "lane 0 only ✗", ORANGE_D),
+                ("2", 2, "lane 1 only ✗", ORANGE_D), ("0", 0, "no lane ✗", ORANGE_D)]
+        sx, st = x + 72, 8
+        b.append(text(x, y - 2, "mask: hex", 10, MUTED))
+        b.append(text(x, y + 10, "= decimal", 10, MUTED))
+        for q in range(8):                           # one label per quad: quad 0 = lanes 0-3, the quad traced above
+            qx = sx + q * (4 * st + 3) + (4 * st - 2) / 2
+            on = q == 0
+            b.append(text(qx, y - 2, f"quad {q}", 9.5, BLUE if on else MUTED, "middle", "700" if on else "normal"))
+            b.append(text(qx, y + 10, f"{4 * q}–{4 * q + 3}", 9.5, BLUE if on else MUTED, "middle"))
+        RW = 30                                      # row pitch: hex on one line, its decimal under it
+        for r, (dec, val, res, col) in enumerate(rows):
+            ry = y + 18 + r * RW
+            b.append(text(x, ry + 11, f"0x{val:X}", 10, INK, family=MONO))
+            b.append(text(x, ry + 24, f"= {dec}", 9, MUTED, family=MONO))
+            for i in range(32):
+                on = (val >> i) & 1
+                b.append(rect(sx + i * st + (i // 4) * 3, ry + 4, 5, 15, BLUE if on else SURF, BLUE if on else GRID, 1, 1))
+            lines = res.split("\n")                 # a long result takes two lines
+            for k, ln in enumerate(lines):
+                b.append(text(sx + 32 * st + 7 * 3 + 8, ry + 16 + (k - (len(lines) - 1) / 2) * 13, ln, 11, col,
+                              weight="700"))
+        ny = y + 18 + len(rows) * RW + 12
+        notes = [("One bit is one lane: 1 = 0b0001 lists lane 0 alone, not quad 0. Quad 0 takes four bits, "
+                  "0xF = 0b1111. Each hex digit is one quad, so 0x11111111 puts 0001 in every quad: the first "
+                  "lane of each (0, 4, …, 28). 0xF731 builds a mask quad by quad: 1 = 0001 (lane 0), "
+                  "3 = 0011 (lanes 4, 5), 7 = 0111 (lanes 8–10), F = 1111 (lanes 12–15). Binary is written lane 31 … lane 0; the squares run lane 0 → 31. "
+                  "0xFFFFFFFF read as an unsigned number is 4294967295; as a signed 32-bit int it is -1, "
+                  "which is what the code passes.", INK2),
+                 ("✗: all 32 lanes run the shuffle, but some are not listed, and lanes read unlisted partners. "
+                  "The hardware promises nothing: v may come back as garbage.", MUTED)]
+        for para, col in notes:
+            for ln in textwrap.wrap(para, 86):
+                b.append(text(x, ny, ln, 10.5, col))
+                ny += 14
+            ny += 6
 
     def draw_clamp(x, y):
-        bits = "0000000011111"                       # bits 12 .. 0 of 31
-        for i, c in enumerate(bits):
-            bit = 12 - i
-            xx = x + i * 30
-            seg, clamp = 8 <= bit <= 12, bit <= 4
-            b.append(rect(xx, y, 26, 22, BLUE_L if clamp else (GREY_L if seg else SURF), GRID, 1, 2))
-            b.append(text(xx + 13, y + 15, c, 12, INK if clamp else INK2, "middle", family=MONO))
-            b.append(text(xx + 13, y - 4, str(bit), 9, MUTED, "middle"))
-        b.append(line(x, y + 28, x + 5 * 30 - 4, y + 28, INK2))
-        b.append(text(x + 73, y + 42, "segment mask = 0", 10.5, INK2, "middle"))
-        b.append(line(x + 8 * 30, y + 28, x + 13 * 30 - 4, y + 28, BLUE))
-        b.append(text(x + 313, y + 42, "clamp = 31", 10.5, BLUE, "middle"))
+        def para(s, fill=INK2, weight="normal", size=11.5, w=70, lh=16):
+            nonlocal y
+            for ln in textwrap.wrap(s, w):
+                b.append(text(x, y, ln, size, fill, weight=weight))
+                y += lh
+            y += 4
 
-    card(0, 0, 1, "op(v, …)", [
-        "Combines my own value (this first v) with the one my partner sent, and stores the result back in v. "
-        "op is quad_reduce's second argument, chosen where the kernel calls it:"], draw_op)
+        # what the number means: two settings drawn as the 32 lanes cut into groups
+        y -= 4
+        para("The number holds two settings, the way 125 minutes is 2 hours and 5 minutes. "
+             "Split it as big × 256 + small:")
+        y -= 2
+        for k, s_ in enumerate(["small: how far a lane may read inside its group. 31 means to the end.",
+                                "big: sets the group size, 32 − big lanes (the hardware’s convention)."]):
+            b.append(text(x + 8, y, "•", 11.5, INK2))
+            b.append(text(x + 20, y, s_, 11.5, INK2))
+            y += 16
+        y += 8
+        st = 12                                      # one square per lane
+        for val, big, size, res in [("31", 0, 32, "one group, no walls"), ("7199", 28, 4, "a wall every 4 lanes")]:
+            b.append(f'<text x="{x}" y="{y + 2}" font-size="12" fill="{INK}" font-family="{MONO}" xml:space="preserve">'
+                     f'<tspan fill="{BLUE}" font-weight="700">{val:<4}</tspan> = {big:>2} × 256 + 31</text>')
+            b.append(text(x + 172, y + 2, f"big {big}: groups of 32 − {big} = {size},", 11, INK2))
+            b.append(text(x + 172, y + 16, res, 11, INK, weight="600"))
+            y += 24
+            for i in range(32):
+                gx = x + i * st + (i // size) * 6
+                b.append(rect(gx, y, st - 2, 14, BLUE_L if i < 4 else GREY_L, GRID, 1, 2))
+                if i % size == 0 and i:              # a wall between two groups
+                    b.append(line(gx - 4, y - 3, gx - 4, y + 17, ORANGE, 2.5))
+            y += 32
+        para("One square per lane, lane 0 on the left; blue is quad 0. In the name, “mask” is big and "
+             "“clamp” is small.", MUTED, size=10.5, w=82, lh=14)
+
+        # why it does not matter here
+        para("Why it changes nothing in quad_reduce", INK, "600")
+        y -= 4
+        para("bfly’s partners, lane ^ 2 and lane ^ 1 (card 4), are always in the same quad, so they never cross "
+             "a wall, even with groups of 4. 31 is also CuTe’s default; the code just spells it out.")
+
+        # when it does matter
+        para("When it matters", INK, "600")
+        y -= 4
+        para("down mode (card 2): partner = lane + 2. Quad 0 (lanes 0–3) works on one row of S and quad 1 "
+             "(lanes 4–7) on the next, so lanes 2 and 3 would read lanes 4 and 5: another row’s values.")
+        vals = [3, 7, 2, 5, 6, 1, 4, 8]              # quad 0's v, then quad 1's
+        cx0, cs = x + 128, 46
+        qx = cx0 + 4 * cs + 10                       # lanes 4, 5 sit past a gap
+        y += 22
+        b.append(text(x, y + 14, "each lane’s v", 11, INK2))
+        b.append(text(cx0 + 2 * cs - 2, y - 18, "quad 0", 10, BLUE, "middle", "700"))
+        b.append(text(qx + cs - 2, y - 18, "quad 1", 10, ORANGE_D, "middle", "700"))
+        for i in range(6):
+            cx = cx0 + i * cs if i < 4 else qx + (i - 4) * cs
+            fill = BLUE_L if i < 4 else ORANGE_L
+            b.append(rect(cx, y, cs - 4, 20, fill, GRID, 1, 3))
+            b.append(text(cx + (cs - 4) / 2, y + 14, str(vals[i]), 11.5, INK, "middle"))
+            b.append(text(cx + (cs - 4) / 2, y - 4, f"lane {i}", 9.5, MUTED, "middle"))
+        y += 40
+        b.append(text(x, y, "What lanes 0–3 receive from line 1, under three settings:", 11, INK2))
+        y += 8
+        cases = [("bfly", 32, "bfly, 31", "✓ as in quad_reduce"),
+                 ("down", 32, "down, 31", "✗ lanes 2, 3 get\nquad 1’s 6 and 1"),
+                 ("down", 4, "down, 7199", "✓ walls stop them:\nthey keep their v")]
+        for mode, size, lab, verdict in cases:
+            b.append(text(x, y + 19, lab, 11.5, INK, weight="600", family=MONO))
+            for l in range(4):
+                j = l ^ 2 if mode == "bfly" else l + 2
+                if j // size != l // size:
+                    j = l                            # partner past a wall: own v back
+                own, cross = j == l, j // 4 != 0
+                fill, edge = (ORANGE_L, ORANGE) if cross else (SURF, GRID)
+                xx = cx0 + l * cs
+                b.append(f'<rect x="{xx}" y="{y}" width="{cs - 4}" height="30" rx="3" fill="{fill}" stroke="{edge}" '
+                         f'stroke-width="1"' + (' stroke-dasharray="3,2"' if own else '') + '/>')
+                b.append(text(xx + (cs - 4) / 2, y + 13, str(vals[j]), 11.5, INK, "middle", "600"))
+                b.append(text(xx + (cs - 4) / 2, y + 25, "own" if own else f"from {j}", 9, MUTED, "middle"))
+            vcol = ORANGE_D if verdict.startswith("✗") else AQUA_D
+            for k, ln in enumerate(verdict.split("\n")):
+                b.append(text(cx0 + 4 * cs + 4, y + 13 + k * 13, ln, 10.5, vcol, weight="700"))
+            y += 36
+        y += 4
+        para("Each box: the value the lane receives (big) and the lane it came from (small). "
+             "Dashed: the partner was past a wall, so the lane got its own v back.", MUTED, size=10.5, w=82, lh=14)
+
+    card(0, 0, 1, "op(my v, partner's v)", [
+        "Combines my v with my partner's v, the value the whole shuffle call returns, and stores the result "
+        "back in v. op itself is passed in where the kernel calls quad_reduce:"], draw_op)
     card(1, 0, 2, "shuffle_sync_bfly", [
-        "The PTX instruction shfl.sync in bfly (butterfly) mode. The mode decides whose register each lane reads. "
-        "In butterfly mode lanes swap in pairs; the name comes from the crossed pairs of the FFT's butterfly diagram."], draw_bfly)
+        "The PTX instruction shfl.sync in bfly (butterfly) mode: partner\u00a0=\u00a0lane\u00a0^\u00a0offset (XOR, see 4), so lanes swap in pairs.",
+        "Why bfly: every lane needs the row max to rescale its own 16 scores. down mode (partner = lane + offset) "
+        "would leave it in lane 0 alone:"], draw_bfly)
     card(0, 1, 3, "v", [
-        "The value this lane sends, a Float32 in a register: here the maximum of its own 16 scores of the row. Every lane sends "
-        "its v and gets its partner's back, all in one instruction, without touching memory."], draw_v)
+        "My v again, the same register as op's 1st argument: the value this lane sends, here the maximum of its "
+        "own 16 scores of the row. Every lane sends its v and gets its partner's back, in one instruction."], draw_v)
     card(1, 1, 4, "offset=2", [
-        "In butterfly mode the partner is lane ^ offset. 2 = 0b10 flips bit 1: 0↔2, 1↔3. The next line's offset=1 "
-        "flips bit 0: 0↔1, 2↔3. Bits 2–4 never change, so a partner is always in the same quad."], draw_offset)
+        "^ is bitwise XOR, not a power. Write lane and offset in binary; each 1 bit of offset flips that bit of "
+        "lane. offset=2 (0b10) flips bit 1, offset=1 (0b01) flips bit 0.",
+        "Not 2 instead of 1: line 1 uses 2, line 2 uses 1. A quad's lanes 0–3 take 2 bits, and each line combines "
+        "across one bit, so after both every lane has all 4. Either order works."], draw_offset)
     card(0, 2, 5, "mask=-1", [
-        "Which lanes take part, one bit per lane. -1 is 0xFFFFFFFF: all 32. The .sync means each of them must reach "
-        "this instruction; the hardware waits for them. All 8 quads swap at once."], draw_mask)
+        "Which lanes take part: one bit per lane, bit i for lane i. The other cards follow quad 0 (lanes 0–3), but "
+        "one shuffle runs the whole warp: all 8 quads (lanes 0–31) swap at once, each on its own row. So the mask "
+        "covers 32 lanes. -1 in 32 bits is all ones, 0xFFFFFFFF (add 1 and it wraps round to 0): every lane.",
+        "Why: a shuffle reads my partner's register, so my partner must run the shuffle too. The mask lists the "
+        "lanes that will, so the hardware knows whom to wait for. In quad_reduce every lane runs it: all 32."],
+         draw_mask)
     card(1, 2, 6, "mask_and_clamp=31", [
-        "Two numbers packed in one integer. Bits 0–4, the clamp: the highest lane a partner may be; past it, a "
-        "lane gets its own v back. Bits 8–12, the segment mask: split the warp into groups (0: one group of 32). "
-        "lane ^ 2 never passes 31, so 31 means: the whole warp, no clamping."], draw_clamp)
+        "Walls between lanes. It cuts the 32 lanes into equal groups, and a lane may read only from a partner "
+        "in its own group. If the partner is past a wall, the lane gets its own v back instead. "
+        "Not the same as mask (5): mask says which lanes run the shuffle."], draw_clamp)
 
     # trace both lines of quad_reduce on quad 0
-    ty = Y0 + 3 * (CH + 14) + 16
+    ty = Y0 + sum(RH) + 3 * 14 + 16
     b.append(text(20, ty, "Both lines of quad_reduce on quad 0, for the maximum of row 0", 13.5, weight="600"))
     b.append(text(20, ty + 18, "Each lane starts with the maximum of its own 16 scores. Quads 1–7 do the same "
                   "at the same time, on rows 1–7.", 11.5, INK2))
     cols = ["", "lane 0", "lane 1", "lane 2", "lane 3"]
     rows = [("", "v (own maximum)", [3, 7, 2, 5], False),
             ("offset=2", "partner = lane ^ 2", [2, 3, 0, 1], False),
-            ("", "received", [2, 5, 3, 7], False),
+            ("", "partner's v (received)", [2, 5, 3, 7], False),
             ("", "v = fmax(v, received)", [3, 7, 3, 7], True),
             ("offset=1", "partner = lane ^ 1", [1, 0, 3, 2], False),
-            ("", "received", [7, 3, 7, 3], False),
+            ("", "partner's v (received)", [7, 3, 7, 3], False),
             ("", "v = fmax(v, received)", [7, 7, 7, 7], True)]
     gx, lw, colw, rh = 20, 250, 80, 24
     y = ty + 44
@@ -1299,17 +1668,29 @@ def block_grid():
 
 
 def warp_lanes():
-    """A warp's 32 lanes in 8 quads, which lanes hold which row of an MMA result, and how warps make a block."""
+    """Top-down: a block's 64 rows split over 4 warps, warp 0's 32 lanes in 8 quads, and which lanes hold
+    each value of warp 0's 16 x 8 multiply result (quad q holds rows q and q + 8)."""
     b = []
     GREY_L = "#f6f6f4"
-    b.append(f'<defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
-             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
-    b.append(text(20, 30, "A warp, its lanes and its quads", 16, weight="600"))
-    y0 = 104
+    b.append(text(20, 30, "From a block down to its lanes: who holds which rows", 16, weight="600"))
+    b.append(text(20, 50, "Blue follows one path: warp 0 of the block, then quad 0 of warp 0.", 12.5, INK2))
 
-    # 1. one warp: 32 lanes, 8 quads
-    b.append(text(20, 62, "1. One warp = 32 lanes (threads)", 13.5, weight="600"))
-    b.append(text(20, 80, "all 32 run the same instruction at the same time", 11.5, INK2))
+    # 1. one block = 4 warps, 16 rows each
+    b.append(text(20, 88, "1. One block = 4 warps = 128 threads", 13.5, weight="600"))
+    b.append(text(20, 106, "it computes 64 rows (tokens); each warp takes 16", 11.5, INK2))
+    tx, ty, ts = 40, 122, 128
+    for w in range(4):
+        hit = w == 0
+        y = ty + w * ts / 4
+        b.append(rect(tx, y, ts, ts / 4, BLUE_L if hit else GREY_L, BLUE if hit else GRID, 1.5 if hit else 1))
+        b.append(text(tx + ts + 14, y + 20, f"warp {w}: rows {16 * w}–{16 * w + 15}", 11.5,
+                      BLUE if hit else INK2, weight="600" if hit else "normal"))
+    b.append(text(tx, ty + ts + 18, "the block's 64 × 64 tile", 11, MUTED))
+
+    # 2. warp 0 = 32 lanes in 8 quads
+    y0 = 352
+    b.append(text(20, y0 - 42, "2. Warp 0 = 32 lanes (threads)", 13.5, weight="600"))
+    b.append(text(20, y0 - 24, "all 32 run the same instruction at the same time", 11.5, INK2))
     x0, cw, ch = 84, 58, 24
     for q in range(8):
         y = y0 + q * 28
@@ -1321,38 +1702,29 @@ def warp_lanes():
     b.append(text(20, y0 + 8 * 28 + 18, "A quad = 4 neighbouring lanes. Not a piece of hardware,", 11.5, INK2))
     b.append(text(20, y0 + 8 * 28 + 34, "just how the multiply instruction hands out its results.", 11.5, INK2))
 
-    # 2. who holds which value of one 16 x 8 MMA result
-    X = 400
-    b.append(text(X, 62, "2. Who holds each value of one multiply's 16 × 8 result", 13.5, weight="600"))
-    b.append(text(X, 80, "rows 0–7 shown; rows 8–15 go to the same lanes again", 11.5, INK2))
-    gx, gw = X + 46, 50
+    # 3. who holds each value of warp 0's 16 x 8 multiply result: lane 4r + c/2 for row r and row r + 8
+    X = 420
+    b.append(text(X, 88, "3. Who holds each value of warp 0's 16 × 8 multiply result", 13.5, weight="600"))
+    b.append(text(X, 106, "one tensor-core multiply: warp 0's 16 rows × 8 columns", 11.5, INK2))
+    gx, gw, rh, gap = X + 46, 52, 23, 10
     for c in range(8):
-        b.append(text(gx + c * gw + gw / 2, y0 - 6, f"col {c}", 10, MUTED, "middle"))
-    for r in range(8):
-        y = y0 + r * 28
-        hit = r == 0
-        b.append(text(gx - 8, y + 16, f"row {r}", 11, BLUE if hit else MUTED, "end", "600" if hit else "normal"))
+        b.append(text(gx + c * gw + gw / 2, 128, f"col {c}", 10, MUTED, "middle"))
+    for r in range(16):
+        y = 136 + r * rh + (gap if r >= 8 else 0)
+        hit = r % 8 == 0
+        b.append(text(gx - 8, y + 14, f"row {r}", 11, BLUE if hit else MUTED, "end", "600" if hit else "normal"))
         for c in range(8):
-            lane = 4 * r + c // 2
-            b.append(rect(gx + c * gw, y, gw - 2, ch, BLUE if hit else GREY_L, SURF if hit else GRID, 1, 3))
-            b.append(text(gx + c * gw + gw / 2 - 1, y + 16, f"lane {lane}", 9.5, SURF if hit else INK2, "middle"))
-    b.append(text(X, y0 + 8 * 28 + 18, "Row 0 is held only by lanes 0–3 (quad 0), 2 values each. So a row's max or sum", 11.5, INK2))
-    b.append(text(X, y0 + 8 * 28 + 34, "needs just those 4 lanes to swap values (shuffles), not the whole warp.", 11.5, INK2))
-
-    # 3. bigger: warps make a block, blocks run on SMs
-    y = y0 + 8 * 28 + 70
-    b.append(text(20, y, "3. Bigger units", 13.5, weight="600"))
-    bx = 20
-    b.append(rect(bx, y + 14, 4 * 74 + 14, 52, SURF, ORANGE, 1.5, 6))
-    b.append(text(bx + 8, y + 30, "a block = 4 warps = 128 threads", 11, ORANGE, weight="600"))
-    for w in range(4):
-        b.append(rect(bx + 8 + w * 74, y + 36, 68, 22, GREY_L, GRID, 1, 4))
-        b.append(text(bx + 8 + w * 74 + 34, y + 51, f"warp {w}", 11, INK2, "middle"))
-    ax = bx + 4 * 74 + 14
-    b.append(f'<line x1="{ax + 6}" y1="{y + 40}" x2="{ax + 40}" y2="{y + 40}" stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah6)"/>')
-    b.append(text(ax + 50, y + 36, "runs on one SM (streaming multiprocessor), next to other blocks.", 11.5, INK2))
-    b.append(text(ax + 50, y + 52, "This GPU has 56 SMs, each with its own registers, shared memory and tensor cores.", 11.5, INK2))
-    return svg(870, y + 80, b)
+            lane = 4 * (r % 8) + c // 2
+            b.append(rect(gx + c * gw, y, gw - 2, rh - 3, BLUE if hit else GREY_L, SURF if hit else GRID, 1, 3))
+            b.append(text(gx + c * gw + gw / 2 - 1, y + 14, f"lane {lane}", 9.5, SURF if hit else INK2, "middle"))
+    cy = 136 + 16 * rh + gap + 22
+    for i, s in enumerate(["Why two rows per quad: 16 × 8 = 128 values ÷ 32 lanes = 4 per lane.",
+                           "Each row (8 values) goes to one quad: 4 lanes × 2 neighbouring columns.",
+                           "There are 16 rows but only 8 quads, so each quad takes 2 rows: row q",
+                           "and row q + 8. A row's max or sum then needs only its quad's 4 lanes",
+                           "to swap values (shuffles), not the whole warp."]):
+        b.append(text(X, cy + 16 * i, s, 11.5, INK2))
+    return svg(900, max(cy + 16 * 3, y0 + 8 * 28 + 34) + 20, b)
 
 
 def ldmatrix_x4():
@@ -1433,31 +1805,38 @@ def qkv_tiles():
     GREY_L = "#f6f6f4"
     b.append(f'<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
-    b.append(text(20, 30, "The 64 × 64 tiles: what one block takes from Q, K and V (one head, N = 4,096, D = 64)", 16, weight="600"))
+    b.append(text(20, 30, "The 64 × 64 tiles: what one block reads from Q, K and V and writes to O (one head, N = 4,096, D = 64)", 16, weight="600"))
 
     def arrow(x1, y1, x2, y2):
         b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" marker-end="url(#ah7)"/>')
 
-    # 1. global memory: one head's Q, K, V
+    # 1. global memory: one head's Q, O, K, V. Q and O side by side: tile 1 of Q in, tile 1 of O out
     top, h, w = 124, 288, 56
     b.append(text(20, 64, "1. Global memory: one head", 13.5, weight="600"))
-    b.append(text(20, 82, "4,096 rows × 64 head dims each (not to scale)", 11.5, INK2))
-    for i, name in enumerate("QKV"):
-        x = 36 + i * 84
+    b.append(text(20, 82, "4,096 rows × 64 head dims each", 11.5, INK2))
+    b.append(text(20, 97, "cut into 64 tiles of 64 × 64; tiles 0, 1, 2 and 63 drawn", 11.5, MUTED))
+    # square tiles (64 rows x 64 dims, like panel 2), with a break standing for tiles 3 to 62
+    ys = {0: top, 1: top + w, 2: top + 2 * w, 63: top + h - w}
+    for name, x in (("Q", 24), ("O", 88), ("K", 168), ("V", 232)):
         b.append(text(x + w / 2, top - 10, name, 13, INK, "middle", "600"))
-        b.append(rect(x, top, w, h, GREY_L, INK2, 1))
-        for j in range(1, 12):
-            b.append(line(x, top + j * 24, x + w, top + j * 24, GRID, 1))
-        if name == "Q":
-            b.append(rect(x, top + 48, w, 24, ORANGE_L, ORANGE, 2))
-        else:
-            b.append(rect(x, top + 96, w, 24, AQUA_L, AQUA, 2))
-    arrow(296, top + 4, 296, top + h - 4)
-    b.append(f'<text x="312" y="{top + h / 2}" font-size="11" fill="{INK2}" text-anchor="middle" '
-             f'transform="rotate(90 312 {top + h / 2})">64 steps, one per key block</text>')
-    b.append(text(20, top + h + 22, "Orange: this block's 64 query rows.", 11.5, ORANGE))
-    b.append(text(20, top + h + 38, "Green: the 64 keys of the current step.", 11.5, AQUA))
-    b.append(text(20, top + h + 54, "The block steps down K and V, 64 rows at a time.", 11.5, INK2))
+        for t, y in ys.items():
+            if name in "QO" and t == 1:
+                b.append(rect(x, y, w, w, ORANGE_L, ORANGE, 2))
+                b.append(text(x + w / 2, y + w / 2 + 4, "1", 11, ORANGE, "middle", "600"))
+            elif name in "KV" and t == 2:
+                b.append(rect(x, y, w, w, AQUA_L, AQUA, 2))
+                b.append(text(x + w / 2, y + w / 2 + 4, "step j", 10.5, AQUA, "middle", "600"))
+            else:
+                b.append(rect(x, y, w, w, GREY_L, INK2, 1))
+                b.append(text(x + w / 2, y + w / 2 + 4, str(t), 11, MUTED, "middle"))
+        b.append(text(x + w / 2, top + 3 * w + (h - 4 * w) / 2 + 7, "⋮", 20, MUTED, "middle"))
+    arrow(304, top + 4, 304, top + h - 4)
+    b.append(f'<text x="320" y="{top + h / 2}" font-size="11" fill="{INK2}" text-anchor="middle" '
+             f'transform="rotate(90 320 {top + h / 2})">4,096 keys ÷ 64 per step = 64 steps</text>')
+    b.append(text(20, top + h + 22, "Orange: this block's rows. Q tile 1 in, O tile 1 out.", 11.5, ORANGE))
+    b.append(text(20, top + h + 38, "Green: the 64 keys of step j, one of the 64 steps.", 11.5, AQUA))
+    b.append(text(20, top + h + 54, "The block steps down K and V, 64 rows at a time,", 11.5, INK2))
+    b.append(text(20, top + h + 70, "adding each step's share into O tile 1.", 11.5, INK2))
 
     # 2. shared memory: three 64 x 64 tiles
     X, ts = 350, 84
@@ -1522,8 +1901,9 @@ def qkv_tiles():
              "Softmax turns a row of scores into weights; O adds up",
              "the V rows with those weights. The other 3 warps do the",
              "same for their 16 rows at the same time, reading the",
-             "same K and V tiles. O builds up over all 64 steps.",
-             "The division by each row's sum happens once, at the end."]
+             "same K and V tiles. Each step adds its 64 keys' share to O;",
+             "after 64 steps, all 4,096 keys are counted. The division",
+             "by each row's sum happens once, at the end."]
     for i, t in enumerate(notes):
         b.append(text(X3, r2 + ms + 60 + 16 * i, t, 11.5, INK2))
 
@@ -1746,6 +2126,7 @@ if __name__ == "__main__":
     (OUT / "pipeline.svg").write_text(pipeline())
     (OUT / "gpu_hierarchy.svg").write_text(gpu_hierarchy())
     (OUT / "layouts.svg").write_text(layouts())
+    (OUT / "mnk_shape.svg").write_text(mnk_shape())
     (OUT / "tiled_mma.svg").write_text(tiled_mma())
     (OUT / "ldmatrix_pairs.svg").write_text(ldmatrix_pairs())
     (OUT / "warp_shuffle.svg").write_text(warp_shuffle())

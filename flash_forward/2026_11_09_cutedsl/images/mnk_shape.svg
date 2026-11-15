@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 522" width="960" height="522" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="960" height="522" fill="#ffffff"/>
+<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">(16, 8, 16) is (M, N, K): three sizes of one matrix multiply, not a 3-D array</text>
+<text x="20" y="50" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">C = A · B with A of size M × K, B of size K × N, C of size M × N. Every matrix is 2-D and uses two of the three numbers.</text>
+<text x="20" y="88" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">1. Three matrices, each 2-D</text>
+<rect x="70" y="140" width="176" height="176" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="70" y1="151" x2="246" y2="151" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="162" x2="246" y2="162" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="173" x2="246" y2="173" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="184" x2="246" y2="184" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="195" x2="246" y2="195" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="206" x2="246" y2="206" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="217" x2="246" y2="217" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="228" x2="246" y2="228" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="239" x2="246" y2="239" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="250" x2="246" y2="250" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="261" x2="246" y2="261" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="272" x2="246" y2="272" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="283" x2="246" y2="283" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="294" x2="246" y2="294" stroke="#ecebe7" stroke-width="1"/>
+<line x1="70" y1="305" x2="246" y2="305" stroke="#ecebe7" stroke-width="1"/>
+<line x1="81" y1="140" x2="81" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="92" y1="140" x2="92" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="103" y1="140" x2="103" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="114" y1="140" x2="114" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="125" y1="140" x2="125" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="136" y1="140" x2="136" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="147" y1="140" x2="147" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="158" y1="140" x2="158" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="169" y1="140" x2="169" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="180" y1="140" x2="180" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="191" y1="140" x2="191" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="202" y1="140" x2="202" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="213" y1="140" x2="213" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="224" y1="140" x2="224" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="235" y1="140" x2="235" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<rect x="70" y="140" width="176" height="176" fill="none" stroke="#52514e" stroke-width="1.2" rx="0"/>
+<text x="158.0" y="132" font-size="12" text-anchor="middle"><tspan fill="#1baf7a" font-weight="600">K = 16</tspan></text>
+<text transform="translate(61,228.0) rotate(-90)" font-size="12" fill="#2a78d6" text-anchor="middle" font-weight="600">M = 16</text>
+<text x="158.0" y="336" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">A = piece of Q</text>
+<text x="158.0" y="353" font-size="12" text-anchor="middle"><tspan fill="#2a78d6" font-weight="600">M</tspan><tspan fill="#52514e" font-weight="normal"> × </tspan><tspan fill="#1baf7a" font-weight="600">K</tspan><tspan fill="#52514e" font-weight="normal"> = 16 × 16</tspan></text>
+<text x="158.0" y="369" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">query rows × head dims</text>
+<rect x="310" y="140" width="88" height="176" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="310" y1="151" x2="398" y2="151" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="162" x2="398" y2="162" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="173" x2="398" y2="173" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="184" x2="398" y2="184" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="195" x2="398" y2="195" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="206" x2="398" y2="206" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="217" x2="398" y2="217" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="228" x2="398" y2="228" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="239" x2="398" y2="239" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="250" x2="398" y2="250" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="261" x2="398" y2="261" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="272" x2="398" y2="272" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="283" x2="398" y2="283" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="294" x2="398" y2="294" stroke="#ecebe7" stroke-width="1"/>
+<line x1="310" y1="305" x2="398" y2="305" stroke="#ecebe7" stroke-width="1"/>
+<line x1="321" y1="140" x2="321" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="332" y1="140" x2="332" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="343" y1="140" x2="343" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="354" y1="140" x2="354" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="365" y1="140" x2="365" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="376" y1="140" x2="376" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="387" y1="140" x2="387" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<rect x="310" y="140" width="88" height="176" fill="none" stroke="#52514e" stroke-width="1.2" rx="0"/>
+<text x="354.0" y="132" font-size="12" text-anchor="middle"><tspan fill="#eb6834" font-weight="600">N = 8</tspan></text>
+<text transform="translate(301,228.0) rotate(-90)" font-size="12" fill="#1baf7a" text-anchor="middle" font-weight="600">K = 16</text>
+<text x="354.0" y="336" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">B = piece of Kᵀ</text>
+<text x="354.0" y="353" font-size="12" text-anchor="middle"><tspan fill="#1baf7a" font-weight="600">K</tspan><tspan fill="#52514e" font-weight="normal"> × </tspan><tspan fill="#eb6834" font-weight="600">N</tspan><tspan fill="#52514e" font-weight="normal"> = 16 × 8</tspan></text>
+<text x="354.0" y="369" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">head dims × keys</text>
+<rect x="460" y="140" width="88" height="176" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="460" y1="151" x2="548" y2="151" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="162" x2="548" y2="162" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="173" x2="548" y2="173" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="184" x2="548" y2="184" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="195" x2="548" y2="195" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="206" x2="548" y2="206" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="217" x2="548" y2="217" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="228" x2="548" y2="228" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="239" x2="548" y2="239" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="250" x2="548" y2="250" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="261" x2="548" y2="261" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="272" x2="548" y2="272" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="283" x2="548" y2="283" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="294" x2="548" y2="294" stroke="#ecebe7" stroke-width="1"/>
+<line x1="460" y1="305" x2="548" y2="305" stroke="#ecebe7" stroke-width="1"/>
+<line x1="471" y1="140" x2="471" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="482" y1="140" x2="482" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="493" y1="140" x2="493" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="504" y1="140" x2="504" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="515" y1="140" x2="515" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="526" y1="140" x2="526" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<line x1="537" y1="140" x2="537" y2="316" stroke="#ecebe7" stroke-width="1"/>
+<rect x="460" y="140" width="88" height="176" fill="none" stroke="#52514e" stroke-width="1.2" rx="0"/>
+<text x="504.0" y="132" font-size="12" text-anchor="middle"><tspan fill="#eb6834" font-weight="600">N = 8</tspan></text>
+<text transform="translate(451,228.0) rotate(-90)" font-size="12" fill="#2a78d6" text-anchor="middle" font-weight="600">M = 16</text>
+<text x="504.0" y="336" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">C = piece of S</text>
+<text x="504.0" y="353" font-size="12" text-anchor="middle"><tspan fill="#2a78d6" font-weight="600">M</tspan><tspan fill="#52514e" font-weight="normal"> × </tspan><tspan fill="#eb6834" font-weight="600">N</tspan><tspan fill="#52514e" font-weight="normal"> = 16 × 8</tspan></text>
+<text x="504.0" y="369" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal">query rows × keys</text>
+<text x="272" y="236" font-size="22" fill="#52514e" text-anchor="middle" font-weight="normal">×</text>
+<text x="424" y="236" font-size="22" fill="#52514e" text-anchor="middle" font-weight="normal">=</text>
+<rect x="70" y="195" width="176" height="11" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<rect x="365" y="140" width="11" height="176" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<rect x="515" y="195" width="11" height="11" fill="#1baf7a" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="20" y="416" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">One value of C (filled) = a row of A times a column of B:</text>
+<text x="20" y="434" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">16 products added up. That length, K, is the third number.</text>
+<text x="20" y="452" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">It is the side A and B share, and it is gone from C.</text>
+<text x="620" y="88" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">2. What is 16 × 8 × 16: the work</text>
+<polygon points="660,199.2 748,199.2 836.0,140.0 748.0,140.0" fill="#f6f6f4" stroke="#52514e" stroke-width="1.2"/>
+<polygon points="748,199.2 836.0,140.0 836.0,316.0 748,375.2" fill="#ecebe7" stroke="#52514e" stroke-width="1.2"/>
+<line x1="665.5" y1="195.5" x2="753.5" y2="195.5" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="753.5" y1="195.5" x2="753.5" y2="371.5" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="671.0" y1="191.79999999999998" x2="759.0" y2="191.79999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="759.0" y1="191.79999999999998" x2="759.0" y2="367.8" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="676.5" y1="188.1" x2="764.5" y2="188.1" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="764.5" y1="188.1" x2="764.5" y2="364.09999999999997" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="682.0" y1="184.39999999999998" x2="770.0" y2="184.39999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="770.0" y1="184.39999999999998" x2="770.0" y2="360.4" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="687.5" y1="180.7" x2="775.5" y2="180.7" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="775.5" y1="180.7" x2="775.5" y2="356.7" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="693.0" y1="177.0" x2="781.0" y2="177.0" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="781.0" y1="177.0" x2="781.0" y2="353.0" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="698.5" y1="173.29999999999998" x2="786.5" y2="173.29999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="786.5" y1="173.29999999999998" x2="786.5" y2="349.3" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="704.0" y1="169.6" x2="792.0" y2="169.6" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="792.0" y1="169.6" x2="792.0" y2="345.59999999999997" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="709.5" y1="165.89999999999998" x2="797.5" y2="165.89999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="797.5" y1="165.89999999999998" x2="797.5" y2="341.9" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="715.0" y1="162.2" x2="803.0" y2="162.2" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="803.0" y1="162.2" x2="803.0" y2="338.2" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="720.5" y1="158.5" x2="808.5" y2="158.5" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="808.5" y1="158.5" x2="808.5" y2="334.5" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="726.0" y1="154.79999999999998" x2="814.0" y2="154.79999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="814.0" y1="154.79999999999998" x2="814.0" y2="330.79999999999995" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="731.5" y1="151.1" x2="819.5" y2="151.1" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="819.5" y1="151.1" x2="819.5" y2="327.09999999999997" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="737.0" y1="147.39999999999998" x2="825.0" y2="147.39999999999998" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="825.0" y1="147.39999999999998" x2="825.0" y2="323.4" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="742.5" y1="143.7" x2="830.5" y2="143.7" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="830.5" y1="143.7" x2="830.5" y2="319.7" stroke="#d6d5d0" stroke-width="0.8"/>
+<line x1="720.5" y1="259.7" x2="808.5" y2="200.5" stroke="#1baf7a" stroke-width="2"/>
+<circle cx="723.2" cy="257.8" r="2" fill="#1baf7a"/>
+<circle cx="728.8" cy="254.1" r="2" fill="#1baf7a"/>
+<circle cx="734.2" cy="250.4" r="2" fill="#1baf7a"/>
+<circle cx="739.8" cy="246.8" r="2" fill="#1baf7a"/>
+<circle cx="745.2" cy="243.0" r="2" fill="#1baf7a"/>
+<circle cx="750.8" cy="239.3" r="2" fill="#1baf7a"/>
+<circle cx="756.2" cy="235.6" r="2" fill="#1baf7a"/>
+<circle cx="761.8" cy="231.9" r="2" fill="#1baf7a"/>
+<circle cx="767.2" cy="228.2" r="2" fill="#1baf7a"/>
+<circle cx="772.8" cy="224.5" r="2" fill="#1baf7a"/>
+<circle cx="778.2" cy="220.8" r="2" fill="#1baf7a"/>
+<circle cx="783.8" cy="217.1" r="2" fill="#1baf7a"/>
+<circle cx="789.2" cy="213.4" r="2" fill="#1baf7a"/>
+<circle cx="794.8" cy="209.8" r="2" fill="#1baf7a"/>
+<circle cx="800.2" cy="206.0" r="2" fill="#1baf7a"/>
+<circle cx="805.8" cy="202.3" r="2" fill="#1baf7a"/>
+<rect x="660" y="199.2" width="88" height="176" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="660" y1="210.2" x2="748" y2="210.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="221.2" x2="748" y2="221.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="232.2" x2="748" y2="232.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="243.2" x2="748" y2="243.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="254.2" x2="748" y2="254.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="265.2" x2="748" y2="265.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="276.2" x2="748" y2="276.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="287.2" x2="748" y2="287.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="298.2" x2="748" y2="298.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="309.2" x2="748" y2="309.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="320.2" x2="748" y2="320.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="331.2" x2="748" y2="331.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="342.2" x2="748" y2="342.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="353.2" x2="748" y2="353.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="660" y1="364.2" x2="748" y2="364.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="671" y1="199.2" x2="671" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="682" y1="199.2" x2="682" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="693" y1="199.2" x2="693" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="704" y1="199.2" x2="704" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="715" y1="199.2" x2="715" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="726" y1="199.2" x2="726" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<line x1="737" y1="199.2" x2="737" y2="375.2" stroke="#ecebe7" stroke-width="1"/>
+<rect x="660" y="199.2" width="88" height="176" fill="none" stroke="#52514e" stroke-width="1.2" rx="0"/>
+<rect x="715" y="254.2" width="11" height="11" fill="#1baf7a" stroke="#1baf7a" stroke-width="1.5" rx="0"/>
+<text x="704.0" y="393.2" font-size="12" fill="#eb6834" text-anchor="middle" font-weight="600">N = 8</text>
+<text transform="translate(651,287.2) rotate(-90)" font-size="12" fill="#2a78d6" text-anchor="middle" font-weight="600">M = 16</text>
+<text x="698.0" y="165.6" font-size="12" fill="#1baf7a" text-anchor="end" font-weight="600">K = 16</text>
+<text x="844.0" y="228.0" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal">front face = C</text>
+<text x="620" y="416" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Each value of C is a rod of 16 products along K (dots).</text>
+<text x="620" y="434" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">16 × 8 values × 16 products = 2,048 multiply-adds,</text>
+<text x="620" y="452" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">all done by one mma instruction. Adding up each</text>
+<text x="620" y="470" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">rod squashes the box flat into C. No stored array</text>
+<text x="620" y="488" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">has this shape; it only counts the work.</text>
+</svg>
