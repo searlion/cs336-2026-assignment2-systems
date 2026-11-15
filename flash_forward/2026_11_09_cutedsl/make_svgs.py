@@ -2045,56 +2045,69 @@ def cp_async():
     b.append(text(50, yy + 32, "oldest one: that is why K is started first. The three timelines below compare the choices.",
                   12, INK2))
 
-    # why two groups, and why K first: three small timelines
+    # why two groups, and why K first: three timelines stacked on one time scale, so the pauses line up
     y2 = yy + 66
     b.append(text(50, y2, "Why two groups, and why K first? Three ways to load K and V", 13, weight="600"))
-    u = 19
+    b.append(text(50, y2 + 18, "One time scale for all three rows. In every row the thread starts K's or V's copies first, and the "
+                  "second set lands a little", 11.5, INK2))
+    b.append(text(50, y2 + 34, "later because its copies queue behind the first. The dashed line is when the thread can start "
+                  "S = Q Kᵀ.", 11.5, INK2))
+    u, tx = 28, 300
+    dur, lag, comp = 4, 1.5, 2.5     # copy time of one tile, how much later the second set lands, S = Q K^T
+    top = y2 + 58
+    rp = 92                          # row pitch
 
-    def timeline(x, y, title, call, mode, caption, best=False):
-        b.append(text(x, y, title, 12, BLUE if best else INK, weight="600"))
-        b.append(text(x, y + 16, call, 11, INK2, family=MONO))
-        ry = y + 30
-        b.append(text(x, ry + 17, "moving", 11, MUTED))
-        b.append(text(x, ry + 51, "thread", 11, MUTED))
-        tx = x + 52
-        # K and V are the same size, so each takes the same time (4 units); the one started second starts and
-        # lands 1.5 units later (it queues behind the first)
-        dur, lag = 4, 1.5
-        if mode == "one":
-            b.append(rect(tx, ry, (dur + lag) * u - 2, 26, ORANGE, rx=4))
-            b.append(text(tx + (dur + lag) / 2 * u, ry + 17.5, "K and V", 10.5, SURF, "middle"))
-            land = dur + lag
-        else:
-            first, second = ("K", "V") if mode == "kfirst" else ("V", "K")
-            land = dur if mode == "kfirst" else dur + lag
-            for row, g in enumerate((first, second)):
-                x0g = row * lag
-                b.append(rect(tx + x0g * u, ry + 14 * row, dur * u - 2, 12, ORANGE, rx=3))
-                end = x0g + dur
-                lx = (land + end) / 2 if x0g < land < end else x0g + dur / 2   # keep the label off the dashed line
-                b.append(text(tx + lx * u, ry + 14 * row + 10, g, 9.5, SURF, "middle", "600"))
+    def timeline(i, title, call, order, land, caption, one_group=False, best=False):
+        ry = top + i * rp
+        b.append(text(50, ry + 14, title, 12, BLUE if best else INK, weight="600"))
+        b.append(text(50, ry + 30, call, 11, INK2, family=MONO))
+        b.append(text(tx - 8, ry + 17, "copies", 11, MUTED, "end"))
+        b.append(text(tx - 8, ry + 51, "thread", 11, MUTED, "end"))
+        for row, g in enumerate(order):
+            x0g = row * lag
+            b.append(rect(tx + x0g * u, ry + 14 * row, dur * u - 2, 12, ORANGE, rx=3))
+            end = x0g + dur
+            lx = (land + end) / 2 if x0g < land < end else x0g + dur / 2   # keep the label off the dashed line
+            b.append(text(tx + lx * u, ry + 14 * row + 10, g, 9.5, SURF, "middle", "600"))
+        if one_group:
+            b.append(f'<rect x="{tx - 3}" y="{ry - 3}" width="{(dur + lag) * u + 4}" height="32" fill="none" '
+                     f'stroke="{INK2}" stroke-width="1" stroke-dasharray="3 3" rx="5"/>')
         b.append(rect(tx, ry + 34, land * u - 2, 26, PAUSE, rx=4))
         b.append(text(tx + land * u / 2, ry + 51.5, "paused", 11, INK2, "middle"))
-        b.append(rect(tx + land * u, ry + 34, 4 * u - 2, 26, BLUE_L, rx=4))
-        b.append(text(tx + land * u + 2 * u, ry + 51.5, "S = Q Kᵀ", 10.5, INK, "middle"))
-        b.append(line(tx + land * u - 1, ry - 4, tx + land * u - 1, ry + 64, INK, 1.5, "4 3"))
-        for i, c in enumerate(caption):
-            b.append(text(x, ry + 84 + 16 * i, c, 11.5, INK2))
+        b.append(rect(tx + land * u, ry + 34, comp * u - 2, 26, BLUE_L, rx=4))
+        b.append(text(tx + (land + comp / 2) * u, ry + 51.5, "S = Q Kᵀ", 10.5, INK, "middle"))
+        b.append(line(tx + land * u - 1, ry - 6, tx + land * u - 1, ry + 64, INK, 1.5, "4 3"))
+        if best:   # bracket under the thread bar: from this row's resume point to the other rows'
+            sx0, sx1, by = tx + land * u - 1, tx + (land + lag) * u - 1, ry + 66
+            b.append(line(sx0, by, sx1, by, BLUE, 1.5))
+            b.append(line(sx0, by - 4, sx0, by + 4, BLUE, 1.5))
+            b.append(line(sx1, by - 4, sx1, by + 4, BLUE, 1.5))
+            b.append(text((sx0 + sx1) / 2, by + 15, "pause saved", 11, BLUE, "middle", "600"))
+        for k, c in enumerate(caption):
+            b.append(text(545, ry + 14 + 16 * k, c, 11.5, INK2))
 
-    timeline(50, y2 + 26, "One group for K and V", "wait_group(0)", "one",
-             ["S = Q Kᵀ waits for V too,", "although it does not use V."])
-    timeline(340, y2 + 26, "V first, then K", "wait_group(0)", "vfirst",
-             ["Now K is the newest group, so it", "lands last, and the only way to wait", "for it is wait_group(0). No better",
-              "than one group."])
-    timeline(630, y2 + 26, "K first, then V (as above)", "wait_group(1)", "kfirst",
-             ["S = Q Kᵀ starts as soon as K", "has landed; V finishes while", "the thread computes."], best=True)
-    b.append(text(50, y2 + 230, "K and V are the same size (8 KB per tile), so their bars are the same length. "
-                  "The one started second lands a little later, because its", 11.5, INK2))
-    b.append(text(50, y2 + 246, "copies queue behind the first one's. That gap is the time the K-first order saves: "
-                  "small when memory is idle, larger when it is busy.", 11.5, INK2))
+    # faint guide where the thread resumes in the first two rows, carried down to the third
+    gx = tx + (dur + lag) * u - 1
+    b.append(line(gx, top - 6, gx, top + 2 * rp + 64, GRID, 1, "2 3"))
+    timeline(0, "One group for K and V", "wait_group(0)", ("K", "V"), dur + lag,
+             ["K lands at the same moment as in the K-first row,",
+              "but the group also holds V, so the thread waits",
+              "for V too, though S = Q Kᵀ does not use it."], one_group=True)
+    timeline(1, "V first, then K", "wait_group(0)", ("V", "K"), dur + lag,
+             ["K is now the newest group, so it lands last, and",
+              "wait_group can only leave the newest groups",
+              "unfinished. No better than one group."])
+    timeline(2, "K first, then V (as above)", "wait_group(1)", ("K", "V"), dur,
+             ["The thread waits only for K, the older group,",
+              "and starts S = Q Kᵀ while V is still moving.",
+              "The pause is shorter by the time V lands after K."], best=True)
+    y_end = top + 2 * rp + 86
+    b.append(text(50, y_end + 26, "So starting K first does not make K land sooner. It makes K the older group, so wait_group(1) "
+                  "can stop waiting once K", 11.5, INK2))
+    b.append(text(50, y_end + 42, "has landed. The time saved is small when memory is idle, larger when it is busy.", 11.5, INK2))
 
     # 3. waiting for everyone's copies
-    y = y2 + 290
+    y = y_end + 84
     heading(y, 3, "Barrier: wait for every thread's copies",
             ["wait_group only knows about this thread's own copies. The other 127 threads copied the rest of the tile."])
     ty, tw, sh = y + 44, 150, 22
