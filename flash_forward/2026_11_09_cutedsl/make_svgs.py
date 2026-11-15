@@ -72,17 +72,6 @@ def mma_ownership():
             y += lh
         return y + 8
 
-    def shape_table(y, name, shape, rows, total):
-        b.append(text(TX, y, f"{name} has shape {shape}:", 12.5, INK, weight="600"))
-        y += 22
-        for num, what in rows:
-            b.append(text(TX + 14, y, num, 13, BLUE if num != "4" or "across" not in what else ORANGE,
-                          "end", "700"))
-            b.append(text(TX + 26, y, what, 12.5, INK2))
-            y += 19
-        b.append(text(TX + 26, y, total, 12.5, INK, weight="600"))
-        return y + 28
-
     def header(y, n, title, code):
         b.append(line(20, y - 26, W - 20, y - 26, GRID))
         b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
@@ -111,72 +100,77 @@ def mma_ownership():
             for c in range(cols):
                 b.append(rect(x + c * cs + 1, y + r * cs + 1, cs - 2, cs - 2, FAINT, rx=1.5))
 
-    # ---- 1: the instruction ----------------------------------------------------------------
-    y = header(98, 1, "The instruction decides who holds what",
-               ["tiled_mma = cute.make_tiled_mma(warp.MmaF16BF16Op(…, (16, 8, 16)), (4, 1, 1), …)  # idea 2",
-                "thr_mma = tiled_mma.get_slice(tidx)  # the rule, for thread tidx (here 0)"])
-    cs = 12
-    qx, kx, sx, gy = 56, 286, 516, y + 34
-    b.append(text(qx, gy - 20, "Q piece: 16 rows × 16 dims", 12, INK, weight="600"))
-    b.append(text(kx, gy - 20, "K piece: 8 keys × 16 dims", 12, INK, weight="600"))
-    b.append(text(sx, gy - 20, "S piece: 16 × 8", 12, INK, weight="600"))
-    blank(qx, gy, 16, 16, cs)
-    blank(kx, gy, 8, 16, cs)
-    blank(sx, gy, 16, 8, cs)
-    for r in (0, 8):
-        for c in range(16):
-            lane_cell(qx + c * cs, gy + r * cs, cs, (c % 8) // 2)
-        for c in range(8):
-            lane_cell(sx + c * cs, gy + r * cs, cs, c // 2)
-        b.append(text(qx - 5, gy + r * cs + 10, f"row {r}", 9.5, INK2, "end"))
-        b.append(text(sx - 5, gy + r * cs + 10, str(r), 9.5, INK2, "end"))
-    for c in range(16):
-        lane_cell(kx + c * cs, gy, cs, (c % 8) // 2)
-    b.append(text(kx - 5, gy + 10, "key 0", 9.5, INK2, "end"))
-    # lane 0's registers: pairs of neighbours
-    for x0, rows in ((qx, (0, 8)), (kx, (0,))):
-        for r in rows:
-            for c0 in (0, 8):
-                b.append(rect(x0 + c0 * cs - 0.5, gy + r * cs - 0.5, 2 * cs + 1, cs + 1, "none", INK, 1.4, rx=2))
-    for x0, n in ((qx, 16), (kx, 16), (sx, 8)):
-        for c in (0, 1, 8, 9) if n == 16 else (0, 1):
-            b.append(text(x0 + c * cs + cs / 2, gy - 1, str(c), 8, MUTED, "middle"))
-    b.append(rect(qx, gy + 16 * cs + 12, 2 * cs, cs, "none", INK, 1.4, rx=2))
-    b.append(text(qx + 2 * cs + 8, gy + 16 * cs + 22, "outlined: one 32-bit register holds 2 bf16 values", 11, INK))
-    b.append(text(kx, gy + 8 * cs + 22, "per instruction, lane 0 holds:", 11.5, INK2))
-    for i, s in enumerate(("8 values of Q (4 registers)", "4 values of K (2 registers)", "4 values of S")):
-        b.append(text(kx, gy + 8 * cs + 42 + 17 * i, s, 12, INK, weight="600"))
-    pic_bottom = gy + 16 * cs + 40
-    ty = para(y, "Idea 2 picked one tensor-core instruction, (16, 8, 16). One warp multiplies a 16 × 16 piece "
-                 "of Q by a piece of K with 8 keys, and gets a 16 × 8 piece of S.")
-    ty = para(ty, "The instruction also fixes which lane (thread of the warp) holds which value. NVIDIA defines "
-                  "this as part of the instruction, and CuTe has the table built in. No line of our code writes "
-                  "it out: choosing the instruction is enough.")
-    ty = para(ty, "The cells show lane numbers for lanes 0–3. Lanes 4–31 hold the other rows and keys the "
-                  "same way.")
-    ty = para(ty, "Why pairs side by side? A register is 32 bits and a bf16 value is 16 bits, so the "
-                  "instruction takes Q and K two values at a time: neighbours along the head dims.")
-    ty = para(ty, "get_slice(0) picks lane 0 of warp 0. (4, 1, 1) gave warp 0 rows 0–15 of the tile.")
+    # ---- 1: get_slice picks thread 0 = lane 0 of warp 0, and with it lane 0's spots in each piece --
+    y = header(98, 1, "Pick a thread: thread 0 and its spots",
+               ["thr_mma = tiled_mma.get_slice(tidx)  # tidx = 0: thread 0, one of the block's 128"])
+    # warp 0's lanes in quads: this is what get_slice(0) picks, and it doubles as the colour key
+    lw, lx, ly = 16, 56, y + 16
+    b.append(text(lx, ly - 10, "Warp 0's 32 lanes. tidx = 0 is lane 0.", 12, INK, weight="600"))
+    for L in range(32):
+        x = lx + L * lw + (L // 4) * 6
+        b.append(rect(x + 1, ly + 1, lw - 2, lw - 2, BLUE if L == 0 else BLUE_L if L < 4 else FAINT, rx=2))
+        b.append(text(x + lw / 2, ly + lw - 4.5, str(L), 9, SURF if L == 0 else INK if L < 4 else MUTED,
+                      "middle", "600" if L < 4 else "normal"))
+    b.append(line(lx + 1, ly + lw + 6, lx + 4 * lw - 1, ly + lw + 6, INK2))
+    b.append(text(lx + 2 * lw, ly + lw + 20, "quad 0", 10.5, INK, "middle", "600"))
+    b.append(text(lx + 4 * lw + 6 + 1, ly + lw + 20, "grey: lanes 4–31, the same pattern on other rows and keys",
+                  10.5, MUTED))
+    # lane 0's spots in one instruction's pieces; lanes 1-3 fill the rest of the same rows
+    cs = 11
+    gy = ly + lw + 112
+    b.append(text(lx, gy - 50, "Lane 0's spots in one instruction, (16, 8, 16)", 12.5, INK, weight="600"))
+    pieces = [(56, "Q piece", "16 rows × 16 dims", 16, 16, "dim", ("row 0", "row 8"), (0, 8),
+               "rows 0, 8 × dims 0, 1, 8, 9", 8),
+              (282, "K piece", "8 keys × 16 dims", 8, 16, "dim", ("key 0",), (0,),
+               "key 0 × dims 0, 1, 8, 9", 4),
+              (508, "S piece", "16 rows × 8 keys", 16, 8, "key", ("row 0", "row 8"), (0, 8),
+               "rows 0, 8 × keys 0, 1", 4)]
+    cap_y = gy + 16 * cs + 36
+    for x0, name, size, rows, cols, axis, rlabels, owned, spots, nval in pieces:
+        b.append(text(x0, gy - 22, name, 12, INK, weight="600"))
+        b.append(text(x0, gy - 8, size, 11, INK2))
+        blank(x0, gy, rows, cols, cs)
+        for r, lab in zip(owned, rlabels):
+            for c in range(cols):
+                lane_cell(x0 + c * cs, gy + r * cs, cs, (c % 8) // 2)
+            b.append(text(x0 - 5, gy + r * cs + 9, lab, 9.5, INK2, "end"))
+        ay = gy + rows * cs + 12
+        b.append(text(x0 - 5, ay, axis, 9.5, INK2, "end"))
+        for c in (0, 8, cols - 1) if cols == 16 else (0, cols - 1):
+            b.append(text(x0 + c * cs + cs / 2, ay, str(c), 9, MUTED, "middle"))
+        b.append(text(x0, cap_y, f"thread 0: {nval} values", 12, BLUE, weight="600"))
+        b.append(text(x0, cap_y + 16, spots, 11, INK2))
+    pic_bottom = cap_y + 24
+    ty = para(y, "The code starts by picking one thread, tidx, of the block's 128. Thread 0 is lane 0 of "
+                 "warp 0, and warp 0 has rows 0–15 of the tile (idea 2).")
+    ty = para(ty, "get_slice returns a rule, not data: which spots of each instruction's Q, K and S pieces "
+                  "this lane holds. Choosing the instruction in idea 2 fixed that table. NVIDIA defines it "
+                  "and CuTe has it built in; no line of our code spells it out.")
+    ty = para(ty, "Lanes 1–3, the rest of quad 0, fill in rows 0 and 8 (key 0 of K), two neighbouring "
+                  "columns each: a 32-bit register holds two bf16 values. Quad 1 does rows 1 and 9, and so "
+                  "on, as in “What is a warp, a lane and a quad?”.")
+    ty = para(ty, "Nothing is loaded yet. The next lines apply this rule to the whole 64 × 64 tiles.")
     y = max(pic_bottom, ty) + 46
 
-    # ---- 2, 3, 4: the partitions ---------------------------------------------------------------
-    px, side = 4, 256
+    # ---- 2, 3, 4: each partition line: the tile on the left, the tensor it returns on the right ------
+    # The tensor is drawn in its shape (values per piece, pieces down, pieces across): one small block
+    # ("chip") per piece holding thread 0's values of that piece, as they sit in the piece.
+    px, side, cx = 5, 320, 440       # tile cell size, tile side, x of the returned tensor
+    PIECE_LINE = "#c4c3bd"
 
     def tile(x0, y0, name, cap, row_step, col_step, owner, light=None, warp_rows=False):
-        b.append(text(x0, y0 - 30, name, 12.5, INK, weight="600", family=MONO))
-        b.append(text(x0 + 8 * len(name) + 10, y0 - 30, cap, 12, INK2))
+        b.append(text(x0, y0 - 28, name, 12.5, INK, weight="600", family=MONO))
+        b.append(text(x0 + 8 * len(name) + 10, y0 - 28, cap, 12, INK2))
         b.append(rect(x0, y0, side, side, "#f6f6f4", GRID))
         if warp_rows:
             b.append(rect(x0, y0, side, 16 * px, PIECE))
             for w in range(4):
-                b.append(text(x0 + side + 8, y0 + (16 * w + 9) * px, f"warp {w}", 10.5,
-                              INK if w == 0 else MUTED, weight="600" if w == 0 else "normal"))
-        # piece boundaries
-        rows_to = 16 if warp_rows else 64
+                b.append(text(x0 - 6, y0 + (16 * w + 8) * px + 4, f"warp {w}", 10.5,
+                              INK if w == 0 else MUTED, "end", "600" if w == 0 else "normal"))
         for c in range(col_step, 64, col_step):
-            b.append(line(x0 + c * px, y0, x0 + c * px, y0 + rows_to * px, INK2, 0.8, "3 2"))
-        for r in range(row_step, rows_to + (1 if warp_rows else 0), row_step):
-            b.append(line(x0, y0 + r * px, x0 + side, y0 + r * px, INK2, 0.8, "3 2"))
+            b.append(line(x0 + c * px, y0, x0 + c * px, y0 + side, PIECE_LINE, 1))
+        for r in range(row_step, 64, row_step):
+            b.append(line(x0, y0 + r * px, x0 + side, y0 + r * px, PIECE_LINE, 1))
         for r in range(64):
             for c in range(64):
                 if owner(r, c):
@@ -184,151 +178,178 @@ def mma_ownership():
                 elif light and light(r, c):
                     b.append(rect(x0 + c * px, y0 + r * px, px, px, BLUE_L))
 
-    def band_labels(x0, y0, step=16, label="k"):
-        for kk in range(64 // step):
-            b.append(text(x0 + (kk + 0.5) * step * px, y0 - 8, f"{label} = {kk}" if step == 16 else str(kk),
-                          10.5, ORANGE, "middle"))
+    def k_labels(x0, y0):              # the 4 bands of 16 head dims, which the loop walks with k
+        for kk in range(4):
+            b.append(text(x0 + (16 * kk + 8) * px, y0 - 8, f"k = {kk}", 10.5, ORANGE, "middle"))
+
+    def chips(x0, y0, down, across, cr, cc, cs, pitch_x, pitch_y, hl=None):
+        for i in range(down):
+            for j in range(across):
+                for r in range(cr):
+                    for c in range(cc):
+                        b.append(rect(x0 + j * pitch_x + c * cs + 0.5, y0 + i * pitch_y + r * cs + 0.5,
+                                      cs - 1, cs - 1, BLUE))
+        if hl is not None:             # orange frame around piece column hl
+            b.append(rect(x0 + hl * pitch_x - 3.5, y0 - 3.5, cc * cs + 7, (down - 1) * pitch_y + cr * cs + 7,
+                          "none", ORANGE, 1.6, rx=2))
+
+    def arrow(x1, x2, yy, label=None):
+        b.append(line(x1, yy, x2 - 7, yy, INK2, 1.3))
+        b.append(f'<path d="M{x2},{yy} l-8,-4.5 v9 z" fill="{INK2}"/>')
+        if label:
+            b.append(text((x1 + x2) / 2, yy - 7, label, 12, INK, "middle", "600"))
+
+    def shape_lines(x, yy, shape, rows, total):
+        b.append(text(x, yy, f"shape {shape}", 12.5, INK, weight="600"))
+        yy += 21
+        for num, what, col in rows:
+            b.append(text(x + 10, yy, num, 13, col, "end", "700"))
+            b.append(text(x + 20, yy, what, 12, INK2))
+            yy += 19
+        b.append(text(x + 20, yy, total, 12, INK, weight="600"))
+
+    def returned(name, yy, sub):
+        b.append(text(cx, yy, name, 12.5, INK, weight="600", family=MONO))
+        b.append(text(cx + 8 * len(name) + 10, yy, sub, 11.5, INK2))
 
     # 2: Q
-    y = header(y, 2, "My values of Q", ["tSsQ = thr_mma.partition_A(sQ)  # sQ: the 64 x 64 Q tile in shared memory"])
+    y = header(y, 2, "My spots in the Q tile",
+               ["tSsQ = thr_mma.partition_A(sQ)  # sQ: the 64 x 64 Q tile in shared memory"])
     gy = y + 40
     tile(56, gy, "sQ", "64 rows × 64 head dims", 16, 16, lambda r, c: r in (0, 8) and c % 8 in (0, 1),
          warp_rows=True)
-    band_labels(56, gy)
-    b.append(text(56, gy + side + 22, "dashed: the 4 Q pieces of warp 0, one per k", 11, INK2))
-    ty = para(y, "partition_A lays the 16 × 16 Q piece from step 1 over the whole 64 × 64 tile. Warp 0's "
-                 "rows 0–15 are 1 piece tall and 4 pieces across the 64 head dims. In each piece thread 0 gets "
-                 "the same 8 spots as in step 1.")
-    ty = shape_table(ty, "tSsQ", "(8, 1, 4)", [("8", "values per piece (step 1)"),
-                                               ("1", "piece down: warp 0's 16 rows"),
-                                               ("4", "pieces across: 64 head dims ÷ 16")],
-                     "8 × 1 × 4 = 32 values")
-    ty = para(ty, "tSsQ copies nothing. It only records where thread 0's 32 values sit in shared memory, "
-                  "grouped by piece.")
-    ty = para(ty, "CuTe prints the shape as ((2, 2, 2), 1, 4). The (2, 2, 2) is the same 8, split by "
-                  "direction: the pair, row 0 or row 8, dims +0 or +8.", 11.5, MUTED, 17)
-    y = max(gy + side + 30, ty) + 46
+    k_labels(56, gy)
+    arrow(56 + side + 8, cx - 8, gy + 8 * px)
+    returned("tSsQ", gy + 14, "one block per piece")
+    chips(cx, gy + 32, 1, 4, 2, 4, 8, 42, 0)
+    for kk in range(4):
+        b.append(text(cx + kk * 42 + 16, gy + 32 + 16 + 14, f"k = {kk}", 10.5, ORANGE, "middle"))
+    shape_lines(cx, gy + 104, "(8, 1, 4)", [("8", "values per piece (step 1)", BLUE),
+                                             ("1", "piece down: warp 0's 16 rows", INK),
+                                             ("4", "pieces across: 64 dims ÷ 16", ORANGE)], "= 32 values")
+    ty = para(y, "partition_A cuts the Q tile into the instruction's 16 × 16 pieces and keeps thread 0's 8 "
+                 "spots in each: rows 0 and 8, dims +0, +1, +8, +9, as in step 1. Only warp 0's rows count, "
+                 "so that is 1 piece down and 4 across.")
+    ty = para(ty, "It copies nothing. tSsQ only records where these 32 values sit in shared memory.")
+    ty = para(ty, "CuTe prints the shape as ((2, 2, 2), 1, 4): the 8 split into pair × row 0 or 8 × dims +0 "
+                  "or +8.", 11.5, MUTED, 17)
+    y = max(gy + side + 10, ty) + 46
 
     # 3: K
-    y = header(y, 3, "My values of K", ["tSsK = thr_mma.partition_B(sK)"])
+    y = header(y, 3, "My spots in the K tile",
+               ["tSsK = thr_mma.partition_B(sK)  # sK: one 64 x 64 block of K in shared memory"])
     gy = y + 40
     tile(56, gy, "sK", "64 keys × 64 head dims", 8, 16, lambda r, c: r % 8 == 0 and c % 8 in (0, 1))
-    band_labels(56, gy)
+    k_labels(56, gy)
+    b.append(text(50, gy - 8, "key", 10.5, INK2, "end"))
     for n in range(8):
-        b.append(text(56 + side + 8, gy + (8 * n + 5) * px, f"keys {8 * n}–{8 * n + 7}", 10.5, MUTED))
-    b.append(text(56, gy + side + 22, "dashed: 8 K pieces down × 4 across", 11, INK2))
-    ty = para(y, "A K piece is 8 keys × 16 head dims. Covering the 64 keys takes 8 pieces down, and the "
-                 "64 head dims 4 across. In each piece thread 0 gets the same 4 spots as in step 1: "
-                 "the piece's first key, dims +0, +1, +8, +9.")
-    ty = shape_table(ty, "tSsK", "(4, 8, 4)", [("4", "values per piece (step 1)"),
-                                               ("8", "pieces down: 64 keys ÷ 8"),
-                                               ("4", "pieces across: 64 head dims ÷ 16")],
-                     "4 × 8 × 4 = 128 values")
-    ty = para(ty, "Why more than Q? Each warp scores its own rows against all 64 keys, so K is not divided "
-                  "between warps. Lane 0 of every warp (threads 0, 32, 64, 96) holds these same 128.")
-    ty = para(ty, "Printed as ((2, 2), 8, 4): the 4 split into the pair and dims +0 or +8.", 11.5, MUTED, 17)
-    y = max(gy + side + 30, ty) + 46
+        b.append(text(50, gy + 8 * n * px + 8, str(8 * n), 10, MUTED, "end"))
+    arrow(56 + side + 8, cx - 8, gy + 36)
+    returned("tSsK", gy + 14, "one block per piece")
+    chips(cx, gy + 32, 8, 4, 1, 4, 8, 42, 16)
+    for kk in range(4):
+        b.append(text(cx + kk * 42 + 16, gy + 32 + 7 * 16 + 8 + 14, f"k = {kk}", 10.5, ORANGE, "middle"))
+    shape_lines(cx, gy + 204, "(4, 8, 4)", [("4", "values per piece (step 1)", BLUE),
+                                             ("8", "pieces down: 64 keys ÷ 8", INK),
+                                             ("4", "pieces across: 64 dims ÷ 16", ORANGE)], "= 128 values")
+    ty = para(y, "partition_B does the same for K. A K piece is 8 keys × 16 dims, so the tile is 8 pieces "
+                 "down and 4 across. In each, thread 0 has the first key, dims +0, +1, +8, +9.")
+    ty = para(ty, "Why 128 values, against 32 of Q? Every warp scores its own rows against all 64 keys, so K "
+                  "is not split between warps.")
+    y = max(gy + side + 10, ty) + 46
 
     # 4: registers
     y = header(y, 4, "Registers to hold them, and my part of S",
-               ["tSrQ = thr_mma.make_fragment_A(tSsQ)  # same shape as tSsQ: (8, 1, 4)",
-                "tSrK = thr_mma.make_fragment_B(tSsK)  # same shape as tSsK: (4, 8, 4)",
+               ["tSrQ = thr_mma.make_fragment_A(tSsQ)  # registers, same shape as tSsQ: (8, 1, 4)",
+                "tSrK = thr_mma.make_fragment_B(tSsK)  # registers, same shape as tSsK: (4, 8, 4)",
                 "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), cutlass.Float32)"])
     gy = y + 40
-    tile(56, gy, "acc_S", "64 rows × 64 keys, in registers", 16, 8,
+    tile(56, gy, "S", "64 rows × 64 keys: the scores, in registers", 16, 8,
          lambda r, c: r in (0, 8) and c % 8 in (0, 1), lambda r, c: r in (0, 8), warp_rows=True)
     for n in range(8):
         b.append(text(56 + (8 * n + 4) * px, gy - 8, str(n), 10.5, MUTED, "middle"))
-    b.append(text(56, gy + side + 22, "dashed: warp 0's 8 S pieces, one per K piece", 11, INK2))
-    ty = para(y, "make_fragment_A and make_fragment_B set aside thread 0's registers for those values, "
-                 "with the same shapes. Nothing is copied yet; the loop does that.")
-    ty = para(y if False else ty, "acc_S is thread 0's part of the 64 × 64 score tile S, in registers, "
-                                  "laid out by S pieces the same way:")
-    ty = shape_table(ty, "acc_S", "(4, 1, 8)", [("4", "values per S piece (step 1)"),
-                                                ("1", "piece down: warp 0's 16 rows"),
-                                                ("8", "pieces across: 64 keys ÷ 8")],
-                     "4 × 1 × 8 = 32 values, set to 0 per key block")
+    arrow(56 + side + 8, cx - 8, gy + 8 * px)
+    returned("acc_S", gy + 14, "one block per S piece")
+    chips(cx, gy + 32, 1, 8, 2, 2, 8, 22, 0)
+    for n in range(8):
+        b.append(text(cx + n * 22 + 8, gy + 32 + 16 + 14, str(n), 10.5, MUTED, "middle"))
+    shape_lines(cx, gy + 104, "(4, 1, 8)", [("4", "values per S piece (step 1)", BLUE),
+                                             ("1", "piece down: warp 0's 16 rows", INK),
+                                             ("8", "pieces across: 64 keys ÷ 8", INK)], "= 32 values")
+    ty = para(y, "make_fragment_A and make_fragment_B set aside registers in the shapes of tSsQ and tSsK. "
+                 "They stay empty until the loop.")
+    ty = para(ty, "acc_S is thread 0's part of the score tile S: rows 0 and 8, keys +0 and +1 of each 16 × 8 "
+                  "S piece. The kernel zeroes it before each key block.")
     ty = para(ty, "Light blue: lanes 1–3 hold the rest of rows 0 and 8. A row of S is spread over these 4 "
                   "threads, which the softmax will have to combine.")
-    y = max(gy + side + 30, ty) + 46
+    y = max(gy + side + 10, ty) + 46
 
-    # ---- 5: the loop -------------------------------------------------------------------------
-    y = header(y, 5, "The loop: one band of 16 head dims per step",
+    # ---- 5: the loop, shown at k = 1 -------------------------------------------------------------
+    y = header(y, 5, "The loop: 16 head dims per step",
                ["for k in range(4):  # 4 = the last number of both shapes",
                 "    cute.autovec_copy(tSsQ[None, None, k], tSrQ[None, None, k])  # ① Q: shared -> registers",
                 "    cute.autovec_copy(tSsK[None, None, k], tSrK[None, None, k])  # ② K: shared -> registers",
                 "    cute.gemm(tiled_mma, acc_S, tSrQ[None, None, k], tSrK[None, None, k], acc_S)  # ③"])
-    cs = 8
-    cw = 4 * cs   # one K chip: 4 values
-    x0, gy = 56, y + 40
-
-    def chip(x, yy, rows, cols, on):
-        for r in range(rows):
-            for c in range(cols):
-                b.append(rect(x + c * cs + 0.5, yy + r * cs + 0.5, cs - 1, cs - 1, BLUE if on else BLUE_L))
-
-    # tSsQ as 4 chips of 8, tSsK as 8 x 4 chips of 4; k = 1 picked
-    b.append(text(x0, gy - 12, "tSsQ  (8, 1, 4)", 12, INK, weight="600", family=MONO))
+    cs, pq, pk = 8, 42, 16           # cell size, pitch across, pitch down for K
+    x0, gy = 56, y + 44
+    ky = gy + 70
+    rx, mx, sx = 300, 352, 432       # registers: tSrQ / tSrK, the mma labels, acc_S
+    # shared memory: tSsQ and tSsK, piece column k = 1 framed
+    b.append(text(x0, gy - 14, "tSsQ", 12.5, INK, weight="600", family=MONO))
+    b.append(text(x0 + 42, gy - 14, "shared memory", 11.5, INK2))
+    chips(x0, gy, 1, 4, 2, 4, cs, pq, 0, hl=1)
     for kk in range(4):
-        cx = x0 + kk * (cw + 12)
-        chip(cx, gy, 2, 4, kk == 1)
-        b.append(text(cx + cw / 2, gy + 2 * cs + 13, f"k={kk}", 9.5, ORANGE if kk == 1 else MUTED, "middle"))
-    b.append(rect(x0 + (cw + 12) - 3, gy - 3, cw + 6, 2 * cs + 6, "none", ORANGE, 1.6, rx=2))
-    ky = gy + 64
-    b.append(text(x0, ky - 12, "tSsK  (4, 8, 4)", 12, INK, weight="600", family=MONO))
-    for n in range(8):
-        for kk in range(4):
-            chip(x0 + kk * (cw + 12), ky + n * (cs + 6), 1, 4, kk == 1)
+        b.append(text(x0 + kk * pq + 16, gy + 30, f"k = {kk}", 10.5, ORANGE if kk == 1 else MUTED, "middle",
+                      "600" if kk == 1 else "normal"))
+    b.append(text(x0, ky - 14, "tSsK", 12.5, INK, weight="600", family=MONO))
+    chips(x0, ky, 8, 4, 1, 4, cs, pq, pk, hl=1)
     for kk in range(4):
-        b.append(text(x0 + kk * (cw + 12) + cw / 2, ky + 8 * (cs + 6) + 9, f"k={kk}", 9.5,
-                      ORANGE if kk == 1 else MUTED, "middle"))
-    b.append(rect(x0 + (cw + 12) - 3, ky - 3, cw + 6, 8 * (cs + 6) - 6 + 6, "none", ORANGE, 1.6, rx=2))
-    b.append(text(x0, ky + 8 * (cs + 6) + 30, "orange: [None, None, 1]", 11.5, ORANGE, weight="600"))
-    b.append(text(x0, ky + 8 * (cs + 6) + 47, "Q: all 8 × 1 = 8 values", 11.5, INK2))
-    b.append(text(x0, ky + 8 * (cs + 6) + 63, "K: all 4 × 8 = 32 values", 11.5, INK2))
-
-    # gemm at k = 1: 8 instructions, one per K piece
-    gx = 270
-    b.append(text(gx, gy - 12, "③ gemm at k = 1: 8 instructions", 12, INK, weight="600"))
-    b.append(text(gx, gy + 10, "Q chip (same for all 8)", 10.5, MUTED))
-    chip(gx + 140, gy, 2, 4, True)
+        b.append(text(x0 + kk * pq + 16, ky + 7 * pk + 8 + 16, f"k = {kk}", 10.5, ORANGE if kk == 1 else MUTED,
+                      "middle", "600" if kk == 1 else "normal"))
+    by = ky + 7 * pk + 8 + 44
+    b.append(text(x0, by, "orange: [None, None, 1]", 12, ORANGE, weight="600"))
+    b.append(text(x0, by + 18, "Q: all 8 × 1 = 8 values", 11.5, INK2))
+    b.append(text(x0, by + 35, "K: all 4 × 8 = 32 values", 11.5, INK2))
+    # ① ② copy piece column 1 into the same places in registers
+    arrow(x0 + 3 * pq + 4 * cs + 10, rx - 10, gy + 8, "①")
+    arrow(x0 + 3 * pq + 4 * cs + 10, rx - 10, ky + 3 * pk + 4, "②")
+    b.append(text(rx, gy - 14, "tSrQ", 12.5, INK, weight="600", family=MONO))
+    b.append(text(rx + 42, gy - 14, "registers", 11.5, INK2))
+    chips(rx, gy, 1, 1, 2, 4, cs, pq, 0)
+    b.append(text(rx + 4 * cs + 10, gy + 12, "Q piece 1: used by all 8 mmas", 11, INK2))
+    b.append(text(rx, ky - 14, "tSrK", 12.5, INK, weight="600", family=MONO))
+    chips(rx, ky, 8, 1, 1, 4, cs, pq, pk)
+    # ③ one mma per K piece n, adding into acc_S piece n
+    b.append(text(mx, ky - 14, "③ gemm", 12.5, INK, weight="600"))
+    b.append(text(sx, ky - 14, "acc_S", 12.5, INK, weight="600", family=MONO))
     for n in range(8):
-        yy = ky + n * (cs + 6)
-        chip(gx, yy, 1, 4, True)
-        b.append(text(gx + cw + 6, yy + 7.5, f"→ mma {n} →", 10, INK2))
-        sxp = gx + cw + 76
+        yy = ky + n * pk
+        b.append(text(mx, yy + 8, f"mma {n}", 10.5, INK2))
+        arrow(mx + 38, sx - 6, yy + 4)
         for r in range(2):
             for c in range(2):
-                b.append(rect(sxp + c * cs + 0.5, yy + r * 4 + 0.5, cs - 1, 3.5, BLUE))
-        b.append(text(sxp + 2 * cs + 6, yy + 7.5, f"S piece {n}", 10, INK2))
-    b.append(text(gx, ky - 12 + 0, "K piece n (4)", 10.5, MUTED))
-    b.append(text(gx + cw + 76, ky - 12, "adds into 4 of acc_S", 10.5, MUTED))
-    # accumulation over steps
-    ay = ky + 8 * (cs + 6) + 26
-    b.append(text(gx, ay, "S[0, 0] after each step sums head dims:", 11.5, INK, weight="600"))
+                b.append(rect(sx + c * 7 + 0.5, yy - 2 + r * 7 + 0.5, 6, 6, BLUE))
+        b.append(text(sx + 20, yy + 8, f"+= piece {n}", 10.5, INK2))
+    # accumulation over the 4 steps
+    ay = by
+    b.append(text(rx, ay, "S[0, 0] after each step sums head dims:", 11.5, INK, weight="600"))
     for kk in range(4):
         yy = ay + 12 + 16 * kk
-        b.append(text(gx, yy + 9, f"k={kk}", 10, INK2))
+        b.append(text(rx, yy + 9, f"k = {kk}", 10, INK2))
         for d in range(4):
             fill = ORANGE if d == kk else ORANGE_L if d < kk else "#f6f6f4"
-            b.append(rect(gx + 30 + d * 44, yy, 44, 10, fill, GRID, 0.5))
-        b.append(text(gx + 30 + 4 * 44 + 6, yy + 9, f"0–{16 * kk + 15}", 10, INK2))
-    pic_bottom = ay + 12 + 16 * 4 + 10
+            b.append(rect(rx + 36 + d * 40, yy, 40, 10, fill, GRID, 0.5))
+        b.append(text(rx + 36 + 4 * 40 + 6, yy + 9, f"0–{16 * kk + 15}", 10, INK2))
+    pic_bottom = ay + 12 + 16 * 4
 
-    ty = para(y, "for k in range(4): the 4 is the last number of both shapes, the pieces across the head "
-                 "dims. Step k covers head dims 16k to 16k + 15.")
-    ty = para(ty, "[None, None, k] gives one entry per number of the shape. None means “all of these”, "
-                  "like : in NumPy, and k picks one. So it takes everything of piece-column k: 8 × 1 = 8 "
-                  "values of Q, 4 × 8 = 32 of K.")
-    ty = para(ty, "① ② autovec_copy copies those values from shared memory into the same places in tSrQ and "
-                  "tSrK.")
-    ty = para(ty, "③ gemm runs 8 instructions, one per K piece n. Each takes thread 0's 8 Q values and the "
-                  "4 values of K piece n, and adds into the 4 values of S piece n. 8 × 4 = all 32 of acc_S.")
-    ty = para(ty, "Each instruction runs on the whole warp at once. S[0, 0] needs 16 products per step and "
-                  "thread 0 holds only 4 of them; lanes 1–3 supply the rest (step 1). No thread computes a "
-                  "score alone.")
-    ty = para(ty, "acc_S is both input and output, so each step adds its 16 head dims. After k = 3 every "
-                  "score sums all 64.")
+    ty = para(y, "Step k takes piece column k of both shapes: head dims 16k to 16k + 15. In [None, None, k], "
+                 "None keeps a whole mode, like : in NumPy, and k picks one piece across.")
+    ty = para(ty, "① ② copy those values from shared memory into the same places in tSrQ and tSrK.")
+    ty = para(ty, "③ gemm runs 8 instructions, one per K piece n: Q piece k with K piece n, added into S "
+                  "piece n of acc_S. Each runs on the whole warp; thread 0 brings only its spots, and lanes "
+                  "1–3 the rest of each row (step 1).")
+    ty = para(ty, "acc_S is both input and output, so the steps add up: after k = 3 every score sums all 64 "
+                  "head dims.")
     y = max(pic_bottom, ty) + 20
     return svg(W, y, b)
 
