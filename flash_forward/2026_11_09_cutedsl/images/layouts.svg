@@ -155,7 +155,7 @@
 <text x="505" y="706" font-size="13" fill="#2a78d6" text-anchor="middle" font-weight="700">1</text>
 <text x="550" y="706" font-size="13" fill="#c4501f" text-anchor="middle" font-weight="700">1</text>
 <text x="595" y="706" font-size="13" fill="#52514e" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1·<tspan fill="#2a78d6" font-weight="700">1</tspan> + 16·<tspan fill="#c4501f" font-weight="700">1</tspan> = <tspan fill="#0b0b0b" font-weight="700">17</tspan></text>
-<text x="20" y="757" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. Why: no single stride gives 0, 1, 16, 17</text>
+<text x="20" y="757" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">3. Why nest? No single stride gives 0, 1, 16, 17</text>
 <text x="20" y="779" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">A single stride s puts the rows at 0, s, 2s, 3s,</text>
 <text x="20" y="797" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">evenly spaced. These rows start +1, +15, +1 apart.</text>
 <text x="20" y="815" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Two digits, each with its own stride, can say it.</text>

@@ -609,7 +609,7 @@ def layouts():
 
     # (3) why: the row starts 0, 1, 16, 17 are not evenly spaced
     T += 165
-    step(T, "3. Why: no single stride gives 0, 1, 16, 17", [
+    step(T, "3. Why nest? No single stride gives 0, 1, 16, 17", [
         "A single stride s puts the rows at 0, s, 2s, 3s,",
         "evenly spaced. These rows start +1, +15, +1 apart.",
         "Two digits, each with its own stride, can say it."])
