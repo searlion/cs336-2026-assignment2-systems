@@ -9,9 +9,9 @@
 <text x="31" y="134" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
 <text x="50" y="134" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">How wide is one row of the pattern?</text>
 <rect x="20" y="148" width="1000" height="117" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<rect x="21" y="154" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="154" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="34.0" y="169" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">def smem_layout(rows, cols):</text>
-<rect x="21" y="175" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="175" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="190" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">width = 64 if cols % 64 == 0 else 32</text>
 <text x="478.27000000000004" y="190" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># Swizzle&lt;3,3,3&gt; for 128-byte rows</text>
 <text x="64.12" y="211" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,</text>
@@ -76,7 +76,7 @@
 <text x="64.12" y="619" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">width = 64 if cols % 64 == 0 else 32</text>
 <text x="478.27000000000004" y="619" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># Swizzle&lt;3,3,3&gt; for 128-byte rows</text>
 <text x="64.12" y="640" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,</text>
-<rect x="21" y="646" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="646" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="312.61" y="661" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((8, width), stride=(width, 1)))</text>
 <text x="64.12" y="682" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">return cute.tile_to_shape(atom, (rows, cols), (0, 1))</text>
 <text x="119.0" y="766" font-size="10" fill="#8a8984" text-anchor="middle" font-weight="normal">0–3</text>
@@ -246,7 +246,7 @@
 <text x="34.0" y="1079" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">def smem_layout(rows, cols):</text>
 <text x="64.12" y="1100" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">width = 64 if cols % 64 == 0 else 32</text>
 <text x="478.27000000000004" y="1100" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># Swizzle&lt;3,3,3&gt; for 128-byte rows</text>
-<rect x="21" y="1106" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="1106" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="1121" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,</text>
 <text x="312.61" y="1142" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((8, width), stride=(width, 1)))</text>
 <text x="64.12" y="1163" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">return cute.tile_to_shape(atom, (rows, cols), (0, 1))</text>
@@ -325,9 +325,9 @@
 <text x="34.0" y="1576" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">def smem_layout(rows, cols):</text>
 <text x="64.12" y="1597" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">width = 64 if cols % 64 == 0 else 32</text>
 <text x="478.27000000000004" y="1597" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># Swizzle&lt;3,3,3&gt; for 128-byte rows</text>
-<rect x="21" y="1603" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="1603" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="1618" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,</text>
-<rect x="21" y="1624" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="1624" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="312.61" y="1639" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((8, width), stride=(width, 1)))</text>
 <text x="64.12" y="1660" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">return cute.tile_to_shape(atom, (rows, cols), (0, 1))</text>
 <rect x="56" y="1726" width="66" height="28" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="5"/>
@@ -511,7 +511,7 @@
 <text x="478.27000000000004" y="2136" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># Swizzle&lt;3,3,3&gt; for 128-byte rows</text>
 <text x="64.12" y="2157" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,</text>
 <text x="312.61" y="2178" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((8, width), stride=(width, 1)))</text>
-<rect x="21" y="2184" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="2184" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="2199" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">return cute.tile_to_shape(atom, (rows, cols), (0, 1))</text>
 <text x="96" y="2265" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">the 64 × 64 tile of Q</text>
 <rect x="96" y="2275" width="240" height="30" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>

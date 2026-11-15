@@ -7,7 +7,7 @@
 <rect x="223.0" y="69" width="624.0" height="32" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.8" rx="5"/>
 <text x="121.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="36.0" lengthAdjust="spacingAndGlyphs">v = </text>
 <rect x="155.0" y="75" width="22.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="166.0" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="166.0" cy="59" r="9" fill="#0b0b0b"/>
 <text x="166.0" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
 <text x="157.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs">op</text>
 <text x="175.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs">( </text>
@@ -15,34 +15,34 @@
 <text x="202.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="27.0" lengthAdjust="spacingAndGlyphs"> , </text>
 <text x="229.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="90.0" lengthAdjust="spacingAndGlyphs">cute.arch.</text>
 <rect x="317.0" y="75" width="157.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="395.5" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="395.5" cy="59" r="9" fill="#0b0b0b"/>
 <text x="395.5" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
 <text x="319.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="153.0" lengthAdjust="spacingAndGlyphs">shuffle_sync_bfly</text>
 <text x="472.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="9.0" lengthAdjust="spacingAndGlyphs">(</text>
 <rect x="479.0" y="75" width="13.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="485.5" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="485.5" cy="59" r="9" fill="#0b0b0b"/>
 <text x="485.5" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
 <text x="481.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="9.0" lengthAdjust="spacingAndGlyphs">v</text>
 <text x="490.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs">, </text>
 <rect x="506.0" y="75" width="76.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="544.0" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="544.0" cy="59" r="9" fill="#0b0b0b"/>
 <text x="544.0" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
 <text x="508.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="72.0" lengthAdjust="spacingAndGlyphs">offset=2</text>
 <text x="580.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs">, </text>
 <rect x="596.0" y="75" width="67.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="629.5" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="629.5" cy="59" r="9" fill="#0b0b0b"/>
 <text x="629.5" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">5</text>
 <text x="598.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="63.0" lengthAdjust="spacingAndGlyphs">mask=-1</text>
 <text x="661.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs">, </text>
 <rect x="677.0" y="75" width="157.0" height="21" fill="#d4e4f7" stroke="#2a78d6" stroke-width="1" rx="3"/>
-<circle cx="755.5" cy="59" r="9" fill="#2a78d6"/>
+<circle cx="755.5" cy="59" r="9" fill="#0b0b0b"/>
 <text x="755.5" y="63" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
 <text x="679.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="153.0" lengthAdjust="spacingAndGlyphs">mask_and_clamp=31</text>
 <text x="832.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="9.0" lengthAdjust="spacingAndGlyphs">)</text>
 <text x="841.0" y="90" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="18.0" lengthAdjust="spacingAndGlyphs"> )</text>
-<text x="197.5" y="120" font-size="12.5" fill="#c24e1d" text-anchor="middle" font-weight="700">my v</text>
+<text x="197.5" y="120" font-size="12.5" fill="#c4501f" text-anchor="middle" font-weight="700">my v</text>
 <text x="197.5" y="135" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">op's 1st argument</text>
-<text x="535.0" y="120" font-size="12.5" fill="#12805a" text-anchor="middle" font-weight="700">my partner's v: what this whole call returns</text>
+<text x="535.0" y="120" font-size="12.5" fill="#0f7f58" text-anchor="middle" font-weight="700">my partner's v: what this whole call returns</text>
 <text x="535.0" y="135" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">op's 2nd argument. The v inside the call is my v again: the value I send.</text>
 <text x="121.0" y="172" font-size="12" fill="#8a8984" text-anchor="start" font-weight="normal">On lane 0:</text>
 <text x="201.0" y="172" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="90.0" lengthAdjust="spacingAndGlyphs">v = fmax( </text>
@@ -54,7 +54,7 @@
 <text x="336.0" y="172" font-size="15" fill="#0b0b0b" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve" textLength="54.0" lengthAdjust="spacingAndGlyphs"> ) = 3</text>
 <text x="410.0" y="172" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">lane 0 sends its 3 and, in the same instruction, lane 2 sends its 2</text>
 <rect x="20" y="206" width="460" height="290" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="40" cy="228" r="9" fill="#2a78d6"/>
+<circle cx="40" cy="228" r="9" fill="#0b0b0b"/>
 <text x="40" y="232" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
 <text x="58" y="233" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">op(my v, partner's v)</text>
 <text x="36" y="256" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Combines my v with my partner's v, the value the whole shuffle call</text>
@@ -74,7 +74,7 @@
 <text x="96" y="378" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">fmax(3, 2) = 3</text>
 <text x="226" y="378" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="normal">my v, then my partner's</text>
 <rect x="500" y="206" width="460" height="290" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="520" cy="228" r="9" fill="#2a78d6"/>
+<circle cx="520" cy="228" r="9" fill="#0b0b0b"/>
 <text x="520" y="232" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
 <text x="538" y="233" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">shuffle_sync_bfly</text>
 <text x="516" y="256" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">The PTX instruction shfl.sync in bfly (butterfly) mode:</text>
@@ -110,7 +110,7 @@
 <text x="685" y="414" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">0–3</text>
 <rect x="708" y="400" width="38" height="20" fill="#d1efe4" stroke="#1baf7a" stroke-width="1.3" rx="3"/>
 <text x="727" y="414" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">0–3</text>
-<text x="582" y="442" font-size="11.5" fill="#12805a" text-anchor="start" font-weight="700">all 4 lanes hold the row max</text>
+<text x="582" y="442" font-size="11.5" fill="#0f7f58" text-anchor="start" font-weight="700">all 4 lanes hold the row max</text>
 <text x="768" y="342" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">down</text>
 <text x="806" y="342" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal">partner = lane + offset</text>
 <rect x="768" y="352" width="38" height="20" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
@@ -137,11 +137,11 @@
 <text x="871" y="414" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">2,3</text>
 <rect x="894" y="400" width="38" height="20" fill="#fbe0d5" stroke="#eb6834" stroke-width="1.3" rx="3"/>
 <text x="913" y="414" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
-<text x="768" y="442" font-size="11.5" fill="#c24e1d" text-anchor="start" font-weight="700">only lane 0 holds the row max</text>
+<text x="768" y="442" font-size="11.5" fill="#c4501f" text-anchor="start" font-weight="700">only lane 0 holds the row max</text>
 <text x="516" y="462" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">Cells: the lanes whose values this lane has combined. down is shown cut into quads,</text>
 <text x="516" y="476" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">so a lane whose partner is past lane 3 keeps its own v.</text>
 <rect x="20" y="510" width="460" height="312" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="40" cy="532" r="9" fill="#2a78d6"/>
+<circle cx="40" cy="532" r="9" fill="#0b0b0b"/>
 <text x="40" y="536" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
 <text x="58" y="537" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">v</text>
 <text x="36" y="560" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">My v again, the same register as op's 1st argument: the value this</text>
@@ -156,7 +156,7 @@
 <text x="254" y="630" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">partner's v</text>
 <text x="326" y="630" font-size="11.5" fill="#8a8984" text-anchor="start" font-weight="normal">returned</text>
 <rect x="500" y="510" width="460" height="312" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="520" cy="532" r="9" fill="#2a78d6"/>
+<circle cx="520" cy="532" r="9" fill="#0b0b0b"/>
 <text x="520" y="536" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
 <text x="538" y="537" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">offset=2</text>
 <text x="516" y="560" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">^ is bitwise XOR, not a power. Write lane and offset in binary; each 1</text>
@@ -191,7 +191,7 @@
 <text x="516" y="792" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">Quad 1 (lanes 4–7) works the same: 5 ^ 2 = 7, 6 ^ 1 = 7. Bits 2–4 of a lane say which</text>
 <text x="516" y="806" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">quad it is in, and never flip, so a partner is always in the same quad.</text>
 <rect x="20" y="836" width="460" height="686" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="40" cy="858" r="9" fill="#2a78d6"/>
+<circle cx="40" cy="858" r="9" fill="#0b0b0b"/>
 <text x="40" y="862" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">5</text>
 <text x="58" y="863" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">mask=-1</text>
 <text x="36" y="886" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Which lanes take part: one bit per lane, bit i for lane i. The other</text>
@@ -254,7 +254,7 @@
 <rect x="361" y="1056" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
 <rect x="369" y="1056" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
 <rect x="377" y="1056" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
-<text x="393" y="1068.0" font-size="11" fill="#12805a" text-anchor="start" font-weight="700">all 32 ✓</text>
+<text x="393" y="1068.0" font-size="11" fill="#0f7f58" text-anchor="start" font-weight="700">all 32 ✓</text>
 <text x="36" y="1093" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0xF</text>
 <text x="36" y="1106" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 15</text>
 <rect x="108" y="1086" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
@@ -289,7 +289,7 @@
 <rect x="361" y="1086" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1086" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1086" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1098.0" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">quad 0 only ✗</text>
+<text x="393" y="1098.0" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">quad 0 only ✗</text>
 <text x="36" y="1123" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0x11111111</text>
 <text x="36" y="1136" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 286331153</text>
 <rect x="108" y="1116" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
@@ -324,7 +324,7 @@
 <rect x="361" y="1116" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1116" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1116" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1128.0" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">0, 4, …, 28 ✗</text>
+<text x="393" y="1128.0" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">0, 4, …, 28 ✗</text>
 <text x="36" y="1153" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0xF731</text>
 <text x="36" y="1166" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 63281</text>
 <rect x="108" y="1146" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
@@ -359,8 +359,8 @@
 <rect x="361" y="1146" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1146" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1146" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1151.5" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">0, 4–5, 8–10,</text>
-<text x="393" y="1164.5" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">12–15 ✗</text>
+<text x="393" y="1151.5" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">0, 4–5, 8–10,</text>
+<text x="393" y="1164.5" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">12–15 ✗</text>
 <text x="36" y="1183" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0x1</text>
 <text x="36" y="1196" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 1</text>
 <rect x="108" y="1176" width="5" height="15" fill="#2a78d6" stroke="#2a78d6" stroke-width="1" rx="1"/>
@@ -395,7 +395,7 @@
 <rect x="361" y="1176" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1176" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1176" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1188.0" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">lane 0 only ✗</text>
+<text x="393" y="1188.0" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">lane 0 only ✗</text>
 <text x="36" y="1213" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0x2</text>
 <text x="36" y="1226" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 2</text>
 <rect x="108" y="1206" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
@@ -430,7 +430,7 @@
 <rect x="361" y="1206" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1206" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1206" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1218.0" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">lane 1 only ✗</text>
+<text x="393" y="1218.0" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">lane 1 only ✗</text>
 <text x="36" y="1243" font-size="10" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0x0</text>
 <text x="36" y="1256" font-size="9" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 0</text>
 <rect x="108" y="1236" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
@@ -465,7 +465,7 @@
 <rect x="361" y="1236" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="369" y="1236" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
 <rect x="377" y="1236" width="5" height="15" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="1"/>
-<text x="393" y="1248.0" font-size="11" fill="#c24e1d" text-anchor="start" font-weight="700">no lane ✗</text>
+<text x="393" y="1248.0" font-size="11" fill="#c4501f" text-anchor="start" font-weight="700">no lane ✗</text>
 <text x="36" y="1274" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal">One bit is one lane: 1 = 0b0001 lists lane 0 alone, not quad 0. Quad 0 takes four</text>
 <text x="36" y="1288" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal">bits, 0xF = 0b1111. Each hex digit is one quad, so 0x11111111 puts 0001 in every quad:</text>
 <text x="36" y="1302" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal">the first lane of each (0, 4, …, 28). 0xF731 builds a mask quad by quad: 1 = 0001</text>
@@ -476,7 +476,7 @@
 <text x="36" y="1378" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">✗: all 32 lanes run the shuffle, but some are not listed, and lanes read unlisted</text>
 <text x="36" y="1392" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">partners. The hardware promises nothing: v may come back as garbage.</text>
 <rect x="500" y="836" width="460" height="686" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" rx="6"/>
-<circle cx="520" cy="858" r="9" fill="#2a78d6"/>
+<circle cx="520" cy="858" r="9" fill="#0b0b0b"/>
 <text x="520" y="862" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
 <text x="538" y="863" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">mask_and_clamp=31</text>
 <text x="516" y="886" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Walls between lanes. It cuts the 32 lanes into equal groups, and a</text>
@@ -578,7 +578,7 @@
 <text x="516" y="1288" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">would read lanes 4 and 5: another row’s values.</text>
 <text x="516" y="1344" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">each lane’s v</text>
 <text x="734" y="1312" font-size="10" fill="#2a78d6" text-anchor="middle" font-weight="700">quad 0</text>
-<text x="882" y="1312" font-size="10" fill="#c24e1d" text-anchor="middle" font-weight="700">quad 1</text>
+<text x="882" y="1312" font-size="10" fill="#c4501f" text-anchor="middle" font-weight="700">quad 1</text>
 <rect x="644" y="1330" width="42" height="20" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="665.0" y="1344" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">3</text>
 <text x="665.0" y="1326" font-size="9.5" fill="#8a8984" text-anchor="middle" font-weight="normal">lane 0</text>
@@ -611,7 +611,7 @@
 <rect x="782" y="1378" width="42" height="30" rx="3" fill="#ffffff" stroke="#d6d5d0" stroke-width="1"/>
 <text x="803.0" y="1391" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">7</text>
 <text x="803.0" y="1403" font-size="9" fill="#8a8984" text-anchor="middle" font-weight="normal">from 1</text>
-<text x="832" y="1391" font-size="10.5" fill="#12805a" text-anchor="start" font-weight="700">✓ as in quad_reduce</text>
+<text x="832" y="1391" font-size="10.5" fill="#0f7f58" text-anchor="start" font-weight="700">✓ as in quad_reduce</text>
 <text x="516" y="1433" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">down, 31</text>
 <rect x="644" y="1414" width="42" height="30" rx="3" fill="#ffffff" stroke="#d6d5d0" stroke-width="1"/>
 <text x="665.0" y="1427" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">2</text>
@@ -625,8 +625,8 @@
 <rect x="782" y="1414" width="42" height="30" rx="3" fill="#fbe0d5" stroke="#eb6834" stroke-width="1"/>
 <text x="803.0" y="1427" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">1</text>
 <text x="803.0" y="1439" font-size="9" fill="#8a8984" text-anchor="middle" font-weight="normal">from 5</text>
-<text x="832" y="1427" font-size="10.5" fill="#c24e1d" text-anchor="start" font-weight="700">✗ lanes 2, 3 get</text>
-<text x="832" y="1440" font-size="10.5" fill="#c24e1d" text-anchor="start" font-weight="700">quad 1’s 6 and 1</text>
+<text x="832" y="1427" font-size="10.5" fill="#c4501f" text-anchor="start" font-weight="700">✗ lanes 2, 3 get</text>
+<text x="832" y="1440" font-size="10.5" fill="#c4501f" text-anchor="start" font-weight="700">quad 1’s 6 and 1</text>
 <text x="516" y="1469" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">down, 7199</text>
 <rect x="644" y="1450" width="42" height="30" rx="3" fill="#ffffff" stroke="#d6d5d0" stroke-width="1"/>
 <text x="665.0" y="1463" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">2</text>
@@ -640,8 +640,8 @@
 <rect x="782" y="1450" width="42" height="30" rx="3" fill="#ffffff" stroke="#d6d5d0" stroke-width="1" stroke-dasharray="3,2"/>
 <text x="803.0" y="1463" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">5</text>
 <text x="803.0" y="1475" font-size="9" fill="#8a8984" text-anchor="middle" font-weight="normal">own</text>
-<text x="832" y="1463" font-size="10.5" fill="#12805a" text-anchor="start" font-weight="700">✓ walls stop them:</text>
-<text x="832" y="1476" font-size="10.5" fill="#12805a" text-anchor="start" font-weight="700">they keep their v</text>
+<text x="832" y="1463" font-size="10.5" fill="#0f7f58" text-anchor="start" font-weight="700">✓ walls stop them:</text>
+<text x="832" y="1476" font-size="10.5" fill="#0f7f58" text-anchor="start" font-weight="700">they keep their v</text>
 <text x="516" y="1490" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">Each box: the value the lane receives (big) and the lane it came from (small).</text>
 <text x="516" y="1504" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal">Dashed: the partner was past a wall, so the lane got its own v back.</text>
 <text x="20" y="1552" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="600">Both lines of quad_reduce on quad 0, for the maximum of row 0</text>

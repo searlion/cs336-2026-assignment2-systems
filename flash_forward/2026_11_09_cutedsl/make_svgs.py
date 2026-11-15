@@ -33,9 +33,16 @@ import pathlib
 OUT = pathlib.Path(__file__).parent / "images"
 FONT = "system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"
-INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#8a8984", "#d6d5d0"
-BLUE, BLUE_L, ORANGE, ORANGE_L, AQUA, AQUA_L = "#2a78d6", "#d4e4f7", "#eb6834", "#fbe0d5", "#1baf7a", "#d1efe4"
-SURF = "#ffffff"
+# One palette for every figure (and for plot_results_svg.py): warm neutrals plus four accents.
+# Neutrals, darkest to lightest: text, secondary text, muted labels, strong lines, grid lines,
+# mid-grey fill, light-grey fill, panel background, page.
+INK, INK2, MUTED, DIM_LINE, GRID = "#0b0b0b", "#52514e", "#8a8984", "#b9b8b2", "#d6d5d0"
+GREY_M, FILL, PANEL, SURF = "#e4e3df", "#ecebe7", "#f6f6f4", "#ffffff"
+# Accents: strong / light (plus a few extra shades). Used in this order when four things need colours.
+BLUE, BLUE_L, BLUE_XL = "#2a78d6", "#d4e4f7", "#eef4fc"
+ORANGE, ORANGE_L, ORANGE_M, ORANGE_D = "#eb6834", "#fbe0d5", "#f4b89f", "#c4501f"   # _D: orange text
+AQUA, AQUA_L, AQUA_D = "#1baf7a", "#d1efe4", "#0f7f58"                            # _D: green text
+GOLD, GOLD_L, GOLD_EDGE = "#c9a227", "#fdf3d8", "#e6d39a"
 
 
 def svg(w, h, body):
@@ -69,7 +76,7 @@ def mma_ownership():
     #   S (C): rows g, g + 8; keys 2t, 2t + 1                      (4 fp32 registers)
     import textwrap
     W, TX, TW = 1040, 640, 58
-    FAINT, PIECE = "#ecebe6", "#eaf1fb"
+    FAINT, PIECE = FILL, BLUE_XL
     b = [text(20, 30, "Following thread 0 through the code", 17, weight="600"),
          text(20, 52, "Blue: values thread 0 holds. Light blue: lanes 1–3, the other three threads of its "
                       "quad. Every thread gets its own share the same way.", 12.5, INK2)]
@@ -87,7 +94,7 @@ def mma_ownership():
         b.append(text(50, y, title, 15, weight="600"))
         y += 14
         h = 21 * len(code) + 12
-        b.append(rect(20, y, W - 40, h, "#f6f6f4", GRID, rx=4))
+        b.append(rect(20, y, W - 40, h, PANEL, GRID, rx=4))
         for i, c in enumerate(code):
             code_part, _, comment = c.partition("  #")
             yy = y + 21 + 21 * i
@@ -164,12 +171,12 @@ def mma_ownership():
     # The tensor is drawn in its shape (values per piece, pieces down, pieces across): one small block
     # ("chip") per piece holding thread 0's values of that piece, as they sit in the piece.
     px, side, cx = 5, 320, 440       # tile cell size, tile side, x of the returned tensor
-    PIECE_LINE = "#c4c3bd"
+    PIECE_LINE = DIM_LINE
 
     def tile(x0, y0, name, cap, row_step, col_step, owner, light=None, warp_rows=False):
         b.append(text(x0, y0 - 28, name, 12.5, INK, weight="600", family=MONO))
         b.append(text(x0 + 8 * len(name) + 10, y0 - 28, cap, 12, INK2))
-        b.append(rect(x0, y0, side, side, "#f6f6f4", GRID))
+        b.append(rect(x0, y0, side, side, PANEL, GRID))
         if warp_rows:
             b.append(rect(x0, y0, side, 16 * px, PIECE))
             for w in range(4):
@@ -345,7 +352,7 @@ def mma_ownership():
         yy = ay + 12 + 16 * kk
         b.append(text(rx, yy + 9, f"k = {kk}", 10, INK2))
         for d in range(4):
-            fill = ORANGE if d == kk else ORANGE_L if d < kk else "#f6f6f4"
+            fill = ORANGE if d == kk else ORANGE_L if d < kk else PANEL
             b.append(rect(rx + 36 + d * 40, yy, 40, 10, fill, GRID, 0.5))
         b.append(text(rx + 36 + 4 * 40 + 6, yy + 9, f"0–{16 * kk + 15}", 10, INK2))
     pic_bottom = ay + 12 + 16 * 4
@@ -366,7 +373,7 @@ def mma_ownership():
 def bank_conflicts():
     """What a shared-memory bank is, a conflict-free read, an 8-way conflict, and what conflicts cost."""
     W = 1000
-    FAINT, GOLD = "#f6f6f4", "#fdf3d8"
+    FAINT, GOLD = PANEL, GOLD_L
     b = [f'<defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
          text(20, 30, "Shared-memory banks and bank conflicts", 17, weight="600"),
@@ -494,7 +501,7 @@ def swizzle_banks():
             for p in range(8):
                 c = p ^ r if swz else p            # logical 16-byte chunk stored at position p
                 hit = c == 0
-                b.append(rect(x0 + p * cw, y0 + r * ch, cw, ch, BLUE if hit else "#f6f6f4", SURF, 2))
+                b.append(rect(x0 + p * cw, y0 + r * ch, cw, ch, BLUE if hit else PANEL, SURF, 2))
                 b.append(text(x0 + p * cw + cw / 2, y0 + r * ch + 17, f"c{c}", 11, SURF if hit else INK2,
                               "middle", family=MONO))
         for i, s in enumerate(caption):
@@ -514,7 +521,7 @@ def swizzle_banks():
 def swizzle_bms():
     """Swizzle<3, 3, 3> from scratch, following one value (row 3, column 8 -> slot 200 -> 208)."""
     W = 900
-    FAINT, GREY = "#f6f6f4", "#e4e3de"
+    FAINT, GREY = PANEL, GREY_M
     b = [f'<defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
          text(20, 30, "Swizzle&lt;3,3,3&gt; step by step, following one value", 17, weight="600"),
@@ -810,7 +817,7 @@ def smem_layout_fig():
     # row 8 starts again at 512. smem_layout(64, 128) puts (0, 64) at 4096: rows are filled first.
     import textwrap
     W, TX, TW = 1040, 640, 58
-    FAINT, HL, DIM = "#f6f6f4", "#fdf1d4", "#b9b8b2"
+    FAINT, HL, DIM = PANEL, GOLD_L, DIM_LINE
     CODE = ["def smem_layout(rows, cols):",
             "    width = 64 if cols % 64 == 0 else 32                   # Swizzle<3,3,3> for 128-byte rows",
             "    atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,",
@@ -1050,8 +1057,8 @@ def ldsm_count():
     Loop 0 of the non-causal SASS (results/cubin/v1_swizzle, v2_ldmatrix), per thread = per warp:
     LDS 224 -> 0, PRMT 64 -> 0, LDSM 0 -> 40, IMAD -6, UIADD3 -2, MOV +2, IADD3 +2: 594 -> 342."""
     W = 1040
-    FAINT = "#f6f6f4"
-    TILE = [BLUE_L, ORANGE_L, AQUA_L, "#fdf3d8"]                 # the four 8 x 8 tiles of a piece
+    FAINT = PANEL
+    TILE = [BLUE_L, ORANGE_L, AQUA_L, GOLD_L]                 # the four 8 x 8 tiles of a piece
     b = [f'<defs><marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
          text(20, 30, "Why 224 loads become 40: one 16 × 16 piece at a time", 17, weight="600"),
@@ -1209,7 +1216,7 @@ def pipeline():
     into six numbered steps, each with one plain sentence. Part 2: the same steps on a time line for one warp
     (what the warp runs, what the shared buffers sK and sV hold), with v3's order on the same time axis."""
     import re
-    W, FAINT, WAIT, OLD = 900, "#f6f6f4", "#e4e3df", "#efeeea"
+    W, FAINT, WAIT, OLD = 900, PANEL, GREY_M, FILL
     KIND = {"wait": INK2, "copy": ORANGE, "math": BLUE}
     b = [text(20, 30, "Round 4: one key block j, line by line", 17, weight="600"),
          text(20, 52, "sK and sV are the shared-memory buffers for one K tile and one V tile. v4 reuses each buffer "
@@ -1366,7 +1373,7 @@ def gpu_hierarchy():
     b = []
     b.append(text(20, 30, "Where the threads and memory live: GPU → SM → block → warp → lane", 16, weight="600"))
     top, h = 56, 290
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
 
     def panel(x, w, title, sub, border):
         b.append(rect(x, top, w, h, SURF, border, 1.5, 8))
@@ -1434,7 +1441,7 @@ def gpu_hierarchy():
 def layouts():
     b = []
     cw, ch = 46, 28
-    C_A, C_B, C_C = "#2a78d6", "#c4501f", "#0f7f58"     # text colours: first row counter, second row counter, column
+    C_A, C_B, C_C = BLUE, ORANGE_D, AQUA_D     # text colours: first row counter, second row counter, column
     tsp = lambda s, c: f'<tspan fill="{c}" font-weight="700">{s}</tspan>'
 
     def cell(x, y, s, fill=SURF, w=cw):
@@ -1485,7 +1492,7 @@ def layouts():
 
     # ---- example 2: ((2, 2), 8):((1, 16), 2), told in four steps: pair them up, what (2, 2) means,
     # why it is needed, and the whole table with its memory order.
-    ROW_T = [SURF, "#e3e2dd", ORANGE_L, "#f4b89f"]       # row tints: i1 picks grey or orange, i0 light or dark
+    ROW_T = [SURF, GREY_M, ORANGE_L, ORANGE_M]       # row tints: i1 picks grey or orange, i0 light or dark
     y = 332
     b.append(text(20, y, "Example 2", 15, weight="600"))
     b.append(text(110, y, f"(({tsp(2, C_A)}, {tsp(2, C_B)}), {tsp(8, C_C)}):(({tsp(1, C_A)}, {tsp(16, C_B)}), {tsp(2, C_C)})",
@@ -1617,7 +1624,7 @@ def tiled_mma():
     Each panel draws S = Q Kt as a matrix multiply: Kt above S, Q to its left, so M, N and K are all visible."""
     b = []
     W, P = 160, 2.5                             # 64 elements -> 160 px
-    FAINT, GREY_L = "#ecebe7", "#f6f6f4"
+    FAINT, GREY_L = FILL, PANEL
     b.append(text(20, 30, "What each argument of make_tiled_mma covers of S = Q Kᵀ", 16, weight="600"))
     b.append(text(20, 50, "M = query rows of S, N = keys (columns of S), K = head dims summed over. "
                   "Each panel adds one argument to the one before.", 12.5, INK2))
@@ -1749,9 +1756,9 @@ def mnk_shape():
     def grid(x, y, rows, cols, fill=SURF):
         b.append(rect(x, y, cols * c, rows * c, fill, GRID, 1))
         for r in range(1, rows):
-            b.append(line(x, y + r * c, x + cols * c, y + r * c, "#ecebe7", 1))
+            b.append(line(x, y + r * c, x + cols * c, y + r * c, FILL, 1))
         for k in range(1, cols):
-            b.append(line(x + k * c, y, x + k * c, y + rows * c, "#ecebe7", 1))
+            b.append(line(x + k * c, y, x + k * c, y + rows * c, FILL, 1))
         b.append(rect(x, y, cols * c, rows * c, "none", INK2, 1.2))
 
     def spans(x, y, parts, size=12.5, anchor="start"):   # parts: (text, colour, weight)
@@ -1793,8 +1800,8 @@ def mnk_shape():
     fw, fh = 8 * c, 16 * c
     top_face = f"{fx},{fy} {fx + fw},{fy} {fx + fw + ex},{fy + ey} {fx + ex},{fy + ey}"
     side_face = f"{fx + fw},{fy} {fx + fw + ex},{fy + ey} {fx + fw + ex},{fy + fh + ey} {fx + fw},{fy + fh}"
-    b.append(f'<polygon points="{top_face}" fill="#f6f6f4" stroke="{INK2}" stroke-width="1.2"/>')
-    b.append(f'<polygon points="{side_face}" fill="#ecebe7" stroke="{INK2}" stroke-width="1.2"/>')
+    b.append(f'<polygon points="{top_face}" fill="{PANEL}" stroke="{INK2}" stroke-width="1.2"/>')
+    b.append(f'<polygon points="{side_face}" fill="{FILL}" stroke="{INK2}" stroke-width="1.2"/>')
     for k in range(1, 16):
         b.append(line(fx + k * dx, fy + k * dy, fx + fw + k * dx, fy + k * dy, GRID, 0.8))
         b.append(line(fx + fw + k * dx, fy + k * dy, fx + fw + k * dx, fy + fh + k * dy, GRID, 0.8))
@@ -1832,7 +1839,7 @@ def ldmatrix_pairs():
         b.append(text(x - 8, y + 1.5 * t + 4, "dims 8–15", 11, MUTED, "end"))
         for i in range(2):
             for j in range(2):
-                b.append(rect(x + j * t, y + i * t, t, t, "#f6f6f4", GRID, 1))
+                b.append(rect(x + j * t, y + i * t, t, t, PANEL, GRID, 1))
                 b.append(text(x + j * t + t / 2, y + i * t + t / 2 + 4, "8 × 8", 11, INK2, "middle"))
 
     # default: two loads of two tiles, one per MMA (one column of 8 keys each)
@@ -1865,7 +1872,7 @@ def warp_shuffle():
     b.append(text(20, 30, "The maximum of one row, held by the 4 lanes of a quad (values 3, 7, 2, 5)", 15, weight="600"))
     w, h, gap = 56, 30, 78
 
-    def lanes(x, y, vals, fill="#f6f6f4", label=True):
+    def lanes(x, y, vals, fill=PANEL, label=True):
         for i, v in enumerate(vals):
             b.append(rect(x + i * gap, y, w, h, fill, GRID, 1, 4))
             b.append(text(x + i * gap + w / 2, y + 20, str(v), 13, INK, "middle"))
@@ -1925,18 +1932,17 @@ def shuffle_args():
     maxLane = (lane & segmask) | (clamp & ~segmask); if j > maxLane the lane reads its own value."""
     import textwrap
     b = []
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
     b.append(f'<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
              f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{BLUE}"/></marker></defs>')
     b.append(text(20, 30, "One shuffle, argument by argument", 16, weight="600"))
 
     def badge(x, y, n, r=9):
-        b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{BLUE}"/>')
+        b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{INK}"/>')
         b.append(text(x, y + 4, str(n), 11, SURF, "middle", "700"))
 
     # the code line: op has two arguments, my v (orange) and the whole shuffle call, which evaluates to my
     # partner's v (green); the pieces of the call are numbered for the cards (textLength pins the monospace width)
-    ORANGE_D, AQUA_D = "#c24e1d", "#12805a"         # darker text shades of ORANGE / AQUA
     fs, cw, cy = 15, 9.0, 90
 
     def mono(x, y, s, fill=INK):
@@ -2297,8 +2303,8 @@ def warp_split():
     b = [f'<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>']
     b.append(text(20, 30, "Where row 0 of S lives, and what its maximum costs", 16, weight="600"))
-    fills = [BLUE_L, ORANGE_L, AQUA_L, "#ece6f6"]
-    strong = [BLUE, ORANGE, AQUA, "#8a6fc4"]
+    fills = [BLUE_L, ORANGE_L, AQUA_L, GOLD_L]
+    strong = [BLUE, ORANGE, AQUA, GOLD]
     px, y0 = 4, 112
 
     def arrow(x1, y1, x2, y2):
@@ -2359,7 +2365,7 @@ def tiled_copy():
     #   thread 19, step m: row 2 + 16 m of the tile, values 24-31
     import textwrap
     W, TX, TW = 1040, 640, 58
-    FAINT, HL, DIM = "#f6f6f4", "#fdf1d4", "#b9b8b2"
+    FAINT, HL, DIM = PANEL, GOLD_L, DIM_LINE
     TR, TC = 2, 3                                    # thread 19's row and column in the 16 x 8 grid
     G2S = ["g2s = cute.make_tiled_copy_tv(",
            "    cute.make_copy_atom(cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=128),  # the atom",
@@ -2423,7 +2429,7 @@ def tiled_copy():
             b.append(rect(x0, y0 + band * 16 * px, 64 * px, 16 * px, BLUE_L))
         if lines:
             for c in range(8, 64, 8):
-                b.append(line(x0 + c * px, y0, x0 + c * px, y0 + 64 * px, "#dcdbd5", 0.6))
+                b.append(line(x0 + c * px, y0, x0 + c * px, y0 + 64 * px, GRID, 0.6))
             for r in range(16, 64, 16):
                 b.append(line(x0, y0 + r * px, x0 + 64 * px, y0 + r * px, INK2, 1))
         for r in owner_rows:
@@ -2465,7 +2471,7 @@ def tiled_copy():
     # ---- 2: the atom ---------------------------------------------------------------------------
     y = header(y, 2, "The atom: the one instruction that moves a piece", G2S, hl={1})
     by, bw, bh = y + 20, 140, 104
-    boxes = [(56, "global memory", "the GPU's main memory:", "big, slow", "#fdf3d8"),
+    boxes = [(56, "global memory", "the GPU's main memory:", "big, slow", GOLD_L),
              (256, "registers", "thread 19's own storage:", "tiny, fastest", BLUE_L),
              (456, "shared memory", "on-chip memory that all", "128 threads of a block see", AQUA_L)]
     for bx, name, s1, s2, fill in boxes:
@@ -2501,7 +2507,7 @@ def tiled_copy():
         b.append(text(x0 - 6, gy + r * ch + 12, f"row {r}", 10.5, INK if r == TR else MUTED, "end"))
         for c in range(8):
             hi = (r, c) == (TR, TC)
-            base = FAINT if (r // 4) % 2 == 0 else "#eef4fc"
+            base = FAINT if (r // 4) % 2 == 0 else BLUE_XL
             b.append(rect(x0 + c * cw, gy + r * ch, cw, ch, ORANGE_L if hi else base, ORANGE if hi else GRID,
                           2 if hi else 1))
             b.append(text(x0 + c * cw + cw / 2, gy + r * ch + 12, f"t{8 * r + c}", 9.5, INK, "middle",
@@ -2694,7 +2700,7 @@ def copy_atoms():
              f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
     b.append(text(20, 30, "The atom of a tiled copy: the instruction that carries each piece", 15, weight="600"))
     b.append(text(20, 50, "Who copies what stays the same; the instruction changes, and with it the speed.", 12.5, INK2))
-    G, R, S = "#fdf3d8", BLUE_L, AQUA_L
+    G, R, S = GOLD_L, BLUE_L, AQUA_L
 
     def path(x, y, nodes, dash=False):
         for j, (lab, fill) in enumerate(nodes):
@@ -2746,7 +2752,7 @@ def copy_atoms():
 def memory_hierarchy():
     """Registers, L1 / shared memory, L2 and global memory: where each sits and who can see it."""
     b = []
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
     b.append(f'<defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
              f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
     b.append(text(20, 30, "Where data lives on the GPU: small and fast at the top, big and slow at the bottom", 16, weight="600"))
@@ -2823,7 +2829,7 @@ def memory_hierarchy():
 def block_grid():
     """How the 2,048 blocks cover the work at N = 4096: 32 (sequence, head) problems x 64 slices of Q."""
     b = []
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
     b.append(f'<defs><marker id="ah5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
     b.append(text(20, 30, "How 2,048 blocks cover the work (N = 4,096 rows, 4 sequences × 8 heads)", 16, weight="600"))
@@ -2900,7 +2906,7 @@ def warp_lanes():
     """Top-down: a block's 64 rows split over 4 warps, warp 0's 32 lanes in 8 quads, and which lanes hold
     each value of warp 0's 16 x 8 multiply result (quad q holds rows q and q + 8)."""
     b = []
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
     b.append(text(20, 30, "From a block down to its lanes: who holds which rows", 16, weight="600"))
     b.append(text(20, 50, "Blue follows one path: warp 0 of the block, then quad 0 of warp 0.", 12.5, INK2))
 
@@ -2959,9 +2965,9 @@ def warp_lanes():
 def ldmatrix_x4():
     """One ldmatrix.x4: a 16 x 16 piece of the K tile, its four 8 x 8 tiles, who receives each value."""
     b = []
-    YEL_L = "#fdf3d8"
-    TILE = [(BLUE_L, BLUE), (ORANGE_L, ORANGE), (AQUA_L, AQUA), (YEL_L, "#c9a227")]
-    GREY_L = "#f6f6f4"
+    YEL_L = GOLD_L
+    TILE = [(BLUE_L, BLUE), (ORANGE_L, ORANGE), (AQUA_L, AQUA), (YEL_L, GOLD)]
+    GREY_L = PANEL
     b.append(text(20, 30, "One ldmatrix.x4: four 8 × 8 tiles from shared memory, handed out to the warp's 32 lanes", 16, weight="600"))
     y0 = 116
 
@@ -3031,7 +3037,7 @@ def qkv_tiles():
     """Where the 64 x 64 tiles come from: one head's Q, K, V in global memory, the three tiles in shared memory,
     and the S and O tiles a step computes."""
     b = []
-    GREY_L = "#f6f6f4"
+    GREY_L = PANEL
     b.append(f'<defs><marker id="ah7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
     b.append(text(20, 30, "The 64 × 64 tiles: what one block reads from Q, K and V and writes to O (one head, N = 4,096, D = 64)", 16, weight="600"))
@@ -3146,7 +3152,7 @@ def cp_async():
     """What cp.async does, in three parts: one copy (global -> shared, no registers), groups (start K and V
     together, wait only for K with commit_group / wait_group(n)), and the barrier that shares the tile."""
     b = []
-    G, GREY_L, PAUSE = "#fdf3d8", "#f6f6f4", "#e4e3df"
+    G, GREY_L, PAUSE = GOLD_L, PANEL, GREY_M
     STEP = ["", ORANGE, BLUE, AQUA]
     b.append(f'<defs><marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
@@ -3244,7 +3250,7 @@ def cp_async():
     rh = 44
     for i, (does, k_state, v_state, paused, note) in enumerate(rows):
         ry = hy + 10 + i * rh
-        b.append(rect(32, ry, 856, rh - 4, "#f0efec" if paused else SURF, GRID, 1, 6))
+        b.append(rect(32, ry, 856, rh - 4, PANEL if paused else SURF, GRID, 1, 6))
         if paused:
             b.append(rect(32, ry, 6, rh - 4, INK2, rx=2))
         b.append(text(cx[0], ry + 25, does, 12 if len(does) < 34 else 11, MUTED if does.startswith("(") else INK,
@@ -3377,9 +3383,9 @@ def key_block_v0():
     #     HMMA 64 (32 for S, 32 for O), SHFL.BFLY 4, MUFU.EX2 34
     import textwrap
     W, TX, TW = 1040, 640, 58
-    FAINT, HL, NEUT = "#f6f6f4", "#fdf1d4", "#e9e7e1"
-    GLOB, SHR = "#fdf3d8", AQUA_L
-    WARPC = ["#fdf3d8", AQUA_L, ORANGE_L, "#e7e2f6"]
+    FAINT, HL, NEUT = PANEL, GOLD_L, FILL
+    GLOB, SHR = GOLD_L, AQUA_L
+    WARPC = [GOLD_L, AQUA_L, ORANGE_L, GREY_M]
     CODE = ["cute.arch.sync_threads()                                   # everyone is done with the old K, V",
             "cute.copy(g2s, tKgK[None, None, None, j], tKsK)            # LDG, then STS, for K and V",
             "cute.copy(g2s, tVgV[None, None, None, j], tVsV)",
@@ -3426,7 +3432,7 @@ def key_block_v0():
             "tSrQ, tSrK = thr_mma.make_fragment_A(tSsQ), thr_mma.make_fragment_B(tSsK)       # registers to hold them",
             "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), Float32)     # its scores of S",
     ]
-    b.append(rect(20, ly, W - 40, 21 * (len(SETUP) + 1) + 12, "#fbfbfa", GRID, rx=4))
+    b.append(rect(20, ly, W - 40, 21 * (len(SETUP) + 1) + 12, PANEL, GRID, rx=4))
     code_line(60, ly + 21, "# made once per thread, before the loop over key blocks (ideas 3 and 4 of the article)")
     for i, c in enumerate(SETUP):
         code_line(60, ly + 42 + 21 * i, c)
@@ -3973,7 +3979,7 @@ def ldsm_copies():
     Q 4 x 1 + K 4 x 4 + P 4 x 1 + V 4 x 4 = 40 LDSM."""
     import textwrap
     W, TX, SX = 1040, 430, 50
-    FAINT, YEL_L, YEL = "#f6f6f4", "#fdf3d8", "#c9a227"
+    FAINT, YEL_L, YEL = PANEL, GOLD_L, GOLD
     WARP = [(BLUE_L, BLUE), (ORANGE_L, ORANGE), (AQUA_L, AQUA), (YEL_L, YEL)]
     b = [f'<defs><marker id="ahl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
@@ -4194,7 +4200,7 @@ def p_roundtrip():
     same registers with as_a_operand. Loop 0 of the non-causal SASS (results/cubin/v2_ldmatrix, v3_p_regs):
     STS 24 -> 8, LDSM 40 -> 36, NOP 2 -> 0, MOV 2 -> 3: 342 -> 321."""
     W = 1040
-    FAINT = "#f6f6f4"
+    FAINT = PANEL
     b = [f'<defs><marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
          text(20, 30, "Round 3: P stops making a round trip through shared memory", 17, weight="600"),
@@ -4306,10 +4312,10 @@ def a_operand_view():
     #   view  (((2,2),2),1,4):(((1,2),4),0,8)     partition_A of the same tile: ((2,2,2),1,4)
     #   register i holds the same (row, column) of P under partition_C and partition_A, for i = 0..31.
     W = 1040
-    FAINT = "#f1f0ec"
+    FAINT = PANEL
     TILE = [BLUE_L, ORANGE_L]                       # alternate 8-column tiles / 16-column steps
-    STEP = [BLUE, ORANGE, AQUA, "#c9a227"]          # steps k = 0..3
-    STEP_L = [BLUE_L, ORANGE_L, AQUA_L, "#fdf3d8"]
+    STEP = [BLUE, ORANGE, AQUA, GOLD]          # steps k = 0..3
+    STEP_L = [BLUE_L, ORANGE_L, AQUA_L, GOLD_L]
     b = [f'<defs><marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
          text(20, 30, "How as_a_operand works: the same 32 values, new labels", 17, weight="600")]
@@ -4350,7 +4356,7 @@ def a_operand_view():
         for r in range(16):
             for c in range(64):
                 g = c // groups
-                b.append(rect(gx + c * cw, y + r * ch, cw, ch, FAINT if (g % 2 == 0) else "#e8e7e1", SURF, 0.5))
+                b.append(rect(gx + c * cw, y + r * ch, cw, ch, FAINT if (g % 2 == 0) else FILL, SURF, 0.5))
         for r, c, i in cells():
             b.append(rect(gx + c * cw, y + r * ch, cw, ch, fill_of(i), SURF, 0.5))
             b.append(text(gx + c * cw + cw / 2, y + r * ch + 8.5, label_of(i), 7.5, SURF, "middle", "700"))
@@ -4367,7 +4373,7 @@ def a_operand_view():
 
     # ---- the message ---------------------------------------------------------------------------
     y = 58
-    b.append(rect(20, y - 6, W - 40, 82, "#fdf6e3", "#e6d39a", 1, 6))
+    b.append(rect(20, y - 6, W - 40, 82, GOLD_L, GOLD_EDGE, 1, 6))
     para(y + 14, ["The idea in one sentence: after S = Q·Kᵀ, each thread already holds exactly the values of P that the "
                   "next multiply, O += P·V,",
                   "will ask it for, and even in the same order. Only the labels CuTe uses to find them differ. "
@@ -4442,7 +4448,7 @@ def a_operand_view():
             "        ((pairs.shape[0], pairs.shape[2][0]), pairs.shape[1], pairs.shape[2][1]),",
             "        stride=((pairs.stride[0], pairs.stride[2][0]), pairs.stride[1], pairs.stride[2][1])))"]
     cy = y + 6
-    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, "#f6f6f4", GRID, 1, 5))
+    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, PANEL, GRID, 1, 5))
     for i, c in enumerate(code):
         ind = len(c) - len(c.lstrip(" "))
         b.append(text(54 + 7.53 * ind, cy + 22 + 21 * i, c.lstrip(" "), 12.5, INK, family=MONO))
@@ -4458,7 +4464,7 @@ def a_operand_view():
     rows = [
         ("acc (the input)", [("(2,2) : (1,2)", BLUE_L), ("1 : 0", FAINT), ("8 : 4", ORANGE_L)],
          "4 values per tile (next column +1, row 8 +2); 8 tiles across, 4 apart"),
-        ("logical_divide(…, (None, None, 2))", [("(2,2) : (1,2)", BLUE_L), ("1 : 0", FAINT), ("2 : 4", "#fdf3d8"),
+        ("logical_divide(…, (None, None, 2))", [("(2,2) : (1,2)", BLUE_L), ("1 : 0", FAINT), ("2 : 4", GOLD_L),
                                                ("4 : 8", ORANGE_L)],
          "cut the 8 tiles into 4 pairs: 2 tiles per pair (4 apart), pairs 8 apart"),
         ("make_layout(…)", [("((2,2),2) : ((1,2),4)", BLUE_L), ("1 : 0", FAINT), ("4 : 8", ORANGE_L)],
@@ -4484,7 +4490,7 @@ def a_operand_view():
             "for k in range(4):",
             "    cute.gemm(tiled_mma, acc_O, tOrP[None, None, k], tOrVt[None, None, k], acc_O)"]
     cy = y + 2
-    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, "#f6f6f4", GRID, 1, 5))
+    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, PANEL, GRID, 1, 5))
     for i, c in enumerate(code):
         k = c.find("#")
         part = c if k < 0 else c[:k].rstrip()

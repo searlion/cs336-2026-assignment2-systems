@@ -105,7 +105,7 @@
 <text x="464.0" y="604.5" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="normal">moving</text>
 <text x="540" y="597" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Bundles the copies started since (V's 4)</text>
 <text x="540" y="612" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">into group 2.</text>
-<rect x="32" y="624" width="856" height="40" fill="#f0efec" stroke="#d6d5d0" stroke-width="1" rx="6"/>
+<rect x="32" y="624" width="856" height="40" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="6"/>
 <rect x="32" y="624" width="6" height="40" fill="#52514e" stroke="none" stroke-width="1" rx="2"/>
 <text x="50" y="649" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">wait_group(1)</text>
 <rect x="320" y="631" width="88" height="26" fill="#eb6834" stroke="#eb6834" stroke-width="1" rx="6"/>

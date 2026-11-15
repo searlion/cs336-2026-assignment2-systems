@@ -37,7 +37,7 @@
 <circle cx="38" cy="297.5" r="9" fill="#0b0b0b"/>
 <text x="38" y="302" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="700">9</text>
 <text x="60.0" y="302" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># ... mask, online softmax with quad shuffles, P -> shared memory -> registers, O += P V</text>
-<rect x="20" y="330" width="1000" height="180" fill="#fbfbfa" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="330" width="1000" height="180" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="60.0" y="351" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># made once per thread, before the loop over key blocks (ideas 3 and 4 of the article)</text>
 <text x="60.0" y="372" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">thr_g2s = g2s.get_slice(tidx)</text>
 <text x="662.4" y="372" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># idea 4: this thread's share of the copy</text>
@@ -57,33 +57,33 @@
 <circle cx="31" cy="565" r="11" fill="#0b0b0b"/>
 <text x="31" y="570" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
 <text x="50" y="570" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Wait until every warp is done with the old K and V</text>
-<rect x="20" y="584" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="584" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="605" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.sync_threads()</text>
 <text x="478.27000000000004" y="605" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># everyone is done with the old K, V</text>
 <text x="470" y="669" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">barrier</text>
 <text x="106" y="696" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">warp 0</text>
-<rect x="116" y="681" width="256" height="22" fill="#e9e7e1" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="116" y="681" width="256" height="22" fill="#ecebe7" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="124" y="696" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">block j − 1: S, softmax, O += P V</text>
 <rect x="374" y="684" width="92" height="16" fill="none" stroke="#8a8984" stroke-width="1" rx="2" stroke-dasharray="3 3"/>
 <text x="421.0" y="696" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">waits</text>
 <rect x="476" y="681" width="120" height="22" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="484" y="696" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">copy block j</text>
 <text x="106" y="726" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">warp 1</text>
-<rect x="116" y="711" width="288" height="22" fill="#e9e7e1" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="116" y="711" width="288" height="22" fill="#ecebe7" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="124" y="726" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">block j − 1: S, softmax, O += P V</text>
 <rect x="406" y="714" width="60" height="16" fill="none" stroke="#8a8984" stroke-width="1" rx="2" stroke-dasharray="3 3"/>
 <text x="437.0" y="726" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">waits</text>
 <rect x="476" y="711" width="120" height="22" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="484" y="726" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">copy block j</text>
 <text x="106" y="756" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">warp 2</text>
-<rect x="116" y="741" width="214" height="22" fill="#e9e7e1" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="116" y="741" width="214" height="22" fill="#ecebe7" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="124" y="756" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">block j − 1: S, softmax, O += P V</text>
 <rect x="332" y="744" width="134" height="16" fill="none" stroke="#8a8984" stroke-width="1" rx="2" stroke-dasharray="3 3"/>
 <text x="400.0" y="756" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">waits</text>
 <rect x="476" y="741" width="120" height="22" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="484" y="756" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">copy block j</text>
 <text x="106" y="786" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">warp 3</text>
-<rect x="116" y="771" width="336" height="22" fill="#e9e7e1" stroke="#d6d5d0" stroke-width="1" rx="3"/>
+<rect x="116" y="771" width="336" height="22" fill="#ecebe7" stroke="#d6d5d0" stroke-width="1" rx="3"/>
 <text x="124" y="786" font-size="10.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">block j − 1: S, softmax, O += P V</text>
 <rect x="454" y="774" width="12" height="16" fill="none" stroke="#8a8984" stroke-width="1" rx="2" stroke-dasharray="3 3"/>
 <rect x="476" y="771" width="120" height="22" fill="#d1efe4" stroke="#d6d5d0" stroke-width="1" rx="3"/>
@@ -104,7 +104,7 @@
 <circle cx="31" cy="903" r="11" fill="#0b0b0b"/>
 <text x="31" y="908" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
 <text x="50" y="908" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Copy key block j of K into shared memory, through registers</text>
-<rect x="20" y="922" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="922" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="943" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(g2s, tKgK[None, None, None, j], tKsK)</text>
 <text x="478.27000000000004" y="943" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># LDG, then STS, for K and V</text>
 <text x="56" y="1007" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">K in global memory</text>
@@ -182,7 +182,7 @@
 <circle cx="31" cy="1274" r="11" fill="#0b0b0b"/>
 <text x="31" y="1279" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
 <text x="50" y="1279" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The same copy for V: the values of the same 64 keys</text>
-<rect x="20" y="1293" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="1293" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="1314" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(g2s, tVgV[None, None, None, j], tVsV)</text>
 <text x="152.0" y="1396" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">K block j</text>
 <rect x="96" y="1406" width="112.0" height="112.0" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="0"/>
@@ -249,7 +249,7 @@
 <circle cx="31" cy="1735.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="1740.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
 <text x="50" y="1740.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Wait until all of K and V has landed</text>
-<rect x="20" y="1754.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="1754.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="1775.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.sync_threads()</text>
 <text x="478.27000000000004" y="1775.0" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># K, V are in shared memory</text>
 <text x="100" y="1843.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">sK: who wrote each row, and what thread 0 reads</text>
@@ -265,10 +265,10 @@
 <rect x="100" y="1882.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1885.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1888.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1891.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1894.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1897.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1900.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1891.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1894.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1897.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1900.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1903.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1906.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1909.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
@@ -281,10 +281,10 @@
 <rect x="100" y="1930.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1933.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1936.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1939.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1942.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1945.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1948.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1939.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1942.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1945.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1948.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1951.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1954.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1957.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
@@ -297,10 +297,10 @@
 <rect x="100" y="1978.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1981.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1984.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1987.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1990.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1993.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="1996.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1987.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1990.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1993.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="1996.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1999.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="2002.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="2005.0" width="192" height="3" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
@@ -313,10 +313,10 @@
 <rect x="100" y="2026.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="2029.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="2032.0" width="192" height="3" fill="#fbe0d5" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="2035.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="2038.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="2041.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
-<rect x="100" y="2044.0" width="192" height="3" fill="#e7e2f6" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="2035.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="2038.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="2041.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
+<rect x="100" y="2044.0" width="192" height="3" fill="#e4e3df" stroke="none" stroke-width="1" rx="0"/>
 <rect x="100" y="1855.0" width="192" height="192" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
 <rect x="100" y="1855.0" width="3" height="3" fill="#2a78d6" stroke="none" stroke-width="1" rx="0"/>
 <rect x="103" y="1855.0" width="3" height="3" fill="#2a78d6" stroke="none" stroke-width="1" rx="0"/>
@@ -465,7 +465,7 @@
 <text x="340" y="1901.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 1 (threads 32–63)</text>
 <rect x="322" y="1911.0" width="12" height="12" fill="#fbe0d5" stroke="#d6d5d0" stroke-width="1" rx="0"/>
 <text x="340" y="1921.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 2 (threads 64–95)</text>
-<rect x="322" y="1931.0" width="12" height="12" fill="#e7e2f6" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="322" y="1931.0" width="12" height="12" fill="#e4e3df" stroke="#d6d5d0" stroke-width="1" rx="0"/>
 <text x="340" y="1941.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">warp 3 (threads 96–127)</text>
 <rect x="322" y="1957.0" width="12" height="12" fill="#2a78d6" stroke="#d6d5d0" stroke-width="1" rx="0"/>
 <text x="340" y="1967.0" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">read by thread 0 in the k loop</text>
@@ -482,7 +482,7 @@
 <circle cx="31" cy="2108.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="2113.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">5</text>
 <text x="50" y="2113.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The k loop: what tSsQ's shape ((2, 2, 2), 1, 4) means, and why k = 0, 1, 2, 3</text>
-<rect x="20" y="2127.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="2127.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="2148.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">for k in cutlass.range_constexpr(cute.size(tSsQ, mode=[2])):</text>
 <text x="56" y="2194.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">5a. Where tSsQ and its shape come from</text>
 <rect x="56" y="2220.0" width="560" height="62" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
@@ -1001,7 +1001,7 @@
 <circle cx="31" cy="3367.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="3372.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
 <text x="50" y="3372.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Q: 8 values into registers, 2 per load</text>
-<rect x="20" y="3386.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="3386.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="3407.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.autovec_copy(tSsQ[None, None, k], tSrQ[None, None, k])</text>
 <text x="515.9200000000001" y="3407.0" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># plain loads</text>
 <text x="56" y="3481.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">sQ</text>
@@ -1315,7 +1315,7 @@
 <circle cx="31" cy="3732.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="3737.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">7</text>
 <text x="50" y="3737.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">K: 32 values into registers, and an 8-way bank conflict</text>
-<rect x="20" y="3751.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="3751.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="3772.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.autovec_copy(tSsK[None, None, k], tSrK[None, None, k])</text>
 <text x="56" y="3836.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">sK at k = 1: the 8 keys thread 0 reads, dims 16–31</text>
 <rect x="104" y="3858.0" width="11" height="11" fill="#2a78d6" stroke="#d6d5d0" stroke-width="0.6" rx="0"/>
@@ -1841,7 +1841,7 @@
 <circle cx="31" cy="4189.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="4194.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">8</text>
 <text x="50" y="4194.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">8 tensor-core instructions per warp, added into acc_S</text>
-<rect x="20" y="4208.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="4208.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="4229.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.gemm(tiled_mma, acc_S, tSrQ[None, None, k], tSrK[None, None, k], acc_S)</text>
 <text x="166" y="4299.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600">K pieces 0–7 at k = 1 (Kᵀ: dims 16–31 × keys 0–63)</text>
 <rect x="166" y="4321.0" width="5" height="5" fill="#2a78d6" stroke="none" stroke-width="1" rx="0"/>
@@ -4195,7 +4195,7 @@
 <circle cx="31" cy="4644.0" r="11" fill="#0b0b0b"/>
 <text x="31" y="4649.0" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">9</text>
 <text x="50" y="4649.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The rest of the key block, in brief</text>
-<rect x="20" y="4663.0" width="1000" height="33" fill="#fdf1d4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<rect x="20" y="4663.0" width="1000" height="33" fill="#fdf3d8" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="4684.0" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># ... mask, online softmax with quad shuffles, P -> shared memory -> registers, O += P V</text>
 <rect x="56" y="4750.0" width="122" height="62" fill="#d4e4f7" stroke="#d6d5d0" stroke-width="1" rx="6"/>
 <text x="66" y="4770.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">acc_S</text>

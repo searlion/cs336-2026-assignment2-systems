@@ -130,7 +130,7 @@
 <text x="50" y="476" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The atom: the one instruction that moves a piece</text>
 <rect x="20" y="490" width="1000" height="96" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
 <text x="34.0" y="511" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">g2s = cute.make_tiled_copy_tv(</text>
-<rect x="21" y="517" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="517" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="532" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_copy_atom(cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=128),</text>
 <text x="681.58" y="532" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the atom</text>
 <text x="64.12" y="553" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((self.threads // tpr, tpr), stride=(tpr, 1)),</text>
@@ -196,7 +196,7 @@
 <text x="34.0" y="901" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">g2s = cute.make_tiled_copy_tv(</text>
 <text x="64.12" y="922" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_copy_atom(cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=128),</text>
 <text x="681.58" y="922" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the atom</text>
-<rect x="21" y="928" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="928" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="943" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((self.threads // tpr, tpr), stride=(tpr, 1)),</text>
 <text x="546.04" y="943" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># threads: (16, 8):(8, 1)</text>
 <text x="64.12" y="964" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((1, vec)))</text>
@@ -514,25 +514,25 @@
 <text x="31" y="1406" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
 <text x="50" y="1406" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The value layout, and the whole plan</text>
 <rect x="20" y="1420" width="1000" height="96" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<rect x="21" y="1426" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="1426" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="34.0" y="1441" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">g2s = cute.make_tiled_copy_tv(</text>
 <text x="64.12" y="1462" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_copy_atom(cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=128),</text>
 <text x="681.58" y="1462" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the atom</text>
 <text x="64.12" y="1483" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((self.threads // tpr, tpr), stride=(tpr, 1)),</text>
 <text x="546.04" y="1483" font-size="12.5" fill="#b9b8b2" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># threads: (16, 8):(8, 1)</text>
-<rect x="21" y="1489" width="998" height="21" fill="#fdf1d4" stroke="none" stroke-width="1" rx="0"/>
+<rect x="21" y="1489" width="998" height="21" fill="#fdf3d8" stroke="none" stroke-width="1" rx="0"/>
 <text x="64.12" y="1504" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.make_layout((1, vec)))</text>
 <text x="546.04" y="1504" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># values:  (1, 8)</text>
 <text x="136" y="1578" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">the 64 × 64 tile of K</text>
 <rect x="136" y="1590" width="320" height="320" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
 <rect x="136" y="1590" width="320" height="80" fill="#d4e4f7" stroke="none" stroke-width="1" rx="0"/>
-<line x1="176" y1="1590" x2="176" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="216" y1="1590" x2="216" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="256" y1="1590" x2="256" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="296" y1="1590" x2="296" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="336" y1="1590" x2="336" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="376" y1="1590" x2="376" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="416" y1="1590" x2="416" y2="1910" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="176" y1="1590" x2="176" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="216" y1="1590" x2="216" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="256" y1="1590" x2="256" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="296" y1="1590" x2="296" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="336" y1="1590" x2="336" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="376" y1="1590" x2="376" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="416" y1="1590" x2="416" y2="1910" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="136" y1="1670" x2="456" y2="1670" stroke="#52514e" stroke-width="1"/>
 <line x1="136" y1="1750" x2="456" y2="1750" stroke="#52514e" stroke-width="1"/>
 <line x1="136" y1="1830" x2="456" y2="1830" stroke="#52514e" stroke-width="1"/>
@@ -612,13 +612,13 @@
 <text x="56" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 0: keys 0–63</text>
 <text x="56" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 0</text>
 <rect x="56" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="72" y1="2440" x2="72" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="88" y1="2440" x2="88" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="104" y1="2440" x2="104" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="120" y1="2440" x2="120" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="136" y1="2440" x2="136" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="152" y1="2440" x2="152" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="168" y1="2440" x2="168" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="72" y1="2440" x2="72" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="88" y1="2440" x2="88" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="104" y1="2440" x2="104" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="120" y1="2440" x2="120" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="136" y1="2440" x2="136" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="152" y1="2440" x2="152" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="168" y1="2440" x2="168" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="56" y1="2472" x2="184" y2="2472" stroke="#52514e" stroke-width="1"/>
 <line x1="56" y1="2504" x2="184" y2="2504" stroke="#52514e" stroke-width="1"/>
 <line x1="56" y1="2536" x2="184" y2="2536" stroke="#52514e" stroke-width="1"/>
@@ -629,13 +629,13 @@
 <text x="198" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 1: keys 64–127</text>
 <text x="198" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 1</text>
 <rect x="198" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="214" y1="2440" x2="214" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="230" y1="2440" x2="230" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="246" y1="2440" x2="246" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="262" y1="2440" x2="262" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="278" y1="2440" x2="278" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="294" y1="2440" x2="294" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="310" y1="2440" x2="310" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="214" y1="2440" x2="214" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="230" y1="2440" x2="230" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="246" y1="2440" x2="246" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="262" y1="2440" x2="262" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="278" y1="2440" x2="278" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="294" y1="2440" x2="294" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="310" y1="2440" x2="310" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="198" y1="2472" x2="326" y2="2472" stroke="#52514e" stroke-width="1"/>
 <line x1="198" y1="2504" x2="326" y2="2504" stroke="#52514e" stroke-width="1"/>
 <line x1="198" y1="2536" x2="326" y2="2536" stroke="#52514e" stroke-width="1"/>
@@ -646,13 +646,13 @@
 <text x="340" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 2: keys 128–191</text>
 <text x="340" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 2</text>
 <rect x="340" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="356" y1="2440" x2="356" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="372" y1="2440" x2="372" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="388" y1="2440" x2="388" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="404" y1="2440" x2="404" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="420" y1="2440" x2="420" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="436" y1="2440" x2="436" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="452" y1="2440" x2="452" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="356" y1="2440" x2="356" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="372" y1="2440" x2="372" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="388" y1="2440" x2="388" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="404" y1="2440" x2="404" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="420" y1="2440" x2="420" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="436" y1="2440" x2="436" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="452" y1="2440" x2="452" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="340" y1="2472" x2="468" y2="2472" stroke="#52514e" stroke-width="1"/>
 <line x1="340" y1="2504" x2="468" y2="2504" stroke="#52514e" stroke-width="1"/>
 <line x1="340" y1="2536" x2="468" y2="2536" stroke="#52514e" stroke-width="1"/>
@@ -663,13 +663,13 @@
 <text x="482" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 3: keys 192–255</text>
 <text x="482" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 3</text>
 <rect x="482" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="498" y1="2440" x2="498" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="514" y1="2440" x2="514" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="530" y1="2440" x2="530" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="546" y1="2440" x2="546" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="562" y1="2440" x2="562" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="578" y1="2440" x2="578" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="594" y1="2440" x2="594" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="498" y1="2440" x2="498" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="514" y1="2440" x2="514" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="530" y1="2440" x2="530" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="546" y1="2440" x2="546" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="562" y1="2440" x2="562" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="578" y1="2440" x2="578" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="594" y1="2440" x2="594" y2="2568" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="482" y1="2472" x2="610" y2="2472" stroke="#52514e" stroke-width="1"/>
 <line x1="482" y1="2504" x2="610" y2="2504" stroke="#52514e" stroke-width="1"/>
 <line x1="482" y1="2536" x2="610" y2="2536" stroke="#52514e" stroke-width="1"/>
@@ -852,13 +852,13 @@
 <text x="357.79" y="2907" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the same pieces in shared memory (D: destination)</text>
 <text x="56" y="2983" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">sK: room for one key block in shared memory</text>
 <rect x="56" y="2993" width="256" height="256" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="88" y1="2993" x2="88" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="120" y1="2993" x2="120" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="152" y1="2993" x2="152" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="184" y1="2993" x2="184" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="216" y1="2993" x2="216" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="248" y1="2993" x2="248" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="280" y1="2993" x2="280" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="88" y1="2993" x2="88" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="120" y1="2993" x2="120" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="152" y1="2993" x2="152" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="184" y1="2993" x2="184" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="216" y1="2993" x2="216" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="248" y1="2993" x2="248" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
+<line x1="280" y1="2993" x2="280" y2="3249" stroke="#d6d5d0" stroke-width="0.6"/>
 <line x1="56" y1="3057" x2="312" y2="3057" stroke="#52514e" stroke-width="1"/>
 <line x1="56" y1="3121" x2="312" y2="3121" stroke="#52514e" stroke-width="1"/>
 <line x1="56" y1="3185" x2="312" y2="3185" stroke="#52514e" stroke-width="1"/>

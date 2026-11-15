@@ -9,7 +9,7 @@ import re
 
 FONT = "system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#8a8984", "#e4e3df"
-COLOR = {"cute": "#2a78d6", "triton": "#eb6834", "nvidia": "#1baf7a", "sdpa": "#eda100"}
+COLOR = {"cute": "#2a78d6", "triton": "#eb6834", "nvidia": "#1baf7a", "sdpa": "#c9a227"}
 ROWS = [("v0_naive", "v0 naive port", "cute"), ("v1_swizzle", "v1 swizzle", "cute"),
         ("v2_ldmatrix", "v2 ldmatrix", "cute"), ("v3_p_regs", "v3 P in registers", "cute"),
         ("v4_cpasync", "v4 cp.async", "cute"), ("v5_tuned", "v5 tuned (final)", "cute"),
