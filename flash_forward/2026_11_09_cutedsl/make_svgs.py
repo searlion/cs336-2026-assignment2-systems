@@ -688,28 +688,78 @@ def swizzle_bms():
           "Orange: row 3, the value from step 3, now at place 2."])
     # row 3, the example of step 3: chunk 1 at place 2
     b.append(rect(530 + 2 * cw - 1, gy + 3 * ch - 1, cw + 2, ch + 2, "none", ORANGE, 2.5))
-    y = gy + 8 * ch + 24 + 17 * 3 + 52
+    y = para(gy + 8 * ch + 24 + 17 * 4 + 14,
+             ["Follow chunk 0 instead and the blue cells form a diagonal (place r in row r, as in the smem_layout figure).",
+              "Every chunk makes a different pattern, but always 8 different places, so every chunk reads in 1 pass."])
+    y += 34
 
     # ---- 5: code ----------------------------------------------------------------------------------
-    y = header(y, 6, "The same steps as one line of code")
-    b.append(text(50, y, "new = slot ^ ((slot &gt;&gt; S) &amp; (0b111 &lt;&lt; M))", 13.5, INK, weight="700",
-                  family=MONO))
-    b.append(text(445, y, "with S = 3 and M = 3", 12.5, INK2))
+    y = header(y, 6, "How the computer does it: from one slot number to the new slot number")
+    y = para(y, ["Steps 3–5 describe the rule with a row and a chunk. But when the kernel asks for row 3, column 8, CuTe works",
+                 "with its slot only: one number goes in (200) and one number must come out (208). There are two ways to do that."])
+
+    def tag(x, yy, letter, title):
+        b.append(rect(x, yy - 15, 22, 21, INK, rx=4))
+        b.append(text(x + 11, yy, letter, 12.5, SURF, "middle", "700"))
+        b.append(text(x + 32, yy, title, 13.5, INK, weight="700"))
+
+    def codebox(yy, rows, cx=44):
+        h = 22 * len(rows) + 14
+        b.append(rect(50, yy, W - 100, h, FAINT, GRID, 1, 5))
+        for i, (code, com) in enumerate(rows):
+            ly = yy + 24 + 22 * i
+            k = code.find(" = ")                                 # line up the = signs at their column
+            if k > 0 and code[:k].endswith(" "):
+                b.append(text(66, ly, code[:k].rstrip(), 12.5, INK, family=MONO))
+                b.append(text(66 + 7.53 * (k + 1), ly, code[k + 1:], 12.5, INK, family=MONO))
+            else:
+                b.append(text(66, ly, code, 12.5, INK, family=MONO))
+            if com:
+                b.append(text(66 + 7.53 * cx, ly, "# " + com, 12.5, MUTED, family=MONO))
+        return yy + h
+
+    # A: the long way
+    y += 18
+    tag(50, y, "A", "The long way: take the slot apart, do step 3, put it back together")
+    y = codebox(y + 14, [
+        ("row      = slot // 64 % 8", "200 // 64 = 3           (step 2: the row)"),
+        ("chunk    = slot // 8 % 8", "200 // 8 = 25, 25 % 8 = 1   (the chunk)"),
+        ("position = slot % 8", "200 % 8 = 0             (the position)"),
+        ("place    = chunk ^ row", "1 XOR 3 = 2             (step 3)"),
+        ("new = (slot // 64) * 64 + place * 8 + position", "192 + 16 + 0 = 208")], cx=50)
+    y = para(y + 22, ["(// is division rounded down, % the remainder.) This works, but it needs divisions and multiplications,",
+                      "and it pulls the slot apart into three separate numbers only to glue them back together."])
+
+    # B: the short way
+    y += 22
+    tag(50, y, "B", "The short way: change only the chunk bits, right inside the slot")
+    y = para(y + 26, ["Step 2 showed that the slot's bits already are row | chunk | position, side by side. Only the 3 chunk bits must",
+                      "change, and XOR with 0 changes nothing. So build a number that holds the row in the chunk's place and 0s",
+                      "everywhere else (000 011 000), then XOR the whole slot with it. The row and position bits meet 0s and stay as",
+                      "they are; the chunk bits meet the row bits, which is exactly step 3. In code, with S = 3 and M = 3:"])
+    y = codebox(y - 4, [("new = slot ^ ((slot &gt;&gt; S) &amp; (0b111 &lt;&lt; M))", "")])
     y = para(y + 22, ["&gt;&gt; 3 slides every bit 3 places to the right; &lt;&lt; 3 slides 3 places to the left; "
                       "&amp; keeps a bit only where both numbers",
-                      "have a 1; ^ is XOR; 0b111 is binary 111. Colours show where each bit came from:"])
-    x0, ty, rh = 230, y + 14, 38
+                      "have a 1; ^ is XOR; 0b111 is binary 111. Read it from the inside out (colours show where each bit came from):"])
+    x0, rh = 230, 38
     steps = [("slot", "011001000", [R] * 3 + [C] * 3 + [P] * 3, "200", "row 3, chunk 1, position 0"),
+             "① build 000 011 000: the row, moved into the chunk's place",
              ("slot &gt;&gt; 3", "000011001", [SURF] * 3 + [R] * 3 + [C] * 3, "25",
               "the row bits slide down under the chunk"),
              ("0b111 &lt;&lt; 3", "000111000", [SURF] * 3 + [GREY] * 3 + [SURF] * 3, "56",
               "a mask: 1s only over the chunk bits"),
              ("(slot &gt;&gt; 3) &amp; mask", "000011000", [SURF] * 3 + [R] * 3 + [SURF] * 3, "24",
-              "just the row, now in the chunk's place"),
+              "keep only what is under the mask: the row"),
+             "② XOR the whole slot with it",
              ("slot ^ that", "011010000", [R] * 3 + [ORANGE_L] * 3 + [P] * 3, "208",
-              "XOR: chunk 1 → 2; XOR with 0 changes nothing")]
-    for j, (lab, d, f, dec, what) in enumerate(steps):
-        yy = ty + j * rh
+              "chunk 1 → 2 (step 3); the rest met 0s and stayed")]
+    yy = y + 14
+    for st in steps:
+        if isinstance(st, str):
+            b.append(text(x0 - 150, yy + 14, st, 12, ORANGE, weight="700"))
+            yy += 24
+            continue
+        lab, d, f, dec, what = st
         b.append(text(x0 - 14, yy + 19, lab, 12, INK, "end", "600", MONO))
         right = bitrow(x0, yy, d, f)
         for k in range(9):                                       # outline the empty bits
@@ -718,7 +768,11 @@ def swizzle_bms():
                 b.append(rect(x0 + g * 102 + i * 30 + 1, yy + 1, 28, 26, "none", GRID, 1))
         b.append(text(right + 14, yy + 19, f"= {dec}", 12.5, INK, weight="600", family=MONO))
         b.append(text(right + 70, yy + 19, what, 12, INK2))
-    y = ty + 5 * rh + 44
+        yy += rh
+    y = para(yy + 18, ["Same answer both ways: 208. The short way is the long way squeezed into 3 bit operations: no division,",
+                       "no multiplication, and the slot never has to be taken apart. This one line is what Swizzle&lt;3,3,3&gt; is."],
+             fill=INK)
+    y += 34
 
     # ---- 6: B, M, S --------------------------------------------------------------------------------
     y = header(y, 7, "So what the three numbers of Swizzle&lt;B, M, S&gt; count")

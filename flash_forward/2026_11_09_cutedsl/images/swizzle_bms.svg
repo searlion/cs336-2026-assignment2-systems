@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 2483" width="900" height="2483" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<rect width="900" height="2483" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 3026" width="900" height="3026" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="900" height="3026" fill="#ffffff"/>
 <defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
 <text x="20" y="30" font-size="17" fill="#0b0b0b" text-anchor="start" font-weight="600">Swizzle&lt;3,3,3&gt; step by step, following one value</text>
 <text x="20" y="52" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The tile: 8 rows × 64 columns of bf16 values (2 bytes each) in shared memory. The value we follow: row 3, column 8.</text>
@@ -633,167 +633,201 @@
 <text x="530" y="1864" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">8 reads, 8 different groups of banks: 1 pass.</text>
 <text x="530" y="1881" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Orange: row 3, the value from step 3, now at place 2.</text>
 <rect x="617" y="1685" width="46" height="26" fill="none" stroke="#eb6834" stroke-width="2.5" rx="0"/>
-<line x1="20" y1="1907" x2="880" y2="1907" stroke="#d6d5d0" stroke-width="1"/>
-<circle cx="31" cy="1928" r="11" fill="#0b0b0b"/>
-<text x="31" y="1933" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
-<text x="50" y="1933" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The same steps as one line of code</text>
-<text x="50" y="1957" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">new = slot ^ ((slot &gt;&gt; S) &amp; (0b111 &lt;&lt; M))</text>
-<text x="445" y="1957" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">with S = 3 and M = 3</text>
-<text x="50" y="1979" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">&gt;&gt; 3 slides every bit 3 places to the right; &lt;&lt; 3 slides 3 places to the left; &amp; keeps a bit only where both numbers</text>
-<text x="50" y="1997" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">have a 1; ^ is XOR; 0b111 is binary 111. Colours show where each bit came from:</text>
-<text x="216" y="2048" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot</text>
-<rect x="230" y="2029" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2029" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="290" y="2029" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="332" y="2029" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="362" y="2029" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="392" y="2029" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="434" y="2029" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2029" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2029" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2048" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<text x="538" y="2048" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 200</text>
-<text x="594" y="2048" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">row 3, chunk 1, position 0</text>
-<text x="216" y="2086" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot &gt;&gt; 3</text>
-<rect x="230" y="2067" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2067" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="290" y="2067" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="332" y="2067" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="362" y="2067" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="392" y="2067" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="434" y="2067" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2067" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2067" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2086" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="231" y="2068" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="261" y="2068" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="291" y="2068" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="538" y="2086" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 25</text>
-<text x="594" y="2086" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">the row bits slide down under the chunk</text>
-<text x="216" y="2124" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0b111 &lt;&lt; 3</text>
-<rect x="230" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="290" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="332" y="2105" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="362" y="2105" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="392" y="2105" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="434" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2105" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2124" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="231" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="261" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="291" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="435" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="465" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="495" y="2106" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="538" y="2124" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 56</text>
-<text x="594" y="2124" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">a mask: 1s only over the chunk bits</text>
-<text x="216" y="2162" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">(slot &gt;&gt; 3) &amp; mask</text>
-<rect x="230" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="290" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="332" y="2143" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="362" y="2143" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="392" y="2143" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="434" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2143" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2162" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="231" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="261" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="291" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="435" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="465" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<rect x="495" y="2144" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<text x="538" y="2162" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 24</text>
-<text x="594" y="2162" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">just the row, now in the chunk's place</text>
-<text x="216" y="2200" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot ^ that</text>
-<rect x="230" y="2181" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2181" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="290" y="2181" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="332" y="2181" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="362" y="2181" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="392" y="2181" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="434" y="2181" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2181" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2181" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2200" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<text x="538" y="2200" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 208</text>
-<text x="594" y="2200" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">XOR: chunk 1 → 2; XOR with 0 changes nothing</text>
-<line x1="20" y1="2237" x2="880" y2="2237" stroke="#d6d5d0" stroke-width="1"/>
-<circle cx="31" cy="2258" r="11" fill="#0b0b0b"/>
-<text x="31" y="2263" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">7</text>
-<text x="50" y="2263" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">So what the three numbers of Swizzle&lt;B, M, S&gt; count</text>
-<rect x="230" y="2321" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="245.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="260" y="2321" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="275.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="290" y="2321" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="305.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="332" y="2321" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="347.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="362" y="2321" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="377.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="392" y="2321" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="407.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
-<rect x="434" y="2321" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="449.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="464" y="2321" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="479.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<rect x="494" y="2321" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
-<text x="509.0" y="2340" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
-<text x="216" y="2340" font-size="13" fill="#0b0b0b" text-anchor="end" font-weight="600">slot 200 =</text>
-<path d="M275.0,2317 C275.0,2291 377.0,2291 377.0,2315" fill="none" stroke="#1baf7a" stroke-width="1.8" marker-end="url(#ahb)"/>
-<text x="326.0" y="2291" font-size="12" fill="#1baf7a" text-anchor="middle" font-weight="700">S = 3 places</text>
-<path d="M334,2357 V2363 H420 V2357" fill="none" stroke="#2a78d6" stroke-width="1.5"/>
-<text x="377" y="2379" font-size="12" fill="#2a78d6" text-anchor="middle" font-weight="700">B = 3 bits</text>
-<path d="M436,2357 V2363 H522 V2357" fill="none" stroke="#52514e" stroke-width="1.5"/>
-<text x="479" y="2379" font-size="12" fill="#52514e" text-anchor="middle" font-weight="700">M = 3 bits</text>
-<text x="50" y="2415" font-size="12.5" fill="#2a78d6" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">B = 3</text>
-<text x="106" y="2415" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how many bits get changed: the chunk number. 2³ = 8 chunks per row, and the pattern spans 8 rows.</text>
-<text x="50" y="2436" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">M = 3</text>
-<text x="106" y="2436" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how many low bits are never touched: the position. 2³ = 8 values, so a 16-byte chunk moves whole.</text>
-<text x="50" y="2457" font-size="12.5" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">S = 3</text>
-<text x="106" y="2457" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how far above the chunk bits the row bits start: bit M + S = 6, since a row is 2⁶ = 64 values.</text>
+<text x="50" y="1912" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Follow chunk 0 instead and the blue cells form a diagonal (place r in row r, as in the smem_layout figure).</text>
+<text x="50" y="1930" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Every chunk makes a different pattern, but always 8 different places, so every chunk reads in 1 pass.</text>
+<line x1="20" y1="1956" x2="880" y2="1956" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="1977" r="11" fill="#0b0b0b"/>
+<text x="31" y="1982" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
+<text x="50" y="1982" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">How the computer does it: from one slot number to the new slot number</text>
+<text x="50" y="2006" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Steps 3–5 describe the rule with a row and a chunk. But when the kernel asks for row 3, column 8, CuTe works</text>
+<text x="50" y="2024" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">with its slot only: one number goes in (200) and one number must come out (208). There are two ways to do that.</text>
+<rect x="50" y="2045" width="22" height="21" fill="#0b0b0b" stroke="none" stroke-width="1" rx="4"/>
+<text x="61" y="2060" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">A</text>
+<text x="82" y="2060" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="700">The long way: take the slot apart, do step 3, put it back together</text>
+<rect x="50" y="2074" width="800" height="124" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="5"/>
+<text x="66" y="2098" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">row</text>
+<text x="133.76999999999998" y="2098" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= slot // 64 % 8</text>
+<text x="442.5" y="2098" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 200 // 64 = 3           (step 2: the row)</text>
+<text x="66" y="2120" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">chunk</text>
+<text x="133.76999999999998" y="2120" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= slot // 8 % 8</text>
+<text x="442.5" y="2120" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 200 // 8 = 25, 25 % 8 = 1   (the chunk)</text>
+<text x="66" y="2142" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">position = slot % 8</text>
+<text x="442.5" y="2142" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 200 % 8 = 0             (the position)</text>
+<text x="66" y="2164" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">place</text>
+<text x="133.76999999999998" y="2164" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= chunk ^ row</text>
+<text x="442.5" y="2164" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 1 XOR 3 = 2             (step 3)</text>
+<text x="66" y="2186" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">new = (slot // 64) * 64 + place * 8 + position</text>
+<text x="442.5" y="2186" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># 192 + 16 + 0 = 208</text>
+<text x="50" y="2220" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">(// is division rounded down, % the remainder.) This works, but it needs divisions and multiplications,</text>
+<text x="50" y="2238" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and it pulls the slot apart into three separate numbers only to glue them back together.</text>
+<rect x="50" y="2263" width="22" height="21" fill="#0b0b0b" stroke="none" stroke-width="1" rx="4"/>
+<text x="61" y="2278" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">B</text>
+<text x="82" y="2278" font-size="13.5" fill="#0b0b0b" text-anchor="start" font-weight="700">The short way: change only the chunk bits, right inside the slot</text>
+<text x="50" y="2304" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Step 2 showed that the slot's bits already are row | chunk | position, side by side. Only the 3 chunk bits must</text>
+<text x="50" y="2322" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">change, and XOR with 0 changes nothing. So build a number that holds the row in the chunk's place and 0s</text>
+<text x="50" y="2340" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">everywhere else (000 011 000), then XOR the whole slot with it. The row and position bits meet 0s and stay as</text>
+<text x="50" y="2358" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">they are; the chunk bits meet the row bits, which is exactly step 3. In code, with S = 3 and M = 3:</text>
+<rect x="50" y="2372" width="800" height="36" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="5"/>
+<text x="66" y="2396" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">new = slot ^ ((slot &gt;&gt; S) &amp; (0b111 &lt;&lt; M))</text>
+<text x="50" y="2430" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">&gt;&gt; 3 slides every bit 3 places to the right; &lt;&lt; 3 slides 3 places to the left; &amp; keeps a bit only where both numbers</text>
+<text x="50" y="2448" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">have a 1; ^ is XOR; 0b111 is binary 111. Read it from the inside out (colours show where each bit came from):</text>
+<text x="216" y="2499" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot</text>
+<rect x="230" y="2480" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2480" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="290" y="2480" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="332" y="2480" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="362" y="2480" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="392" y="2480" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="434" y="2480" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2480" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2480" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2499" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<text x="538" y="2499" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 200</text>
+<text x="594" y="2499" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">row 3, chunk 1, position 0</text>
+<text x="80" y="2532" font-size="12" fill="#eb6834" text-anchor="start" font-weight="700">① build 000 011 000: the row, moved into the chunk's place</text>
+<text x="216" y="2561" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot &gt;&gt; 3</text>
+<rect x="230" y="2542" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2542" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="290" y="2542" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="332" y="2542" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="362" y="2542" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="392" y="2542" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="434" y="2542" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2542" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2542" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2561" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="231" y="2543" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="261" y="2543" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="291" y="2543" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="538" y="2561" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 25</text>
+<text x="594" y="2561" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">the row bits slide down under the chunk</text>
+<text x="216" y="2599" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0b111 &lt;&lt; 3</text>
+<rect x="230" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="290" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="332" y="2580" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="362" y="2580" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="392" y="2580" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="434" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2580" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2599" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="231" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="261" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="291" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="435" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="465" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="495" y="2581" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="538" y="2599" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 56</text>
+<text x="594" y="2599" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">a mask: 1s only over the chunk bits</text>
+<text x="216" y="2637" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">(slot &gt;&gt; 3) &amp; mask</text>
+<rect x="230" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="290" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="332" y="2618" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="362" y="2618" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="392" y="2618" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="434" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2618" width="30" height="28" fill="#ffffff" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2637" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="231" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="261" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="291" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="435" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="465" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<rect x="495" y="2619" width="28" height="26" fill="none" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<text x="538" y="2637" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 24</text>
+<text x="594" y="2637" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">keep only what is under the mask: the row</text>
+<text x="80" y="2670" font-size="12" fill="#eb6834" text-anchor="start" font-weight="700">② XOR the whole slot with it</text>
+<text x="216" y="2699" font-size="12" fill="#0b0b0b" text-anchor="end" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">slot ^ that</text>
+<rect x="230" y="2680" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2680" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="290" y="2680" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="332" y="2680" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="362" y="2680" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="392" y="2680" width="30" height="28" fill="#fbe0d5" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="434" y="2680" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2680" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2680" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2699" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<text x="538" y="2699" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">= 208</text>
+<text x="594" y="2699" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">chunk 1 → 2 (step 3); the rest met 0s and stayed</text>
+<text x="50" y="2736" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">Same answer both ways: 208. The short way is the long way squeezed into 3 bit operations: no division,</text>
+<text x="50" y="2754" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">no multiplication, and the slot never has to be taken apart. This one line is what Swizzle&lt;3,3,3&gt; is.</text>
+<line x1="20" y1="2780" x2="880" y2="2780" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="2801" r="11" fill="#0b0b0b"/>
+<text x="31" y="2806" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">7</text>
+<text x="50" y="2806" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">So what the three numbers of Swizzle&lt;B, M, S&gt; count</text>
+<rect x="230" y="2864" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="245.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="260" y="2864" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="275.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="290" y="2864" width="30" height="28" fill="#d1efe4" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="305.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="332" y="2864" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="347.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="362" y="2864" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="377.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="392" y="2864" width="30" height="28" fill="#d4e4f7" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="407.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">1</text>
+<rect x="434" y="2864" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="449.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="464" y="2864" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="479.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<rect x="494" y="2864" width="30" height="28" fill="#e4e3de" stroke="#ffffff" stroke-width="2" rx="0"/>
+<text x="509.0" y="2883" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">0</text>
+<text x="216" y="2883" font-size="13" fill="#0b0b0b" text-anchor="end" font-weight="600">slot 200 =</text>
+<path d="M275.0,2860 C275.0,2834 377.0,2834 377.0,2858" fill="none" stroke="#1baf7a" stroke-width="1.8" marker-end="url(#ahb)"/>
+<text x="326.0" y="2834" font-size="12" fill="#1baf7a" text-anchor="middle" font-weight="700">S = 3 places</text>
+<path d="M334,2900 V2906 H420 V2900" fill="none" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="377" y="2922" font-size="12" fill="#2a78d6" text-anchor="middle" font-weight="700">B = 3 bits</text>
+<path d="M436,2900 V2906 H522 V2900" fill="none" stroke="#52514e" stroke-width="1.5"/>
+<text x="479" y="2922" font-size="12" fill="#52514e" text-anchor="middle" font-weight="700">M = 3 bits</text>
+<text x="50" y="2958" font-size="12.5" fill="#2a78d6" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">B = 3</text>
+<text x="106" y="2958" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how many bits get changed: the chunk number. 2³ = 8 chunks per row, and the pattern spans 8 rows.</text>
+<text x="50" y="2979" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">M = 3</text>
+<text x="106" y="2979" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how many low bits are never touched: the position. 2³ = 8 values, so a 16-byte chunk moves whole.</text>
+<text x="50" y="3000" font-size="12.5" fill="#1baf7a" text-anchor="start" font-weight="700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">S = 3</text>
+<text x="106" y="3000" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">how far above the chunk bits the row bits start: bit M + S = 6, since a row is 2⁶ = 64 values.</text>
 </svg>
