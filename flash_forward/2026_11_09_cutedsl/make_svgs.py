@@ -21,7 +21,8 @@
 #   images/warp_lanes.svg      block -> 4 warps -> warp 0's lanes and quads, who holds each row of an MMA result
 #   images/ldmatrix_x4.svg     one ldmatrix.x4: a 16 x 16 piece of K, its four 8 x 8 tiles, who receives each value
 #   images/qkv_tiles.svg       the 64 x 64 tiles: Q, K, V in global memory, shared memory, and S / O in registers
-#   images/key_block_v0.svg    one key block of v0, one panel per line, following thread 0
+#   images/key_block_v0_1.svg  one key block of v0, lines 1-4 (barriers, copies of K and V), following thread 0
+#   images/key_block_v0_2.svg  one key block of v0, lines 5-9 (the k loop, loads, multiply, the rest)
 #   images/p_roundtrip.svg    Round 3 before/after: P through shared memory (v2) against as_a_operand (v3)
 #   images/a_operand_view.svg as_a_operand line by line: thread 0's accumulator registers re-read as A operands
 #   images/cp_async.svg        cp.async: global -> shared without registers, commit_group / wait_group(n), then a barrier
@@ -3395,13 +3396,12 @@ def key_block_v0():
             "    cute.autovec_copy(tSsK[None, None, k], tSrK[None, None, k])",
             "    cute.gemm(tiled_mma, acc_S, tSrQ[None, None, k], tSrK[None, None, k], acc_S)",
             "# ... mask, online softmax with quad shuffles, P -> shared memory -> registers, O += P V"]
-    b = [f'<defs><marker id="ahk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
-         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
-         text(20, 30, "One key block in v0, line by line", 17, weight="600"),
-         text(20, 52, "The block's 128 threads (4 warps) run these lines once per key block j: 64 keys of K and "
-                      "their 64 rows of V. Each panel takes one line.", 12.5, INK2),
-         text(20, 70, "Blue: thread 0 (lane 0 of warp 0) and its values. Inside the k loop the figure shows "
-                      "k = 1, head dims 16–31.", 12.5, INK2)]
+    # The figure is drawn as one tall column, then cut in two after panel 4: part 1 gets K and V into
+    # shared memory (lines 1-4), part 2 computes with them (lines 5-9). Both parts open with the same
+    # snippet and setup, with the other part's lines dimmed.
+    DEFS = (f'<defs><marker id="ahk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+            f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>')
+    b = []
 
     def code_line(x, yy, c, on=True):
         k = c.find("#")
@@ -3412,31 +3412,48 @@ def key_block_v0():
         if k >= 0:
             b.append(text(x + 7.53 * k, yy, c[k:], 12.5, MUTED, family=MONO))
 
+    def head(title, on):
+        start = len(b)
+        b.append(text(20, 30, title, 17, weight="600"))
+        b.append(text(20, 52, "The block's 128 threads (4 warps) run these lines once per key block j: 64 keys of K and "
+                              "their 64 rows of V. Each panel takes one line.", 12.5, INK2))
+        b.append(text(20, 70, "Blue: thread 0 (lane 0 of warp 0) and its values. Inside the k loop the figure shows "
+                              "k = 1, head dims 16–31.", 12.5, INK2))
+        y = snippet(on)
+        hb = b[start:]
+        del b[start:]
+        return hb, y
+
     # ---- the whole snippet, each line tagged with its panel ------------------------------------
-    ly = 92
-    b.append(rect(20, ly, W - 40, 21 * (len(CODE) + 1) + 12, FAINT, GRID, rx=4))
-    code_line(60, ly + 21, "# one key block in v0 (abridged)")
-    for i, c in enumerate(CODE):
-        yy = ly + 42 + 21 * i
-        b.append(f'<circle cx="38" cy="{yy - 4.5}" r="9" fill="{INK}"/>')
-        b.append(text(38, yy, str(i + 1), 11, SURF, "middle", "700"))
-        code_line(60, yy, c)
-    # the setup the snippet relies on: run once per thread, before the loop over key blocks
-    ly = ly + 21 * (len(CODE) + 1) + 12 + 16
-    SETUP = [
-            "thr_g2s = g2s.get_slice(tidx)                                                   # idea 4: this thread's share of the copy",
-            "tKgK, tKsK = thr_g2s.partition_S(gK), thr_g2s.partition_D(sK)                   # its pieces of K: global, shared",
-            "tVgV, tVsV = thr_g2s.partition_S(gV), thr_g2s.partition_D(sV)                   # the same for V",
-            "thr_mma = tiled_mma.get_slice(tidx)                                             # idea 3: this thread's share of the MMA",
-            "tSsQ, tSsK = thr_mma.partition_A(sQ), thr_mma.partition_B(sK)                   # its values of Q, K in shared memory",
-            "tSrQ, tSrK = thr_mma.make_fragment_A(tSsQ), thr_mma.make_fragment_B(tSsK)       # registers to hold them",
-            "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), Float32)     # its scores of S",
-    ]
-    b.append(rect(20, ly, W - 40, 21 * (len(SETUP) + 1) + 12, PANEL, GRID, rx=4))
-    code_line(60, ly + 21, "# made once per thread, before the loop over key blocks (ideas 3 and 4 of the article)")
-    for i, c in enumerate(SETUP):
-        code_line(60, ly + 42 + 21 * i, c)
-    y = ly + 21 * (len(SETUP) + 1) + 12 + 60
+    def snippet(on):
+        ly = 92
+        b.append(rect(20, ly, W - 40, 21 * (len(CODE) + 1) + 12, FAINT, GRID, rx=4))
+        code_line(60, ly + 21, "# one key block in v0 (abridged)")
+        for i, c in enumerate(CODE):
+            yy = ly + 42 + 21 * i
+            b.append(f'<circle cx="38" cy="{yy - 4.5}" r="9" fill="{INK if i + 1 in on else MUTED}"/>')
+            b.append(text(38, yy, str(i + 1), 11, SURF, "middle", "700"))
+            code_line(60, yy, c, i + 1 in on)
+        # the setup the snippet relies on: run once per thread, before the loop over key blocks
+        ly = ly + 21 * (len(CODE) + 1) + 12 + 16
+        SETUP = [
+                "thr_g2s = g2s.get_slice(tidx)                                                   # idea 4: this thread's share of the copy",
+                "tKgK, tKsK = thr_g2s.partition_S(gK), thr_g2s.partition_D(sK)                   # its pieces of K: global, shared",
+                "tVgV, tVsV = thr_g2s.partition_S(gV), thr_g2s.partition_D(sV)                   # the same for V",
+                "thr_mma = tiled_mma.get_slice(tidx)                                             # idea 3: this thread's share of the MMA",
+                "tSsQ, tSsK = thr_mma.partition_A(sQ), thr_mma.partition_B(sK)                   # its values of Q, K in shared memory",
+                "tSrQ, tSrK = thr_mma.make_fragment_A(tSsQ), thr_mma.make_fragment_B(tSsK)       # registers to hold them",
+                "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), Float32)     # its scores of S",
+        ]
+        b.append(rect(20, ly, W - 40, 21 * (len(SETUP) + 1) + 12, PANEL, GRID, rx=4))
+        code_line(60, ly + 21, "# made once per thread, before the loop over key blocks (ideas 3 and 4 of the article)")
+        for i, c in enumerate(SETUP):
+            code_line(60, ly + 42 + 21 * i, c)
+        return ly + 21 * (len(SETUP) + 1) + 12 + 60
+
+    head1, y = head("One key block in v0, line by line (lines 1–4)", range(1, 5))
+    head2, _ = head("One key block in v0, line by line (lines 5–9)", range(5, 10))
+    y1 = y
 
     def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
         for ln in textwrap.wrap(s, n):
@@ -3624,7 +3641,8 @@ def key_block_v0():
                   "and ③: a second BAR.SYNC, two per key block.")
     y = max(pic_bottom, ty) + 52
 
-    # ---- 5: the k loop --------------------------------------------------------------------------
+    # ---- 5: the k loop (part 2 starts here) ------------------------------------------------------
+    i5, y5 = len(b), y
     y = header(y, 5, "The k loop: what tSsQ's shape ((2, 2, 2), 1, 4) means, and why k = 0, 1, 2, 3", CODE[4])
 
     def sub(yy, s):
@@ -3970,7 +3988,9 @@ def key_block_v0():
     ty = para(ty, "V is read transposed, one 2-byte value per load: the 128 16-bit loads in v0's count. Round 2 "
                   "reads it with ldmatrix.trans.")
     y = max(pic_bottom, ty) + 20
-    return svg(W, y, b)
+    part1 = svg(W, y5 - 32, [DEFS] + head1 + b[:i5])
+    part2 = svg(W, y - (y5 - y1), [DEFS] + head2 + [f'<g transform="translate(0 {y1 - y5})">'] + b[i5:] + ['</g>'])
+    return part1, part2
 
 
 def ldsm_copies():
@@ -4532,7 +4552,9 @@ if __name__ == "__main__":
     (OUT / "cp_async.svg").write_text(cp_async())
     (OUT / "ldsm_copies.svg").write_text(ldsm_copies())
     (OUT / "ldsm_count.svg").write_text(ldsm_count())
-    (OUT / "key_block_v0.svg").write_text(key_block_v0())
+    kb1, kb2 = key_block_v0()
+    (OUT / "key_block_v0_1.svg").write_text(kb1)
+    (OUT / "key_block_v0_2.svg").write_text(kb2)
     (OUT / "p_roundtrip.svg").write_text(p_roundtrip())
     (OUT / "a_operand_view.svg").write_text(a_operand_view())
     print("wrote", *sorted(p.name for p in OUT.glob("*.svg")))
