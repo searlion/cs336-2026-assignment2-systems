@@ -1,6 +1,7 @@
 # make_svgs.py
 # Writes the eighteen explanatory diagrams of the article as plain SVG (no external fonts):
 #   images/mma_ownership.svg   thread 0 through the partition code and the k loop, line by line
+#   images/bank_conflicts.svg  what a bank is, a conflict-free read, an 8-way conflict, and its cost
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
@@ -352,6 +353,122 @@ def mma_ownership():
                   "head dims.")
     y = max(pic_bottom, ty) + 20
     return svg(W, y, b)
+
+
+# ---------------------------------------------------------------------------------------------
+def bank_conflicts():
+    """What a shared-memory bank is, a conflict-free read, an 8-way conflict, and what conflicts cost."""
+    W = 1000
+    FAINT, GOLD = "#f6f6f4", "#fdf3d8"
+    b = [f'<defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Shared-memory banks and bank conflicts", 17, weight="600"),
+         text(20, 52, "Shared memory is the small, fast memory that a block's threads share. A warp is 32 threads, "
+                      "called lanes, that load together.", 12.5, INK2)]
+
+    def section(y, n, title):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        return y + 22
+
+    def arrow(x1, y1, x2, y2, col=INK2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{col}" stroke-width="1.1" '
+                 f'marker-end="url(#ahb)"/>')
+
+    # ---- 1: what a bank is ---------------------------------------------------------------------
+    y = section(98, 1, "A bank is one of 32 slices of shared memory")
+    x0, cw, ch = 76, 28, 22
+    gy = y + 30
+    for k in range(32):
+        b.append(text(x0 + k * cw + cw / 2, gy - 8, str(k), 9.5, MUTED, "middle"))
+    b.append(text(x0 - 8, gy - 8, "bank", 10, MUTED, "end"))
+    for r in range(4):
+        b.append(text(x0 - 8, gy + r * ch + 15, f"bytes {128 * r}–{128 * r + 127}" if r < 2 else "…", 9.5,
+                      MUTED, "end"))
+        for k in range(32):
+            w = 32 * r + k
+            fill = BLUE_L if k == 0 else FAINT
+            b.append(rect(x0 + k * cw, gy + r * ch, cw, ch, fill, SURF, 1.5))
+            b.append(text(x0 + k * cw + cw / 2, gy + r * ch + 15, f"w{w}", 9, INK if k == 0 else INK2, "middle"))
+    ty = gy + 4 * ch + 26
+    b.append(text(x0, ty, "w = word: 4 bytes, two bf16 values. Word w lives in bank w mod 32, so the "
+                  "banks repeat every 128 bytes (blue: bank 0 holds w0, w32, w64, w96, …).", 12, INK2))
+    b.append(text(x0, ty + 20, "Each bank hands out one word per pass. A pass is one round of reading; "
+                  "Nsight Compute calls it a wavefront.", 12, INK, weight="600"))
+    y = ty + 20 + 62
+
+    # ---- 2: no conflict -----------------------------------------------------------------------
+    y = section(y, 2, "No conflict: every lane reads from a different bank, so 1 pass")
+    ly, by = y + 20, y + 84
+    for k in range(32):
+        x = x0 + k * cw
+        b.append(rect(x + 2, ly, cw - 4, 20, BLUE_L, rx=3))
+        b.append(text(x + cw / 2, ly + 14, f"L{k}", 9, INK, "middle"))
+        arrow(x + cw / 2, ly + 22, x + cw / 2, by - 3)
+        b.append(rect(x, by, cw, ch, AQUA_L, SURF, 1.5))
+        b.append(text(x + cw / 2, by + 15, f"w{k}", 9, INK, "middle"))
+    b.append(text(x0 - 8, ly + 14, "lanes", 10, MUTED, "end"))
+    b.append(text(x0 - 8, by + 15, "banks", 10, MUTED, "end"))
+    b.append(text(x0, by + ch + 26, "Lane k reads word k: 32 lanes, 32 banks. All banks work at once, and the "
+                  "whole warp gets its data in 1 pass.", 12, INK2))
+    b.append(text(x0, by + ch + 44, "Lanes that read the same word also take 1 pass: the bank sends that word to "
+                  "all of them.", 12, INK2))
+    y = by + ch + 44 + 62
+
+    # ---- 3: an 8-way conflict ------------------------------------------------------------------
+    y = section(y, 3, "Bank conflict: 8 lanes read 8 different words in bank 0, so 8 passes")
+    cw3, ch3 = 18, 18
+    gy = y + 30
+    for k in range(32):
+        if k % 4 == 0:
+            b.append(text(x0 + k * cw3 + cw3 / 2, gy - 8, str(k), 9.5, MUTED, "middle"))
+    b.append(text(x0 - 8, gy - 8, "bank", 10, MUTED, "end"))
+    for r in range(8):
+        b.append(text(x0 - 8, gy + r * ch3 + 13, f"row {r}", 9.5, INK2, "end"))
+        for k in range(32):
+            hit = k == 0
+            b.append(rect(x0 + k * cw3, gy + r * ch3, cw3, ch3, ORANGE if hit else FAINT, SURF, 1.2))
+        b.append(text(x0 + cw3 / 2, gy + r * ch3 + 13, f"L{r}", 8.5, SURF, "middle", "700"))
+    b.append(text(x0, gy + 8 * ch3 + 20, "8 rows of a 64-value bf16 tile: each row is 128 bytes = all 32 banks,",
+                  11.5, INK2))
+    b.append(text(x0, gy + 8 * ch3 + 36, "so the start of every row lands in bank 0.", 11.5, INK2))
+    # bank 0 serving one lane per pass
+    px0, pw = 700, 34
+    b.append(text(px0, gy - 8, "bank 0 serves them one by one", 12, INK, weight="600"))
+    for i in range(8):
+        yy = gy + i * ch3
+        b.append(text(px0, yy + 13, f"pass {i + 1}", 10.5, INK2))
+        b.append(rect(px0 + 52 + i * 18, yy + 2, 18, ch3 - 4, ORANGE, SURF, 1, 2))
+        b.append(text(px0 + 52 + i * 18 + 9, yy + 13, f"L{i}", 8.5, SURF, "middle", "700"))
+    b.append(text(px0, gy + 8 * ch3 + 20, "Each lane waits its turn: an 8-way", 11.5, INK2))
+    b.append(text(px0, gy + 8 * ch3 + 36, "conflict takes 8 passes instead of 1.", 11.5, INK2))
+    y = gy + 8 * ch3 + 36 + 62
+
+    # ---- 4: the cost ---------------------------------------------------------------------------
+    y = section(y, 4, "Why it slows the kernel")
+    tx0, unit, ty = 200, 52, y + 26
+    for i, (lab, n, col) in enumerate([("no conflict", 1, AQUA), ("8-way conflict", 8, ORANGE)]):
+        yy = ty + i * 40
+        b.append(text(tx0 - 12, yy + 17, lab, 12, INK, "end", "600"))
+        for p in range(n):
+            b.append(rect(tx0 + p * unit, yy, unit - 3, 24, col, rx=3))
+            b.append(text(tx0 + p * unit + (unit - 3) / 2, yy + 16, f"pass {p + 1}", 10, SURF, "middle", "600"))
+        b.append(text(tx0 + n * unit + 8, yy + 17, "→ data ready, the warp goes on", 11.5, INK2))
+    ax = ty + 2 * 40 + 4
+    arrow(tx0, ax, tx0 + 8 * unit + 20, ax, MUTED)
+    b.append(text(tx0 + 8 * unit + 26, ax + 4, "time", 10.5, MUTED))
+    yy = ax + 34
+    for s in ["The warp cannot use the data until its last pass is done, so it sits idle for the extra passes.",
+              "Shared memory serves one pass at a time for all the block's warps, so their loads queue behind "
+              "the extra passes too.",
+              "In v0, 117 M shared loads took 671 M passes, about 6 per load. 554 M of those passes are the "
+              "conflicts."]:
+        b.append(f'<circle cx="{x0 + 4}" cy="{yy - 4}" r="2.5" fill="{INK2}"/>')
+        b.append(text(x0 + 14, yy, s, 12, INK2))
+        yy += 20
+    return svg(W, yy + 10, b)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -2446,6 +2563,7 @@ def cp_async():
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     (OUT / "mma_ownership.svg").write_text(mma_ownership())
+    (OUT / "bank_conflicts.svg").write_text(bank_conflicts())
     (OUT / "swizzle_banks.svg").write_text(swizzle_banks())
     (OUT / "pipeline.svg").write_text(pipeline())
     (OUT / "gpu_hierarchy.svg").write_text(gpu_hierarchy())
