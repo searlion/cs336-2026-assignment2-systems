@@ -5,7 +5,7 @@
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
 #   images/swizzle_bms.svg     Swizzle<3,3,3> step by step: slot, binary, XOR, why, the code, B/M/S
 #   images/smem_layout.svg     every line of smem_layout: width, plain block, swizzle bits, atom, tiling
-#   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
+#   images/pipeline.svg        Round 4 line by line: v4's six steps, on a time line with sK / sV, against v3
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
 #   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
 #   images/mnk_shape.svg       (16, 8, 16) as (M, N, K): three 2-D matrices, and the 16 x 8 x 16 box of work
@@ -1045,57 +1045,322 @@ def smem_layout_fig():
 
 
 # ---------------------------------------------------------------------------------------------
+def ldsm_count():
+    """From one 16 x 16 piece to the loop's instruction count: v1's LDS (+ PRMT for V) against v2's LDSM.
+    Loop 0 of the non-causal SASS (results/cubin/v1_swizzle, v2_ldmatrix), per thread = per warp:
+    LDS 224 -> 0, PRMT 64 -> 0, LDSM 0 -> 40, IMAD -6, UIADD3 -2, MOV +2, IADD3 +2: 594 -> 342."""
+    W = 1040
+    FAINT = "#f6f6f4"
+    TILE = [BLUE_L, ORANGE_L, AQUA_L, "#fdf3d8"]                 # the four 8 x 8 tiles of a piece
+    b = [f'<defs><marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Why 224 loads become 40: one 16 × 16 piece at a time", 17, weight="600"),
+         text(20, 52, "Every operand of the two multiplies is read from shared memory in 16 × 16 pieces of bf16. "
+                      "Each of the warp's 32 lanes must end up", 12.5, INK2),
+         text(20, 70, "holding 8 values of the piece, as 4 pairs packed into 4 registers (2 values per 32-bit "
+                      "register). Counts are instructions per warp.", 12.5, INK2)]
+
+    def header(y, n, title):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        return y + 24
+
+    def para(x, y, lines, size=12.5, fill=INK2, lh=18):
+        for s in lines:
+            b.append(text(x, y, s, size, fill))
+            y += lh
+        return y
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-end="url(#ahc)"/>')
+
+    def piece(x, y, cs, dark=(), labels=None, rlab=None, clab=None):
+        """16 x 16 cells; tiles coloured; `dark` = set of (row, col) cells to fill dark."""
+        for r in range(16):
+            for c in range(16):
+                t = (r >= 8) + 2 * (c >= 8)
+                hit = (r, c) in dark
+                b.append(rect(x + c * cs, y + r * cs, cs, cs, INK if hit else TILE[t], SURF, 0.6))
+        b.append(rect(x, y, 16 * cs, 16 * cs, "none", INK2, 1))
+        b.append(line(x + 8 * cs, y, x + 8 * cs, y + 16 * cs, INK2, 1))
+        b.append(line(x, y + 8 * cs, x + 16 * cs, y + 8 * cs, INK2, 1))
+        if rlab:
+            b.append(text(x - 6, y + 8 * cs, rlab, 10.5, MUTED, "end"))
+        if clab:
+            b.append(text(x + 8 * cs, y - 6, clab, 10.5, MUTED, "middle"))
+        if labels:
+            for (tr, tc), s in labels.items():
+                b.append(text(x + tc * 8 * cs + 4 * cs, y + tr * 8 * cs + 4 * cs + 4, s, 11, INK, "middle", "700"))
+
+    def instr(x, y, rows, w=330):
+        for i, (op, what) in enumerate(rows):
+            yy = y + i * 21
+            b.append(text(x, yy, op, 12, INK, weight="700", family=MONO))
+            b.append(text(x + 120, yy, what, 12, INK2))
+        return y + len(rows) * 21
+
+    cs = 11
+    # ---- 1: v1, Q / K / P ----------------------------------------------------------------------
+    y = header(118, 1, "v1, a piece of Q, K or P: one plain load per pair")
+    px, py = 100, y + 26
+    lane0 = {(0, 0), (0, 1), (8, 0), (8, 1), (0, 8), (0, 9), (8, 8), (8, 9)}
+    piece(px, py, cs, lane0, rlab="16 rows", clab="16 columns")
+    b.append(text(px + 8 * cs, py + 16 * cs + 18, "black: lane 0's 8 values", 11, INK2, "middle"))
+    tx = 330
+    ty = para(tx, y + 6, ["The 4 pairs a lane needs sit in 4 different places, one in each 8 × 8 tile. Each pair",
+                          "is two neighbours in memory, so one 32-bit load (LDS) can fetch it. But an LDS",
+                          "fetches one address per lane, so a lane needs 4 of them:"])
+    ty = instr(tx + 10, ty + 8, [("LDS.32", "row 0, columns 0–1"), ("LDS.32", "row 8, columns 0–1"),
+                                 ("LDS.32", "row 0, columns 8–9"), ("LDS.32", "row 8, columns 8–9")])
+    b.append(text(tx, ty + 10, "= 4 instructions per piece. All 32 lanes run them together, each at its own "
+                               "addresses.", 12.5, INK, weight="600"))
+    y = max(py + 16 * cs + 18, ty + 10) + 52
+
+    # ---- 2: v1, V --------------------------------------------------------------------------------
+    y = header(y, 2, "v1, a piece of V: worse, because its pairs are not neighbours")
+    py = y + 26
+    vpairs = {(0, 0), (1, 0), (8, 0), (9, 0), (0, 8), (1, 8), (8, 8), (9, 8)}
+    piece(px, py, cs, vpairs, rlab="16 keys", clab="16 head dims")
+    b.append(text(px + 8 * cs, py + 16 * cs + 18, "black: lane 0's 8 values", 11, INK2, "middle"))
+    b.append(f'<path d="M{px - 3},{py + cs / 2} C{px - 20},{py + cs / 2} {px - 20},{py + 1.5 * cs} '
+             f'{px - 3},{py + 1.5 * cs}" fill="none" stroke="{ORANGE}" stroke-width="1.6"/>')
+    b.append(text(px - 22, py + cs - 2, "128 bytes", 10.5, ORANGE, "end", "700"))
+    b.append(text(px - 22, py + cs + 11, "apart", 10.5, ORANGE, "end", "700"))
+    ty = para(tx, y + 6, ["O = P·V wants each pair to be 2 keys of the same head dim. V is stored one key per",
+                          "row, so the two values of a pair are a whole row (128 bytes) apart. Each needs its",
+                          "own 16-bit load, then a PRMT instruction packs the two halves into one register:"])
+    ty = instr(tx + 10, ty + 8, [("LDS.U16 × 2", "key 0 and key 1 of dim 0, then PRMT to pack them"),
+                                 ("LDS.U16 × 2", "keys 8, 9 of dim 0, then PRMT"),
+                                 ("LDS.U16 × 2", "keys 0, 1 of dim 8, then PRMT"),
+                                 ("LDS.U16 × 2", "keys 8, 9 of dim 8, then PRMT")])
+    b.append(text(tx, ty + 10, "= 8 loads + 4 PRMT = 12 instructions per piece.", 12.5, INK, weight="600"))
+    y = max(py + 16 * cs + 18, ty + 10) + 52
+
+    # ---- 3: v2, ldmatrix -------------------------------------------------------------------------
+    y = header(y, 3, "v2: one ldmatrix per piece, for every operand")
+    py = y + 26
+    piece(px, py, cs, labels={(0, 0): "lanes 0–7", (1, 0): "lanes 8–15", (0, 1): "lanes 16–23", (1, 1): "lanes 24–31"},
+          rlab="16 rows", clab="the same piece")
+    b.append(text(px + 8 * cs, py + 16 * cs + 18, "lanes that give each tile's 8 row addresses", 11, INK2, "middle"))
+    ty = para(tx, y + 6, ["ldmatrix.x4 is one instruction for the whole warp. Each of the 32 lanes gives the address",
+                          "of one 8-value row (8 rows × 4 tiles = 32 rows). The hardware reads all 4 tiles and",
+                          "deals every lane its 4 pairs, already packed in 4 registers."])
+    ty = instr(tx + 10, ty + 8, [("LDSM.16.M88.4", "Q, K or P: replaces 4 LDS.32"),
+                                 ("LDSM.16.MT88.4", "V, rows and columns swapped on the way (.trans), so the"),
+                                 ("", "pairs come out as 2 keys of one dim: replaces 8 LDS.U16 + 4 PRMT")])
+    b.append(text(tx, ty + 10, "= 1 instruction per piece.", 12.5, INK, weight="600"))
+    y = max(py + 16 * cs + 18, ty + 10) + 52
+
+    # ---- 4: add it up ----------------------------------------------------------------------------
+    y = header(y, 4, "Add it up over one pass of the loop (one key block)")
+    y = para(50, y + 2, ["Each warp multiplies its own 16 rows of Q by the whole 64 × 64 tile of K, then its 16 rows "
+                         "of P by the whole tile of V. So it reads:"])
+    cols = [50, 330, 450, 720]
+    hy = y + 14
+    for c, s in zip(cols, ["operand (per warp)", "16 × 16 pieces", "v1", "v2"]):
+        b.append(text(c, hy, s, 12, INK, weight="700"))
+    b.append(line(50, hy + 8, W - 50, hy + 8, GRID))
+    rows = [("Q: 16 rows × 64 dims", "4", "4 × 4 = 16 LDS", "4 LDSM"),
+            ("K: 64 keys × 64 dims", "16", "16 × 4 = 64 LDS", "16 LDSM"),
+            ("P: 16 rows × 64 keys", "4", "4 × 4 = 16 LDS", "4 LDSM"),
+            ("V: 64 keys × 64 dims", "16", "16 × 8 = 128 LDS, + 16 × 4 = 64 PRMT", "16 LDSM (.trans)")]
+    for i, r in enumerate(rows):
+        yy = hy + 30 + 22 * i
+        for c, s in zip(cols, r):
+            b.append(text(c, yy, s, 12.5, INK2))
+    ty = hy + 30 + 22 * 4
+    b.append(line(50, ty - 12, W - 50, ty - 12, GRID))
+    for c, s in zip(cols, ["total", "40", "224 LDS + 64 PRMT = 288", "40 LDSM"]):
+        b.append(text(c, ty + 4, s, 12.5, INK, weight="700"))
+
+    # stacked bars: the whole pass
+    by, u = ty + 50, 1.25
+    b.append(text(50, by - 14, "All the instructions in one pass of the loop", 12.5, INK, weight="700"))
+    for j, (lab, segs, tot) in enumerate([
+            ("v1", [(224, "224 LDS", ORANGE_L), (64, "64 PRMT", ORANGE_L), (306, "everything else: 306", FAINT)], 594),
+            ("v2", [(40, "40 LDSM", BLUE_L), (302, "everything else: 302", FAINT)], 342)]):
+        yy = by + j * 44
+        b.append(text(90, yy + 20, lab, 13, INK, "end", "700"))
+        x = 100
+        for n, s, f in segs:
+            b.append(rect(x, yy, n * u, 30, f, INK2, 0.8))
+            b.append(text(x + n * u / 2, yy + 20, s, 11.5, INK, "middle", "600"))
+            x += n * u
+        b.append(text(x + 10, yy + 20, f"{tot}", 13, INK, weight="700"))
+    y = para(50, by + 2 * 44 + 22,
+             ["288 load-and-pack instructions become 40: 248 fewer. Everything else is the same work in both (the 64 "
+              "multiplies, the softmax,",
+              "the copies of the next K and V) and differs only by 4 address instructions, 306 → 302. Together: 594 → 342."],
+             fill=INK2)
+    y = para(50, y + 8,
+             ["Every shared-memory instruction goes through the load/store pipe. With 248 fewer per pass, it falls from "
+              "72.5% to 26.0% busy,",
+              "stops holding up the multiplies, and the tensor cores rise from 71.3% to 86.9% of peak."],
+             fill=INK)
+    return svg(W, y + 14, b)
+
+
+# ---------------------------------------------------------------------------------------------
 def pipeline():
-    b = []
-    b.append(text(20, 30, "One key block, two ways (schematic, not to scale)", 16, weight="600"))
-    x0, unit = 150, 26
+    """Round 4's loop body line by line. Part 1: the eight lines of v4's attend that the article shows, grouped
+    into six numbered steps, each with one plain sentence. Part 2: the same steps on a time line for one warp
+    (what the warp runs, what the shared buffers sK and sV hold), with v3's order on the same time axis."""
+    import re
+    W, FAINT, WAIT, OLD = 900, "#f6f6f4", "#e4e3df", "#efeeea"
+    KIND = {"wait": INK2, "copy": ORANGE, "math": BLUE}
+    b = [text(20, 30, "Round 4: one key block j, line by line", 17, weight="600"),
+         text(20, 52, "sK and sV are the shared-memory buffers for one K tile and one V tile. v4 reuses each buffer "
+                      "as soon as no warp reads it.", 12.5, INK2)]
 
-    def bar(x, y, w, label, fill, ink=INK, h=26):
-        b.append(rect(x0 + x * unit, y, w * unit - 2, h, fill, rx=4))
-        b.append(text(x0 + x * unit + (w * unit - 2) / 2, y + 17, label, 11.5, ink, "middle"))
+    def sub(s):
+        """K_j, V_j-1, K_j+1 ... -> K with a lowered j, j-1, j+1 (dy keeps it working in every browser)."""
+        out, back = [], ""
+        for i, part in enumerate(re.split(r"([KV])_(j(?:[+−]1)?)", s)):
+            if i % 3 == 2:                              # the subscript
+                out.append(f'<tspan dy="3.5" font-size="0.78em">{part}</tspan>')
+                back = ' dy="-3.5"'
+            elif part:
+                out.append(f'<tspan{back}>{part}</tspan>' if back else part)
+                back = ""
+        return "".join(out)
 
-    def barrier(x, y, h):
-        b.append(line(x0 + x * unit - 1, y - 6, x0 + x * unit - 1, y + h + 6, INK, 2))
+    def badge(x, y, n, kind, r=10, faded=False):
+        b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{KIND[kind]}"{" opacity=\"0.45\"" if faded else ""}/>')
+        b.append(text(x, y + 4.3, str(n), 12 if r >= 10 else 10.5, SURF, "middle", "700"))
 
-    # v3: synchronous copies
-    y = 80
-    b.append(text(20, y - 16, "v3: copies through registers", 14, weight="600"))
-    b.append(text(20, y + 17, "warp", 12, INK2))
-    b.append(text(20, y + 51, "copies in flight", 12, INK2))
-    barrier(0.08, y, 60)
-    bar(0, y, 6, "load K_j, V_j", ORANGE_L)
-    barrier(6, y, 60)
-    bar(6, y, 5, "S = Q K_jᵀ", BLUE_L)
-    bar(11, y, 6, "softmax", AQUA_L)
-    bar(17, y, 5, "O += P V_j", BLUE_L)
-    barrier(22, y, 60)
-    bar(22, y, 4, "load K_j+1 …", ORANGE_L)
-    bar(0, y + 34, 6, "K_j, V_j", ORANGE, SURF)
-    bar(22, y + 34, 4, "K_j+1, V_j+1", ORANGE, SURF)
-    b.append(text(x0, y + 86, "Each load goes global memory -> registers -> shared memory, and the warp waits for it before any maths.", 12, INK2))
-    b.append(text(x0, y + 104, "Two barriers (black lines) per key block: before the load, so no warp still reads the old K, V, and after it.", 12, INK2))
+    # ---- part 1: the code, one numbered step per line (step 5 spans three lines) ----------------------------
+    steps = [
+        (1, "wait", ["cute.arch.cp_async_wait_group(0); cute.arch.sync_threads()"],
+         ["Wait until K_j has landed in sK, then wait for every warp. Now all of K_j is there,",
+          "and every warp has finished with V_j−1, so sV is free."]),
+        (2, "copy", ["self.start_load(kv.gV, kv.sV, kv, j); cute.arch.cp_async_commit_group()"],
+         ["Start copying V_j into sV with cp.async. The warp does not wait for it."]),
+        (3, "math", ["# ... S = Q K_j^T ..."],
+         ["Uses K_j, not V_j, so it runs while V_j is still being copied."]),
+        (4, "wait", ["cute.arch.cp_async_wait_group(0); cute.arch.sync_threads()"],
+         ["Wait until V_j has landed in sV, then wait for every warp. Now every warp has finished",
+          "step 3, so no warp still reads K_j: sK is free."]),
+        (5, "copy", ["if j + 1 < kv.n_end:", "    self.start_load(kv.gK, kv.sK, kv, j + 1)",
+                     "cute.arch.cp_async_commit_group()"],
+         ["Start copying K_j+1 into sK, unless j is the last block. The commit is outside the if,",
+          "so the last block commits an empty group, which does nothing."]),
+        (6, "math", ["# ... mask, softmax, O += P V_j ..."],
+         ["Uses V_j, not K_j+1, so it runs while K_j+1 is being copied. Then step 1 of block j+1 waits for K_j+1."]),
+    ]
+    y = 82
+    code_h = 21 * sum(len(c) for _, _, c, _ in steps) + 18 * sum(len(e) for *_, e in steps) + 12 * len(steps) + 8
+    b.append(rect(20, y, W - 40, code_h, FAINT, GRID, rx=4))
+    y += 22
+    for n, kind, code, eng in steps:
+        badge(40, y - 4.5, n, kind)
+        for c in code:
+            ind = len(c) - len(c.lstrip(" "))
+            esc = c.lstrip(" ").replace("&", "&amp;").replace("<", "&lt;")
+            b.append(text(62 + 7.53 * ind, y, esc, 12.5, MUTED if c.startswith("#") else INK, family=MONO))
+            y += 21
+        for e in eng:
+            b.append(text(62, y - 3, sub(e), 12.5, INK2))
+            y += 18
+        y += 12
+    y += 18
 
-    # v4: cp.async, FlashAttention-2 order
-    y = 250
-    b.append(text(20, y - 16, "v4: cp.async in the FlashAttention-2 order", 14, weight="600"))
-    b.append(text(20, y + 17, "warp", 12, INK2))
-    b.append(text(20, y + 51, "copies in flight", 12, INK2))
-    bar(0, y, 1, "", "#f0efec")
-    barrier(1, y, 60)
-    bar(1, y, 5, "S = Q K_jᵀ", BLUE_L)
-    bar(6, y, 1, "", "#f0efec")
-    barrier(7, y, 60)
-    bar(7, y, 6, "softmax", AQUA_L)
-    bar(13, y, 5, "O += P V_j", BLUE_L)
-    bar(18, y, 1, "", "#f0efec")
-    barrier(19, y, 60)
-    bar(19, y, 5, "S = Q K_j+1ᵀ", BLUE_L)
-    bar(1, y + 34, 5, "V_j", ORANGE, SURF)
-    bar(7, y + 34, 5, "K_j+1", ORANGE, SURF)
-    bar(19, y + 34, 5, "V_j+1", ORANGE, SURF)
-    b.append(text(x0, y + 86, "Each copy is started before the maths that does not need it, and waited for", 12, INK2))
-    b.append(text(x0, y + 104, "only where its data is used. Grey: wait for the copy, then a barrier: still two per key block.", 12, INK2))
-    return svg(860, 380, b)
+    # ---- part 2: the same steps in time ---------------------------------------------------------------------
+    b.append(text(20, y, "The same steps in time, for one warp (schematic, not to scale)", 15, weight="600"))
+    y += 22
+    lx = 20
+    for kind, label in (("wait", "grey: waiting"), ("copy", "orange: copy in flight"), ("math", "blue: maths")):
+        fill = {"wait": WAIT, "copy": ORANGE, "math": BLUE_L}[kind]
+        b.append(rect(lx, y - 10, 22, 12, fill, rx=2))
+        b.append(text(lx + 28, y, label, 12, INK2))
+        lx += 44 + 6.6 * len(label)
+    b.append(rect(lx, y - 10, 22, 12, SURF, BLUE, 1, 2))
+    b.append(text(lx + 28, y, "outlined: landed, ready to read", 12, INK2))
+    lx += 44 + 6.6 * len("outlined: landed, ready to read")
+    b.append(line(lx + 4, y - 13, lx + 4, y + 4, INK, 2))
+    b.append(text(lx + 12, y, "black line: barrier", 12, INK2))
+
+    x0, u, bh = 160, 29.5, 26
+
+    def X(t):
+        return x0 + t * u
+
+    def bar(t0, t1, yy, label, fill, ink=INK, edge="none", faded=False):
+        op = ' opacity="0.5"' if faded else ""
+        b.append(f'<g{op}>' + rect(X(t0), yy, (t1 - t0) * u - 2, bh, fill, edge, 1, 4)
+                 + text((X(t0) + X(t1) - 2) / 2, yy + 17, sub(label), 11.5, ink, "middle") + '</g>')
+
+    def barrier(t, y0, y1):
+        b.append(line(X(t) - 1, y0, X(t) - 1, y1, INK, 2))
+
+    # time of each step; step 2 and 5 only start copies, so they are narrow ticks
+    T = {1: (0, 1.4), 2: (1.4, 1.8), 3: (1.8, 7.8), 4: (7.8, 9.4), 5: (9.4, 9.8), 6: (9.8, 19.6),
+         "1n": (19.6, 20.8), "2n": (20.8, 21.2), "3n": (21.2, 24.0)}
+    y += 30
+    # which key block
+    for (t0, t1, s) in ((0, 19.6, "key block j"), (19.6, 24.0, "block j+1")):
+        b.append(line(X(t0) + 2, y + 6, X(t1) - 4, y + 6, MUTED))
+        b.append(line(X(t0) + 2, y + 2, X(t0) + 2, y + 10, MUTED))
+        b.append(line(X(t1) - 4, y + 2, X(t1) - 4, y + 10, MUTED))
+        b.append(rect((X(t0) + X(t1)) / 2 - 3.6 * len(s) - 6, y - 4, 7.2 * len(s) + 12, 18, SURF))
+        b.append(text((X(t0) + X(t1)) / 2, y + 10, sub(s), 12, INK2, "middle", "600"))
+    y += 32
+    lanes = y + 14
+    for key, kind in ((1, "wait"), (2, "copy"), (3, "math"), (4, "wait"), (5, "copy"), (6, "math"),
+                      ("1n", "wait"), ("2n", "copy"), ("3n", "math")):
+        t0, t1 = T[key]
+        badge((X(t0) + X(t1) - 2) / 2, y, int(str(key)[0]), kind, 9, faded=isinstance(key, str))
+    y = lanes
+    rows = {"warp": y, "sK": y + 40, "sV": y + 80}
+    for name, yy in (("v4: the warp runs", rows["warp"]), ("sK holds", rows["sK"]), ("sV holds", rows["sV"])):
+        b.append(text(20, yy + 17, name, 12.5, INK, weight="600" if name.startswith("v4") else "normal"))
+    wy = rows["warp"]
+    bar(*T[1], wy, "wait", WAIT, INK2)
+    bar(*T[2], wy, "", ORANGE)
+    bar(*T[3], wy, "S = Q K_jᵀ", BLUE_L)
+    bar(*T[4], wy, "wait", WAIT, INK2)
+    bar(*T[5], wy, "", ORANGE)
+    bar(*T[6], wy, "mask, softmax, O += P V_j", BLUE_L)
+    bar(*T["1n"], wy, "", WAIT, faded=True)
+    bar(*T["2n"], wy, "", ORANGE, faded=True)
+    bar(*T["3n"], wy, "S = Q K_j+1ᵀ", BLUE_L, faded=True)
+    # the shared buffers
+    ky, vy = rows["sK"], rows["sV"]
+    # each copy bar starts under the tick of the step that starts it (2 or 5)
+    bar(0, 1.0, ky, "K_j", ORANGE, SURF)
+    bar(1.0, 9.4, ky, "K_j (step 3 reads it)", SURF, INK, BLUE)
+    bar(T[5][0], 15.6, ky, "K_j+1 in flight", ORANGE, SURF)
+    bar(15.6, T["1n"][1], ky, "K_j+1 landed", SURF, INK, BLUE)
+    bar(T["1n"][1], 24.0, ky, "step 3 reads it", SURF, INK, BLUE, faded=True)
+    bar(0, 1.4, vy, "V_j−1", OLD, MUTED)
+    bar(T[2][0], 8.6, vy, "V_j in flight", ORANGE, SURF)
+    bar(8.6, 19.6, vy, "V_j (step 6 reads it)", SURF, INK, BLUE)
+    bar(T["2n"][0], 24.0, vy, "V_j+1 in flight", ORANGE, SURF, faded=True)
+    for t in (T[1][1], T[4][1], T["1n"][1]):
+        barrier(t, wy - 5, vy + bh + 5)
+    y = vy + bh + 26
+    for s in ("Each copy starts as soon as its buffer is free (steps 2 and 5) and is waited for just before the maths that",
+              "reads it (steps 4 and 1). So the copies run during the maths, and the waits are short."):
+        b.append(text(x0, y, s, 12.5, INK2))
+        y += 18
+
+    # ---- v3 on the same time axis ---------------------------------------------------------------------------
+    y += 22
+    b.append(line(20, y - 20, W - 20, y - 20, GRID))
+    b.append(text(20, y + 17, "v3: the warp runs", 12.5, INK, weight="600"))
+    bar(0, 7.0, y, "copy K_j and V_j (the warp waits)", ORANGE_L)
+    bar(7.0, 13.0, y, "S = Q K_jᵀ", BLUE_L)
+    bar(13.0, 22.8, y, "mask, softmax, O += P V_j", BLUE_L)
+    for t in (0.07, 7.0, 22.8):
+        barrier(t, y - 5, y + bh + 5)
+    y += bh + 26
+    for s in ("v3 copies K_j and V_j through registers, so the warp itself waits for every value, and no maths starts until",
+              "both have landed. A barrier before the copy (no warp still reads the old tiles) and one after it (all copies landed)."):
+        b.append(text(x0, y, sub(s), 12.5, INK2))
+        y += 18
+    return svg(W, y + 8, b)
 
 def gpu_hierarchy():
     b = []
@@ -3660,166 +3925,7 @@ def key_block_v0():
                   "after k = 3 every score covers all 64 head dims. Warps 1–3 do rows 16–63 at the same time.")
     y = max(pic_bottom, ty) + 52
 
-    # ---------------------------------------------------------------------------------------------
-def ldsm_count():
-    """From one 16 x 16 piece to the loop's instruction count: v1's LDS (+ PRMT for V) against v2's LDSM.
-    Loop 0 of the non-causal SASS (results/cubin/v1_swizzle, v2_ldmatrix), per thread = per warp:
-    LDS 224 -> 0, PRMT 64 -> 0, LDSM 0 -> 40, IMAD -6, UIADD3 -2, MOV +2, IADD3 +2: 594 -> 342."""
-    W = 1040
-    FAINT = "#f6f6f4"
-    TILE = [BLUE_L, ORANGE_L, AQUA_L, "#fdf3d8"]                 # the four 8 x 8 tiles of a piece
-    b = [f'<defs><marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
-         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
-         text(20, 30, "Why 224 loads become 40: one 16 × 16 piece at a time", 17, weight="600"),
-         text(20, 52, "Every operand of the two multiplies is read from shared memory in 16 × 16 pieces of bf16. "
-                      "Each of the warp's 32 lanes must end up", 12.5, INK2),
-         text(20, 70, "holding 8 values of the piece, as 4 pairs packed into 4 registers (2 values per 32-bit "
-                      "register). Counts are instructions per warp.", 12.5, INK2)]
-
-    def header(y, n, title):
-        b.append(line(20, y - 26, W - 20, y - 26, GRID))
-        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
-        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
-        b.append(text(50, y, title, 15, weight="600"))
-        return y + 24
-
-    def para(x, y, lines, size=12.5, fill=INK2, lh=18):
-        for s in lines:
-            b.append(text(x, y, s, size, fill))
-            y += lh
-        return y
-
-    def arrow(x1, y1, x2, y2):
-        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
-                 f'marker-end="url(#ahc)"/>')
-
-    def piece(x, y, cs, dark=(), labels=None, rlab=None, clab=None):
-        """16 x 16 cells; tiles coloured; `dark` = set of (row, col) cells to fill dark."""
-        for r in range(16):
-            for c in range(16):
-                t = (r >= 8) + 2 * (c >= 8)
-                hit = (r, c) in dark
-                b.append(rect(x + c * cs, y + r * cs, cs, cs, INK if hit else TILE[t], SURF, 0.6))
-        b.append(rect(x, y, 16 * cs, 16 * cs, "none", INK2, 1))
-        b.append(line(x + 8 * cs, y, x + 8 * cs, y + 16 * cs, INK2, 1))
-        b.append(line(x, y + 8 * cs, x + 16 * cs, y + 8 * cs, INK2, 1))
-        if rlab:
-            b.append(text(x - 6, y + 8 * cs, rlab, 10.5, MUTED, "end"))
-        if clab:
-            b.append(text(x + 8 * cs, y - 6, clab, 10.5, MUTED, "middle"))
-        if labels:
-            for (tr, tc), s in labels.items():
-                b.append(text(x + tc * 8 * cs + 4 * cs, y + tr * 8 * cs + 4 * cs + 4, s, 11, INK, "middle", "700"))
-
-    def instr(x, y, rows, w=330):
-        for i, (op, what) in enumerate(rows):
-            yy = y + i * 21
-            b.append(text(x, yy, op, 12, INK, weight="700", family=MONO))
-            b.append(text(x + 120, yy, what, 12, INK2))
-        return y + len(rows) * 21
-
-    cs = 11
-    # ---- 1: v1, Q / K / P ----------------------------------------------------------------------
-    y = header(118, 1, "v1, a piece of Q, K or P: one plain load per pair")
-    px, py = 100, y + 26
-    lane0 = {(0, 0), (0, 1), (8, 0), (8, 1), (0, 8), (0, 9), (8, 8), (8, 9)}
-    piece(px, py, cs, lane0, rlab="16 rows", clab="16 columns")
-    b.append(text(px + 8 * cs, py + 16 * cs + 18, "black: lane 0's 8 values", 11, INK2, "middle"))
-    tx = 330
-    ty = para(tx, y + 6, ["The 4 pairs a lane needs sit in 4 different places, one in each 8 × 8 tile. Each pair",
-                          "is two neighbours in memory, so one 32-bit load (LDS) can fetch it. But an LDS",
-                          "fetches one address per lane, so a lane needs 4 of them:"])
-    ty = instr(tx + 10, ty + 8, [("LDS.32", "row 0, columns 0–1"), ("LDS.32", "row 8, columns 0–1"),
-                                 ("LDS.32", "row 0, columns 8–9"), ("LDS.32", "row 8, columns 8–9")])
-    b.append(text(tx, ty + 10, "= 4 instructions per piece. All 32 lanes run them together, each at its own "
-                               "addresses.", 12.5, INK, weight="600"))
-    y = max(py + 16 * cs + 18, ty + 10) + 52
-
-    # ---- 2: v1, V --------------------------------------------------------------------------------
-    y = header(y, 2, "v1, a piece of V: worse, because its pairs are not neighbours")
-    py = y + 26
-    vpairs = {(0, 0), (1, 0), (8, 0), (9, 0), (0, 8), (1, 8), (8, 8), (9, 8)}
-    piece(px, py, cs, vpairs, rlab="16 keys", clab="16 head dims")
-    b.append(text(px + 8 * cs, py + 16 * cs + 18, "black: lane 0's 8 values", 11, INK2, "middle"))
-    b.append(f'<path d="M{px - 3},{py + cs / 2} C{px - 20},{py + cs / 2} {px - 20},{py + 1.5 * cs} '
-             f'{px - 3},{py + 1.5 * cs}" fill="none" stroke="{ORANGE}" stroke-width="1.6"/>')
-    b.append(text(px - 22, py + cs - 2, "128 bytes", 10.5, ORANGE, "end", "700"))
-    b.append(text(px - 22, py + cs + 11, "apart", 10.5, ORANGE, "end", "700"))
-    ty = para(tx, y + 6, ["O = P·V wants each pair to be 2 keys of the same head dim. V is stored one key per",
-                          "row, so the two values of a pair are a whole row (128 bytes) apart. Each needs its",
-                          "own 16-bit load, then a PRMT instruction packs the two halves into one register:"])
-    ty = instr(tx + 10, ty + 8, [("LDS.U16 × 2", "key 0 and key 1 of dim 0, then PRMT to pack them"),
-                                 ("LDS.U16 × 2", "keys 8, 9 of dim 0, then PRMT"),
-                                 ("LDS.U16 × 2", "keys 0, 1 of dim 8, then PRMT"),
-                                 ("LDS.U16 × 2", "keys 8, 9 of dim 8, then PRMT")])
-    b.append(text(tx, ty + 10, "= 8 loads + 4 PRMT = 12 instructions per piece.", 12.5, INK, weight="600"))
-    y = max(py + 16 * cs + 18, ty + 10) + 52
-
-    # ---- 3: v2, ldmatrix -------------------------------------------------------------------------
-    y = header(y, 3, "v2: one ldmatrix per piece, for every operand")
-    py = y + 26
-    piece(px, py, cs, labels={(0, 0): "lanes 0–7", (1, 0): "lanes 8–15", (0, 1): "lanes 16–23", (1, 1): "lanes 24–31"},
-          rlab="16 rows", clab="the same piece")
-    b.append(text(px + 8 * cs, py + 16 * cs + 18, "lanes that give each tile's 8 row addresses", 11, INK2, "middle"))
-    ty = para(tx, y + 6, ["ldmatrix.x4 is one instruction for the whole warp. Each of the 32 lanes gives the address",
-                          "of one 8-value row (8 rows × 4 tiles = 32 rows). The hardware reads all 4 tiles and",
-                          "deals every lane its 4 pairs, already packed in 4 registers."])
-    ty = instr(tx + 10, ty + 8, [("LDSM.16.M88.4", "Q, K or P: replaces 4 LDS.32"),
-                                 ("LDSM.16.MT88.4", "V, rows and columns swapped on the way (.trans), so the"),
-                                 ("", "pairs come out as 2 keys of one dim: replaces 8 LDS.U16 + 4 PRMT")])
-    b.append(text(tx, ty + 10, "= 1 instruction per piece.", 12.5, INK, weight="600"))
-    y = max(py + 16 * cs + 18, ty + 10) + 52
-
-    # ---- 4: add it up ----------------------------------------------------------------------------
-    y = header(y, 4, "Add it up over one pass of the loop (one key block)")
-    y = para(50, y + 2, ["Each warp multiplies its own 16 rows of Q by the whole 64 × 64 tile of K, then its 16 rows "
-                         "of P by the whole tile of V. So it reads:"])
-    cols = [50, 330, 450, 720]
-    hy = y + 14
-    for c, s in zip(cols, ["operand (per warp)", "16 × 16 pieces", "v1", "v2"]):
-        b.append(text(c, hy, s, 12, INK, weight="700"))
-    b.append(line(50, hy + 8, W - 50, hy + 8, GRID))
-    rows = [("Q: 16 rows × 64 dims", "4", "4 × 4 = 16 LDS", "4 LDSM"),
-            ("K: 64 keys × 64 dims", "16", "16 × 4 = 64 LDS", "16 LDSM"),
-            ("P: 16 rows × 64 keys", "4", "4 × 4 = 16 LDS", "4 LDSM"),
-            ("V: 64 keys × 64 dims", "16", "16 × 8 = 128 LDS, + 16 × 4 = 64 PRMT", "16 LDSM (.trans)")]
-    for i, r in enumerate(rows):
-        yy = hy + 30 + 22 * i
-        for c, s in zip(cols, r):
-            b.append(text(c, yy, s, 12.5, INK2))
-    ty = hy + 30 + 22 * 4
-    b.append(line(50, ty - 12, W - 50, ty - 12, GRID))
-    for c, s in zip(cols, ["total", "40", "224 LDS + 64 PRMT = 288", "40 LDSM"]):
-        b.append(text(c, ty + 4, s, 12.5, INK, weight="700"))
-
-    # stacked bars: the whole pass
-    by, u = ty + 50, 1.25
-    b.append(text(50, by - 14, "All the instructions in one pass of the loop", 12.5, INK, weight="700"))
-    for j, (lab, segs, tot) in enumerate([
-            ("v1", [(224, "224 LDS", ORANGE_L), (64, "64 PRMT", ORANGE_L), (306, "everything else: 306", FAINT)], 594),
-            ("v2", [(40, "40 LDSM", BLUE_L), (302, "everything else: 302", FAINT)], 342)]):
-        yy = by + j * 44
-        b.append(text(90, yy + 20, lab, 13, INK, "end", "700"))
-        x = 100
-        for n, s, f in segs:
-            b.append(rect(x, yy, n * u, 30, f, INK2, 0.8))
-            b.append(text(x + n * u / 2, yy + 20, s, 11.5, INK, "middle", "600"))
-            x += n * u
-        b.append(text(x + 10, yy + 20, f"{tot}", 13, INK, weight="700"))
-    y = para(50, by + 2 * 44 + 22,
-             ["288 load-and-pack instructions become 40: 248 fewer. Everything else is the same work in both (the 64 "
-              "multiplies, the softmax,",
-              "the copies of the next K and V) and differs only by 4 address instructions, 306 → 302. Together: 594 → 342."],
-             fill=INK2)
-    y = para(50, y + 8,
-             ["Every shared-memory instruction goes through the load/store pipe. With 248 fewer per pass, it falls from "
-              "72.5% to 26.0% busy,",
-              "stops holding up the multiplies, and the tensor cores rise from 71.3% to 86.9% of peak."],
-             fill=INK)
-    return svg(W, y + 14, b)
-
-
-# ---- 9: the rest of the key block --------------------------------------------------------------
+    # ---- 9: the rest of the key block --------------------------------------------------------------
     y = header(y, 9, "The rest of the key block, in brief", CODE[8])
     bw, bh, gap, x0 = 122, 62, 22, 56
     gy = y + 20
@@ -4193,225 +4299,205 @@ def p_roundtrip():
 
 # ---------------------------------------------------------------------------------------------
 def a_operand_view():
-    # as_a_operand line by line, following thread 0 (warp 0, lane 0) of v3.
+    # as_a_operand step by step, following thread 0 (warp 0, lane 0) of v3.
     # Checked on the GPU with CuTe DSL (4 warps, permutation (64, 16, 16), 64 x 64 tile):
     #   acc   ((2,2),1,8):((1,2),0,4)
     #   pairs ((2,2),1,(2,4)):((1,2),0,(4,8))
     #   view  (((2,2),2),1,4):(((1,2),4),0,8)     partition_A of the same tile: ((2,2,2),1,4)
     #   register i holds the same (row, column) of P under partition_C and partition_A, for i = 0..31.
-    import textwrap
-    W, TX, TW = 1040, 640, 58
-    FAINT = "#ecebe6"
-    EVEN, ODD = BLUE_L, ORANGE_L       # tiles n = 0, 2, 4, 6 / n = 1, 3, 5, 7: left / right half of an A tile
-    b = [f'<defs><marker id="aop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
+    W = 1040
+    FAINT = "#f1f0ec"
+    TILE = [BLUE_L, ORANGE_L]                       # alternate 8-column tiles / 16-column steps
+    STEP = [BLUE, ORANGE, AQUA, "#c9a227"]          # steps k = 0..3
+    STEP_L = [BLUE_L, ORANGE_L, AQUA_L, "#fdf3d8"]
+    b = [f'<defs><marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
          f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
-         text(20, 30, "as_a_operand: the same 32 registers, read as an A operand", 17, weight="600"),
-         text(20, 52, "Following thread 0 (warp 0, lane 0). Numbers are register indices. Blue: tiles n = 0, 2, 4, 6. "
-                      "Orange: tiles n = 1, 3, 5, 7.", 12.5, INK2)]
+         text(20, 30, "How as_a_operand works: the same 32 values, new labels", 17, weight="600")]
 
-    def reg_pos(i):                    # register i of thread 0 -> (row, column) of P
-        n, r = divmod(i, 4)
-        return (8 if r >= 2 else 0), 8 * n + r % 2
-
-    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
-        for ln in textwrap.wrap(s, n):
-            b.append(text(TX, y, ln, size, fill))
-            y += lh
-        return y + 8
-
-    def header(y, n, title, code):
+    def header(y, n, title):
         b.append(line(20, y - 26, W - 20, y - 26, GRID))
         b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
         b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
         b.append(text(50, y, title, 15, weight="600"))
-        y += 14
-        h = 21 * len(code) + 12
-        b.append(rect(20, y, W - 40, h, "#f6f6f4", GRID, rx=4))
-        for i, c in enumerate(code):
-            code_part, _, comment = c.partition("  #")
-            yy = y + 21 + 21 * i
-            if code_part.strip() == "" and comment:
-                code_part, comment = c[:len(c) - len(c.lstrip())], c.lstrip()[1:]
-            ind = len(code_part) - len(code_part.lstrip(" "))
-            if code_part.strip():
-                b.append(text(34 + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK, family=MONO))
-                cx = 34 + 7.53 * (len(code_part) + 2)
-            else:
-                cx = 34 + 7.53 * ind
-            if comment:
-                b.append(text(cx, yy, "#" + comment, 12.5, MUTED, family=MONO))
-        return y + h + 34
+        return y + 24
 
-    def bracket(x1, x2, y, label, size=10.5, below=True, fill=INK, weight="normal"):
-        d = 4 if below else -4
-        b.append(f'<path d="M{x1 + 1},{y - d} V{y} H{x2 - 1} V{y - d}" fill="none" stroke="{INK2}" stroke-width="1"/>')
-        b.append(text((x1 + x2) / 2, y + (14 if below else -6), label, size, fill, "middle", weight))
+    def para(y, lines, x=50, size=12.5, fill=INK2, lh=18, weight="normal"):
+        for s in lines:
+            b.append(text(x, y, s, size, fill, weight=weight))
+            y += lh
+        return y
 
-    def reg_row(x0, y0, g4, g8):       # the 32 registers in order, with gaps after every 4 and every 8
-        cs, xs = 16, []
-        for i in range(32):
-            x = x0 + i * cs + (i // 4) * g4 + (i // 8) * g8
-            xs.append(x)
-            b.append(rect(x + 1, y0 + 1, cs - 2, cs - 2, EVEN if (i // 4) % 2 == 0 else ODD, rx=2))
-            b.append(text(x + cs / 2, y0 + cs - 4.5, str(i), 9, INK, "middle"))
-        return xs, cs
+    def arrow(x1, y1, x2, y2, col=INK2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{col}" stroke-width="1.4" '
+                 f'marker-end="url(#aha)"/>')
 
-    # ---- overview: thread 0's values of P, as 16 x 8 accumulator tiles and as 16 x 16 A tiles ----------
-    cs, sx, sy = 14, 92, 150
-    b.append(text(20, 90, "What thread 0 holds of P (64 × 64). Only rows 0 and 8 shown: the other rows belong to "
-                          "other threads.", 12.5, INK, weight="600"))
+    def bracket(x1, x2, y, label, col=INK2, up=False, size=11):
+        d = -5 if up else 5
+        b.append(f'<path d="M{x1 + 1},{y} V{y + d} H{x2 - 1} V{y}" fill="none" stroke="{col}" stroke-width="1.3"/>')
+        b.append(text((x1 + x2) / 2, y + (d - 5 if up else d + 13), label, size, col, "middle", "600"))
+
+    # thread 0's cells: rows 0 and 8, columns 8n and 8n + 1. Accumulator number i = 4n + col_in_pair + 2 * (row == 8)
+    def cells():
+        for n in range(8):
+            for dr in (0, 1):
+                for dc in (0, 1):
+                    yield 8 * dr, 8 * n + dc, 4 * n + dc + 2 * dr
+
+    cw, ch, gx = 13, 11, 110
+
+    def grid(y, groups, label_of, fill_of, glabel):
+        """16 rows x 64 columns of warp 0's piece of P; columns split into groups of `groups`."""
+        for r in range(16):
+            for c in range(64):
+                g = c // groups
+                b.append(rect(gx + c * cw, y + r * ch, cw, ch, FAINT if (g % 2 == 0) else "#e8e7e1", SURF, 0.5))
+        for r, c, i in cells():
+            b.append(rect(gx + c * cw, y + r * ch, cw, ch, fill_of(i), SURF, 0.5))
+            b.append(text(gx + c * cw + cw / 2, y + r * ch + 8.5, label_of(i), 7.5, SURF, "middle", "700"))
+        for g in range(64 // groups + 1):
+            b.append(line(gx + g * groups * cw, y - 4, gx + g * groups * cw, y + 16 * ch, INK2, 1))
+        for g in range(64 // groups):
+            b.append(text(gx + (g + 0.5) * groups * cw, y - 8, glabel(g), 10.5, INK, "middle", "600"))
+        b.append(text(gx - 8, y + 9, "row 0", 10, INK2, "end"))
+        b.append(text(gx - 8, y + 8 * ch + 9, "row 8", 10, INK2, "end"))
+        b.append(text(gx - 8, y + 16 * ch - 2, "row 15", 10, MUTED, "end"))
+        b.append(text(gx, y + 16 * ch + 14, "key 0", 10, MUTED))
+        b.append(text(gx + 64 * cw, y + 16 * ch + 14, "key 63", 10, MUTED, "end"))
+        return y + 16 * ch + 14
+
+    # ---- the message ---------------------------------------------------------------------------
+    y = 58
+    b.append(rect(20, y - 6, W - 40, 82, "#fdf6e3", "#e6d39a", 1, 6))
+    para(y + 14, ["The idea in one sentence: after S = Q·Kᵀ, each thread already holds exactly the values of P that the "
+                  "next multiply, O += P·V,",
+                  "will ask it for, and even in the same order. Only the labels CuTe uses to find them differ. "
+                  "as_a_operand changes the labels,",
+                  "so P goes straight from one multiply into the next without moving. The steps below check this "
+                  "for one thread, thread 0."], x=36, fill=INK)
+    y += 76 + 46
+
+    # ---- 1: what thread 0 holds ----------------------------------------------------------------
+    y = header(y, 1, "What thread 0 holds: 32 values of P, numbered 0–31")
+    y = para(y, ["Warp 0 computes rows 0–15 of P (all 64 keys), and its 32 threads share the 16 × 64 = 1,024 values: "
+                 "32 each. Which 32 is not",
+                 "our choice: the tensor-core instruction (mma.m16n8k16) fixes it. It produces S in tiles of 16 rows × "
+                 "8 keys, and in every tile it",
+                 "gives thread 0 the same 4 spots: rows 0 and 8, the tile's first 2 columns. Thread 0 numbers its "
+                 "values tile by tile:"])
+    y = grid(y + 30, 8, lambda i: str(i), lambda i: BLUE, lambda g: f"tile {g}")
+    y = para(y + 22, ["Tile n holds values 4n to 4n + 3, in the order (row 0, 1st column), (row 0, 2nd column), "
+                      "(row 8, 1st column), (row 8, 2nd column).",
+                      "This is the accumulator view: CuTe labels value i by (spot in the tile, tile n)."])
+    y += 46
+
+    # ---- 2: what the next multiply asks for ----------------------------------------------------
+    y = header(y, 2, "What O += P·V asks thread 0 for: 4 steps of 8 values")
+    y = para(y, ["The next multiply reads P 16 keys at a time (4 steps, k = 0 to 3). The same instruction fixes which "
+                 "values of each 16 × 16 piece",
+                 "thread 0 must hand in, and in what order (slots 0–7): rows 0 and 8, columns 0, 1, 8 and 9 of the "
+                 "piece."])
+    slot = lambda i: str(i % 8)
+    y = grid(y + 30, 16, slot, lambda i: STEP[i // 8], lambda g: f"step k = {g}")
+    y = para(y + 22, ["Compare with step 1: the marked cells are the same 32 spots. Every value the multiply wants "
+                      "from thread 0 is one it already holds.",
+                      "This is the A-operand view: CuTe labels each value by (slot in the step, step k)."])
+    y += 46
+
+    # ---- 3: same order ------------------------------------------------------------------------
+    y = header(y, 3, "Same values, same order: only the grouping differs")
+    y = para(y, ["Line thread 0's 32 values up in its own order, 0 to 31. Above: the accumulator view groups them in "
+                 "8 tiles of 4. Below: the",
+                 "A-operand view groups them in 4 steps of 8. Step k is simply values 8k to 8k + 7, already in "
+                 "slot order 0–7."])
+    bw, rx = 27, 70
+    ry = y + 40
     for n in range(8):
-        bracket(sx + 8 * n * cs, sx + 8 * (n + 1) * cs, sy - 8, f"n = {n}", 10.5, below=False)
-    owned = {reg_pos(i): i for i in range(32)}
-    for ri, row in enumerate((0, 8)):
-        y = sy + ri * cs
-        b.append(text(sx - 6, y + cs - 3.5, f"row {row}", 10, INK2, "end"))
-        for c in range(64):
-            x = sx + c * cs
-            if (row, c) in owned:
-                i = owned[(row, c)]
-                b.append(rect(x + 1, y + 1, cs - 2, cs - 2, EVEN if (c // 8) % 2 == 0 else ODD, rx=1.5))
-                b.append(text(x + cs / 2, y + cs - 4, str(i), 7.5, INK, "middle"))
-            else:
-                b.append(rect(x + 1, y + 1, cs - 2, cs - 2, FAINT, rx=1.5))
-    for c in range(0, 65, 8):          # thin line: accumulator tile edge; thick: A tile edge
-        x = sx + c * cs
-        b.append(line(x, sy - 3, x, sy + 2 * cs + 3, INK2 if c % 16 == 0 else MUTED, 2 if c % 16 == 0 else 0.8))
+        bracket(rx + 4 * n * bw, rx + 4 * (n + 1) * bw, ry - 4, f"tile {n}", INK2, up=True)
+    for i in range(32):
+        b.append(rect(rx + i * bw, ry, bw, 26, STEP_L[i // 8], SURF, 1.5))
+        b.append(text(rx + i * bw + bw / 2, ry + 17, str(i), 11, INK, "middle", "700", MONO))
+        b.append(text(rx + i * bw + bw / 2, ry + 40, str(i % 8), 9.5, STEP[i // 8], "middle", "700"))
+    b.append(text(rx - 8, ry + 17, "value", 10, MUTED, "end"))
+    b.append(text(rx - 8, ry + 40, "slot", 10, MUTED, "end"))
     for k in range(4):
-        bracket(sx + 16 * k * cs, sx + 16 * (k + 1) * cs, sy + 2 * cs + 10, f"k = {k}", 10.5)
-    b.append(text(sx, sy - 32, "As the accumulator of S = Q Kᵀ: 8 tiles of 16 × 8, 4 values each", 11.5, INK2))
-    b.append(text(sx, sy + 2 * cs + 42, "As the A operand of O += P V: 4 tiles of 16 × 16, 8 values each. "
-                                        "Same registers, same places: only the grouping differs.", 11.5, INK2))
+        bracket(rx + 8 * k * bw, rx + 8 * (k + 1) * bw, ry + 48, f"step k = {k}", STEP[k])
+    y = ry + 48 + 52
+    y = para(y, ["Check one: value 13 is tile 3 (keys 24–31), row 0, 2nd column, so key 25. In the A view it is "
+                 "step 1, slot 5: row 0, column 9 of keys 16–31,",
+                 "so key 25 again. The same holds for all 32 values (checked on the GPU)."])
+    y = para(y + 6, ["Why it lines up: one 16 × 16 step is two neighbouring 16 × 8 tiles side by side, and the "
+                     "instruction places thread 0's spots the same way",
+                     "in both: the first 4 slots of step k are tile 2k, the last 4 are tile 2k + 1."], fill=INK)
+    y += 46
 
-    # ---- 1: the input -------------------------------------------------------------------------------
-    y = header(282, 1, "The input: P in the accumulator layout",
-               ["def as_a_operand(acc):",
-                "    # accumulator ((2,2), MMA_M, MMA_N) -> A operand ((2,2,2), MMA_M, MMA_N/2):",
-                "    # two neighbouring 16x8 accumulator tiles are one 16x16 A tile."])
-    px = 40
-    b.append(text(px, y + 4, "acc.layout = ((2,2), 1, 8) : ((1,2), 0, 4)", 12.5, INK, family=MONO))
-    xs, rcs = reg_row(px, y + 22, 6, 0)
-    for n in range(8):
-        bracket(xs[4 * n], xs[4 * n + 3] + rcs, y + 22 + rcs + 6, f"n = {n}", 10)
-    # decode one tile: registers 0..3
-    dy = y + 92
-    b.append(text(px, dy, "Inside one tile (registers 0–3):", 11.5, INK, weight="600"))
-    for j in range(4):
-        r, c = reg_pos(j)
-        x = px + j * 92
-        b.append(rect(x, dy + 10, 18, 18, EVEN, rx=2))
-        b.append(text(x + 9, dy + 23, str(j), 10, INK, "middle"))
-        b.append(text(x + 24, dy + 23, f"({r}, {c})", 11, INK2, family=MONO))
-    b.append(text(px, dy + 48, "(row, column) of P", 10.5, MUTED))
-    pic = dy + 56
-    ty = para(y, "acc is rP: thread 0's 32 values of P, already converted to bf16, still in the layout the "
-                 "S = Q Kᵀ multiply left them in.")
-    ty = para(ty, "Shape ((2,2), 1, 8): 2 columns × 2 rows per 16 × 8 tile; 1 tile down (warp 0's rows "
-                  "0–15); 8 tiles across the 64 keys.")
-    ty = para(ty, "Stride ((1,2), 0, 4): next column is the next register, row + 8 is 2 registers on, the "
-                  "next tile is 4 registers on.")
-    ty = para(ty, "The two comment lines state the goal: regroup these 8 tiles of 4 into 4 tiles of 8.")
-    y = max(pic, ty) + 46
+    # ---- 4: the code ---------------------------------------------------------------------------
+    y = header(y, 4, "The code only rewrites the labels")
+    y = para(y, ["CuTe finds a thread's values through a layout: shape (how many along each direction) : stride (how "
+                 "many values to jump for each step",
+                 "along it). Each layout here has three parts: the values in one group, the groups down (always 1, "
+                 "stride 0), the groups across."])
+    code = ["def as_a_operand(acc):",
+            "    pairs = cute.logical_divide(acc.layout, (None, None, 2))",
+            "    return cute.make_tensor(acc.iterator, cute.make_layout(",
+            "        ((pairs.shape[0], pairs.shape[2][0]), pairs.shape[1], pairs.shape[2][1]),",
+            "        stride=((pairs.stride[0], pairs.stride[2][0]), pairs.stride[1], pairs.stride[2][1])))"]
+    cy = y + 6
+    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, "#f6f6f4", GRID, 1, 5))
+    for i, c in enumerate(code):
+        ind = len(c) - len(c.lstrip(" "))
+        b.append(text(54 + 7.53 * ind, cy + 22 + 21 * i, c.lstrip(" "), 12.5, INK, family=MONO))
+    y = cy + 21 * len(code) + 12 + 34
 
-    # ---- 2: logical_divide ------------------------------------------------------------------------
-    y = header(y, 2, "Split the tile mode into pairs",
-               ["pairs = cute.logical_divide(acc.layout, (None, None, 2))"])
-    b.append(text(px, y + 4, "mode 2:   8 : 4   →   (2, 4) : (4, 8)", 12.5, INK, family=MONO))
-    xs, rcs = reg_row(px, y + 22, 3, 12)
-    for n in range(8):
-        bracket(xs[4 * n], xs[4 * n + 3] + rcs, y + 22 + rcs + 6, f"n = {n}", 9.5)
-    for k in range(4):
-        bracket(xs[8 * k], xs[8 * k + 7] + rcs, y + 22 + rcs + 34, f"pair {k}", 10.5, weight="600")
-    b.append(text(px, y + 118, "inside a pair: + 4 registers (stride 4)", 11, INK2))
-    b.append(text(px, y + 136, "next pair: + 8 registers (stride 8)", 11, INK2))
-    pic = y + 140
-    ty = para(y, "logical_divide cuts a layout into (piece, rest). The second argument has one entry per "
-                 "mode: None leaves modes 0 and 1 alone, 2 cuts mode 2 into pieces of 2 tiles.")
-    ty = para(ty, "So the 8 tiles become 4 pairs of 2: (2, 4) : (4, 8). The inner 2 picks a tile within the "
-                  "pair, the outer 4 picks the pair.")
-    ty = para(ty, "pairs = ((2,2), 1, (2,4)) : ((1,2), 0, (4,8)). Only the layout changes: no register is read "
-                  "or written.")
-    y = max(pic, ty) + 46
+    def chip(x, yy, s, fill, w=None):
+        w = w or 14 + 7.6 * len(s)
+        b.append(rect(x, yy, w, 28, fill, INK2, 1, 5))
+        b.append(text(x + w / 2, yy + 19, s, 12.5, INK, "middle", "700", MONO))
+        return x + w
 
-    # ---- 3: make_layout + make_tensor -------------------------------------------------------------
-    y = header(y, 3, "Move the pair index into the value mode, on the same registers",
-               ["return cute.make_tensor(acc.iterator, cute.make_layout(",
-                "    ((pairs.shape[0], pairs.shape[2][0]), pairs.shape[1], pairs.shape[2][1]),",
-                "    stride=((pairs.stride[0], pairs.stride[2][0]), pairs.stride[1], pairs.stride[2][1])))"])
-    bh, ry1 = 26, y + 22
-    ry2 = ry1 + 84
-    # pairs' four pieces on top, the new layout's modes below; the orange piece is the one that moves
-    top = [("(2,2) : (1,2)", 40, 124, "[0]", None), ("1 : 0", 192, 56, "[1]", None),
-           ("2 : 4", 276, 56, "[2][0]", ORANGE_L), ("4 : 8", 336, 56, "[2][1]", None)]
-    bot = [("(2,2) : (1,2)", 40, 124, None), ("2 : 4", 168, 56, ORANGE_L), ("1 : 0", 252, 56, None),
-           ("4 : 8", 336, 56, None)]
-    b.append(rect(272, ry1 - 4, 124, bh + 8, "none", MUTED, rx=6))
-    for s_, x, w, lab, fill in top:
-        b.append(rect(x, ry1, w, bh, fill or "#f6f6f4", GRID, rx=4))
-        b.append(text(x + w / 2, ry1 + 17, s_, 11.5, INK, "middle", family=MONO))
-        b.append(text(x + w / 2, ry1 - 10, lab, 10.5, ORANGE if fill else INK2, "middle", family=MONO))
-    b.append(text(410, ry1 + 17, "pairs.shape / .stride", 11, INK2))
-    b.append(rect(36, ry2 - 4, 192, bh + 8, "none", BLUE, rx=6))
-    for s_, x, w, fill in bot:
-        b.append(rect(x, ry2, w, bh, fill or BLUE_L, BLUE, rx=4))
-        b.append(text(x + w / 2, ry2 + 17, s_, 11.5, INK, "middle", family=MONO))
-    for lab, cx in (("mode 0 = ((2,2),2) : ((1,2),4)", 132), ("mode 1", 280), ("mode 2", 364)):
-        b.append(text(cx, ry2 + bh + 18, lab, 10.5, INK2, "middle"))
-    b.append(text(410, ry2 + 17, "new layout", 11, INK2))
-    for x1, x2, col in ((102, 102, INK2), (220, 280, INK2), (304, 196, ORANGE), (364, 364, INK2)):
-        b.append(f'<line x1="{x1}" y1="{ry1 + bh + 3}" x2="{x2}" y2="{ry2 - 6}" stroke="{col}" '
-                 f'stroke-width="{1.8 if col == ORANGE else 1.2}" marker-end="url(#aop)"/>')
-    ry2 += 14
-    xs, rcs = reg_row(px, ry2 + 50, 0, 12)
-    for k in range(4):
-        bracket(xs[8 * k], xs[8 * k + 7] + rcs, ry2 + 50 + rcs + 6, f"k = {k}", 10.5, weight="600")
-    pic = ry2 + 50 + rcs + 26
-    ty = para(y, "make_layout writes the new layout out by hand, shape and stride in the same order. "
-                 "pairs.shape[2][0], the tile within a pair (stride 4), joins mode 0; the pair index "
-                 "pairs.shape[2][1] stays behind as mode 2.")
-    ty = para(ty, "So each k now owns 8 values: 4 from tile 2k and 4 from tile 2k + 1, the shape "
-                  "((2,2,2), 1, 4) that an A operand has.")
-    ty = para(ty, "make_tensor(acc.iterator, …) puts that layout on acc's own registers: iterator is where acc's "
-                  "data starts. Nothing is copied.")
-    y = max(pic, ty) + 46
+    lx, cx0 = 50, 340
+    rows = [
+        ("acc (the input)", [("(2,2) : (1,2)", BLUE_L), ("1 : 0", FAINT), ("8 : 4", ORANGE_L)],
+         "4 values per tile (next column +1, row 8 +2); 8 tiles across, 4 apart"),
+        ("logical_divide(…, (None, None, 2))", [("(2,2) : (1,2)", BLUE_L), ("1 : 0", FAINT), ("2 : 4", "#fdf3d8"),
+                                               ("4 : 8", ORANGE_L)],
+         "cut the 8 tiles into 4 pairs: 2 tiles per pair (4 apart), pairs 8 apart"),
+        ("make_layout(…)", [("((2,2),2) : ((1,2),4)", BLUE_L), ("1 : 0", FAINT), ("4 : 8", ORANGE_L)],
+         "move the tile-in-pair into the group: 8 values per step; 4 steps, 8 apart"),
+    ]
+    for j, (lab, chips, what) in enumerate(rows):
+        yy = y + j * 64
+        b.append(text(lx, yy + 19, lab, 12, INK, weight="700", family=MONO if j else None))
+        x = cx0
+        for s, f in chips:
+            x = chip(x, yy, s, f) + 8
+        b.append(text(cx0, yy + 46, what, 11.5, INK2))
+    y = y + 3 * 64 + 18
+    y = para(y, ["make_tensor(acc.iterator, layout) puts the new layout on acc's own values: acc.iterator is where "
+                 "they start. No value is copied or moved,",
+                 "and no instruction is generated. Read the new layout like step 3: value = slot + 8 × step "
+                 "(the first part counts 0–7, the last jumps by 8)."])
+    y += 46
 
-    # ---- 4: why it is exact -----------------------------------------------------------------------
-    y = header(y, 4, "Why the regrouping is exact: k = 0",
-               ["cute.gemm(tiled_mma, acc_O, tOrP[None, None, k], tOrVt[None, None, k], acc_O)  # in the caller"])
-    tc = 11
-    gy = y + 30
-
-    def tile(x0, rows, cols, cells, label):
-        b.append(text(x0, gy - 10, label, 11.5, INK, weight="600"))
-        for r in range(rows):
-            for c in range(cols):
-                x, yy = x0 + c * tc, gy + r * tc
-                if (r, c) in cells:
-                    i, fill = cells[(r, c)]
-                    b.append(rect(x + 0.5, yy + 0.5, tc - 1, tc - 1, fill, rx=1))
-                    b.append(text(x + tc / 2, yy + tc - 2.5, str(i), 8, INK, "middle", "600"))
-                else:
-                    b.append(rect(x + 0.5, yy + 0.5, tc - 1, tc - 1, FAINT, rx=1))
-        b.append(text(x0 + cols * tc / 2, gy + rows * tc + 15, f"{rows} × {cols}", 10.5, INK2, "middle"))
-
-    t0 = {reg_pos(i): (i, EVEN) for i in range(4)}
-    t1 = {(r, c - 8): (i, ODD) for i in range(4, 8) for r, c in [reg_pos(i)]}
-    ta = {reg_pos(i): (i, EVEN if i < 4 else ODD) for i in range(8)}
-    tile(40, 16, 8, t0, "acc tile n = 0")
-    tile(40 + 8 * tc + 18, 16, 8, t1, "n = 1")
-    eqx = 40 + 16 * tc + 18 + 24
-    b.append(text(eqx, gy + 8 * tc + 6, "=", 22, INK, "middle"))
-    tile(eqx + 24, 16, 16, ta, "A operand, k = 0")
-    pic = gy + 16 * tc + 22
-    ty = para(y, "The mma.m16n8k16 instruction fixes where lane 0's A values sit in the 16 × 16 piece: rows 0 "
-                 "and 8, columns 0, 1, 8, 9. Columns 0, 1 are its spots in tile n = 0, and columns 8, 9 its "
-                 "spots in tile n = 1.")
-    ty = para(ty, "Every lane works the same way (lane 4g + t: rows g, g + 8 × columns 2t, 2t + 1, 2t + 8, "
-                  "2t + 9), so tOrP[None, None, k] is the k-th A operand of O += P V as it stands.")
-    ty = para(ty, "Checked on the GPU: under both layouts, register i holds the same (row, column) of P, for all "
-                  "32 i. v2 instead stored P to shared memory and loaded it back: 16 stores and 4 LDSM per pass.")
-    y = max(pic, ty) + 20
-    return svg(W, y, b)
+    # ---- 5: using it ---------------------------------------------------------------------------
+    y = header(y, 5, "Using it: step k of P is read straight from thread 0's own values")
+    code = ["tOrP = as_a_operand(rP)                       # rP: P as bf16, in the accumulator layout",
+            "for k in range(4):",
+            "    cute.gemm(tiled_mma, acc_O, tOrP[None, None, k], tOrVt[None, None, k], acc_O)"]
+    cy = y + 2
+    b.append(rect(40, cy, W - 80, 21 * len(code) + 12, "#f6f6f4", GRID, 1, 5))
+    for i, c in enumerate(code):
+        k = c.find("#")
+        part = c if k < 0 else c[:k].rstrip()
+        ind = len(part) - len(part.lstrip(" "))
+        b.append(text(54 + 7.53 * ind, cy + 22 + 21 * i, part.lstrip(" "), 12.5, INK, family=MONO))
+        if k >= 0:
+            b.append(text(54 + 7.53 * k, cy + 22 + 21 * i, c[k:], 12.5, MUTED, family=MONO))
+    y = cy + 21 * len(code) + 12 + 28
+    y = para(y, ["tOrP[None, None, k] means: all 8 slots of step k, which are values 8k to 8k + 7. The multiply "
+                 "reads them where they already are.",
+                 "Before Round 3, P was written to shared memory and read back just to arrive in this order, which "
+                 "it already had."])
+    return svg(W, y + 12, b)
 
 
 if __name__ == "__main__":

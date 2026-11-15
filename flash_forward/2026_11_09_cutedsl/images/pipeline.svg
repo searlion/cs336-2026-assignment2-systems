@@ -1,54 +1,110 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 380" width="860" height="380" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<rect width="860" height="380" fill="#ffffff"/>
-<text x="20" y="30" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="600">One key block, two ways (schematic, not to scale)</text>
-<text x="20" y="64" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">v3: copies through registers</text>
-<text x="20" y="97" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">warp</text>
-<text x="20" y="131" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">copies in flight</text>
-<line x1="151.08" y1="74" x2="151.08" y2="146" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="150" y="80" width="154" height="26" fill="#fbe0d5" stroke="none" stroke-width="1" rx="4"/>
-<text x="227.0" y="97" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">load K_j, V_j</text>
-<line x1="305" y1="74" x2="305" y2="146" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="306" y="80" width="128" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
-<text x="370.0" y="97" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K_jᵀ</text>
-<rect x="436" y="80" width="154" height="26" fill="#d1efe4" stroke="none" stroke-width="1" rx="4"/>
-<text x="513.0" y="97" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">softmax</text>
-<rect x="592" y="80" width="128" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
-<text x="656.0" y="97" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">O += P V_j</text>
-<line x1="721" y1="74" x2="721" y2="146" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="722" y="80" width="102" height="26" fill="#fbe0d5" stroke="none" stroke-width="1" rx="4"/>
-<text x="773.0" y="97" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">load K_j+1 …</text>
-<rect x="150" y="114" width="154" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
-<text x="227.0" y="131" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K_j, V_j</text>
-<rect x="722" y="114" width="102" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
-<text x="773.0" y="131" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K_j+1, V_j+1</text>
-<text x="150" y="166" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Each load goes global memory -> registers -> shared memory, and the warp waits for it before any maths.</text>
-<text x="150" y="184" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Two barriers (black lines) per key block: before the load, so no warp still reads the old K, V, and after it.</text>
-<text x="20" y="234" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">v4: cp.async in the FlashAttention-2 order</text>
-<text x="20" y="267" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">warp</text>
-<text x="20" y="301" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">copies in flight</text>
-<rect x="150" y="250" width="24" height="26" fill="#f0efec" stroke="none" stroke-width="1" rx="4"/>
-<text x="162.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text>
-<line x1="175" y1="244" x2="175" y2="316" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="176" y="250" width="128" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
-<text x="240.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K_jᵀ</text>
-<rect x="306" y="250" width="24" height="26" fill="#f0efec" stroke="none" stroke-width="1" rx="4"/>
-<text x="318.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text>
-<line x1="331" y1="244" x2="331" y2="316" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="332" y="250" width="154" height="26" fill="#d1efe4" stroke="none" stroke-width="1" rx="4"/>
-<text x="409.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">softmax</text>
-<rect x="488" y="250" width="128" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
-<text x="552.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">O += P V_j</text>
-<rect x="618" y="250" width="24" height="26" fill="#f0efec" stroke="none" stroke-width="1" rx="4"/>
-<text x="630.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text>
-<line x1="643" y1="244" x2="643" y2="316" stroke="#0b0b0b" stroke-width="2"/>
-<rect x="644" y="250" width="128" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/>
-<text x="708.0" y="267" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K_j+1ᵀ</text>
-<rect x="176" y="284" width="128" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
-<text x="240.0" y="301" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">V_j</text>
-<rect x="332" y="284" width="128" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
-<text x="396.0" y="301" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K_j+1</text>
-<rect x="644" y="284" width="128" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/>
-<text x="708.0" y="301" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">V_j+1</text>
-<text x="150" y="336" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">Each copy is started before the maths that does not need it, and waited for</text>
-<text x="150" y="354" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">only where its data is used. Grey: wait for the copy, then a barrier: still two per key block.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 908" width="900" height="908" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="900" height="908" fill="#ffffff"/>
+<text x="20" y="30" font-size="17" fill="#0b0b0b" text-anchor="start" font-weight="600">Round 4: one key block j, line by line</text>
+<text x="20" y="52" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">sK and sV are the shared-memory buffers for one K tile and one V tile. v4 reuses each buffer as soon as no warp reads it.</text>
+<rect x="20" y="82" width="860" height="410" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<circle cx="40" cy="99.5" r="10" fill="#52514e"/>
+<text x="40" y="103.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<text x="62.0" y="104" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.cp_async_wait_group(0); cute.arch.sync_threads()</text>
+<text x="62" y="122" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Wait until K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> has landed in sK, then wait for every warp. Now all of </tspan>K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> is there,</tspan></text>
+<text x="62" y="140" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and every warp has finished with V<tspan dy="3.5" font-size="0.78em">j−1</tspan><tspan dy="-3.5">, so sV is free.</tspan></text>
+<circle cx="40" cy="168.5" r="10" fill="#eb6834"/>
+<text x="40" y="172.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<text x="62.0" y="173" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">self.start_load(kv.gV, kv.sV, kv, j); cute.arch.cp_async_commit_group()</text>
+<text x="62" y="191" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Start copying V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> into sV with cp.async. The warp does not wait for it.</tspan></text>
+<circle cx="40" cy="219.5" r="10" fill="#2a78d6"/>
+<text x="40" y="223.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<text x="62.0" y="224" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># ... S = Q K_j^T ...</text>
+<text x="62" y="242" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Uses K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">, not </tspan>V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">, so it runs while </tspan>V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> is still being copied.</tspan></text>
+<circle cx="40" cy="270.5" r="10" fill="#52514e"/>
+<text x="40" y="274.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
+<text x="62.0" y="275" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.cp_async_wait_group(0); cute.arch.sync_threads()</text>
+<text x="62" y="293" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Wait until V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> has landed in sV, then wait for every warp. Now every warp has finished</tspan></text>
+<text x="62" y="311" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">step 3, so no warp still reads K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">: sK is free.</tspan></text>
+<circle cx="40" cy="339.5" r="10" fill="#eb6834"/>
+<text x="40" y="343.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">5</text>
+<text x="62.0" y="344" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">if j + 1 &lt; kv.n_end:</text>
+<text x="92.12" y="365" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">self.start_load(kv.gK, kv.sK, kv, j + 1)</text>
+<text x="62.0" y="386" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.arch.cp_async_commit_group()</text>
+<text x="62" y="404" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Start copying K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5"> into sK, unless j is the last block. The commit is outside the if,</tspan></text>
+<text x="62" y="422" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">so the last block commits an empty group, which does nothing.</text>
+<circle cx="40" cy="450.5" r="10" fill="#2a78d6"/>
+<text x="40" y="454.8" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
+<text x="62.0" y="455" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># ... mask, softmax, O += P V_j ...</text>
+<text x="62" y="473" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Uses V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">, not </tspan>K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5">, so it runs while </tspan>K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5"> is being copied. Then step 1 of block j+1 waits for </tspan>K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5">.</tspan></text>
+<text x="20" y="524" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The same steps in time, for one warp (schematic, not to scale)</text>
+<rect x="20" y="536" width="22" height="12" fill="#e4e3df" stroke="none" stroke-width="1" rx="2"/>
+<text x="48" y="546" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">grey: waiting</text>
+<rect x="149.8" y="536" width="22" height="12" fill="#eb6834" stroke="none" stroke-width="1" rx="2"/>
+<text x="177.8" y="546" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">orange: copy in flight</text>
+<rect x="339.0" y="536" width="22" height="12" fill="#d4e4f7" stroke="none" stroke-width="1" rx="2"/>
+<text x="367.0" y="546" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">blue: maths</text>
+<rect x="455.6" y="536" width="22" height="12" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="2"/>
+<text x="483.6" y="546" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">outlined: landed, ready to read</text>
+<line x1="708.2" y1="533" x2="708.2" y2="550" stroke="#0b0b0b" stroke-width="2"/>
+<text x="716.2" y="546" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">black line: barrier</text>
+<line x1="162.0" y1="582" x2="734.2" y2="582" stroke="#8a8984" stroke-width="1"/>
+<line x1="162.0" y1="578" x2="162.0" y2="586" stroke="#8a8984" stroke-width="1"/>
+<line x1="734.2" y1="578" x2="734.2" y2="586" stroke="#8a8984" stroke-width="1"/>
+<rect x="403.5" y="572" width="91.2" height="18" fill="#ffffff" stroke="none" stroke-width="1" rx="0"/>
+<text x="449.1" y="586" font-size="12" fill="#52514e" text-anchor="middle" font-weight="600">key block j</text>
+<line x1="740.2" y1="582" x2="864.0" y2="582" stroke="#8a8984" stroke-width="1"/>
+<line x1="740.2" y1="578" x2="740.2" y2="586" stroke="#8a8984" stroke-width="1"/>
+<line x1="864.0" y1="578" x2="864.0" y2="586" stroke="#8a8984" stroke-width="1"/>
+<rect x="764.7" y="572" width="76.8" height="18" fill="#ffffff" stroke="none" stroke-width="1" rx="0"/>
+<text x="803.1" y="586" font-size="12" fill="#52514e" text-anchor="middle" font-weight="600">block j+1</text>
+<circle cx="179.65" cy="608" r="9" fill="#52514e"/>
+<text x="179.65" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<circle cx="206.2" cy="608" r="9" fill="#eb6834"/>
+<text x="206.2" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<circle cx="300.6" cy="608" r="9" fill="#2a78d6"/>
+<text x="300.6" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<circle cx="412.70000000000005" cy="608" r="9" fill="#52514e"/>
+<text x="412.70000000000005" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">4</text>
+<circle cx="442.20000000000005" cy="608" r="9" fill="#eb6834"/>
+<text x="442.20000000000005" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">5</text>
+<circle cx="592.6500000000001" cy="608" r="9" fill="#2a78d6"/>
+<text x="592.6500000000001" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
+<circle cx="754.9000000000001" cy="608" r="9" fill="#52514e" opacity="0.45"/>
+<text x="754.9000000000001" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">1</text>
+<circle cx="778.5" cy="608" r="9" fill="#eb6834" opacity="0.45"/>
+<text x="778.5" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">2</text>
+<circle cx="825.7" cy="608" r="9" fill="#2a78d6" opacity="0.45"/>
+<text x="825.7" y="612.3" font-size="10.5" fill="#ffffff" text-anchor="middle" font-weight="700">3</text>
+<text x="20" y="639" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">v4: the warp runs</text>
+<text x="20" y="679" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">sK holds</text>
+<text x="20" y="719" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal">sV holds</text>
+<g><rect x="160.0" y="622" width="39.3" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/><text x="179.65" y="639" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">wait</text></g>
+<g><rect x="201.3" y="622" width="9.800000000000004" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="206.2" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text></g>
+<g><rect x="213.1" y="622" width="175.0" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/><text x="300.6" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">ᵀ</tspan></text></g>
+<g><rect x="390.1" y="622" width="45.20000000000002" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/><text x="412.70000000000005" y="639" font-size="11.5" fill="#52514e" text-anchor="middle" font-weight="normal">wait</text></g>
+<g><rect x="437.3" y="622" width="9.800000000000011" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="442.20000000000005" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text></g>
+<g><rect x="449.1" y="622" width="287.1" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/><text x="592.6500000000001" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">mask, softmax, O += P V<tspan dy="3.5" font-size="0.78em">j</tspan></text></g>
+<g opacity="0.5"><rect x="738.2" y="622" width="33.39999999999998" height="26" fill="#e4e3df" stroke="none" stroke-width="1" rx="4"/><text x="754.9000000000001" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text></g>
+<g opacity="0.5"><rect x="773.6" y="622" width="9.799999999999958" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="778.5" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal"></text></g>
+<g opacity="0.5"><rect x="785.4" y="622" width="80.60000000000002" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/><text x="825.7" y="639" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5">ᵀ</tspan></text></g>
+<g><rect x="160.0" y="662" width="27.5" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="173.75" y="679" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K<tspan dy="3.5" font-size="0.78em">j</tspan></text></g>
+<g><rect x="189.5" y="662" width="245.8" height="26" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="4"/><text x="312.4" y="679" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> (step 3 reads it)</tspan></text></g>
+<g><rect x="437.3" y="662" width="180.89999999999998" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="527.75" y="679" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5"> in flight</tspan></text></g>
+<g><rect x="620.2" y="662" width="151.40000000000003" height="26" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="4"/><text x="695.9000000000001" y="679" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">K<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5"> landed</tspan></text></g>
+<g opacity="0.5"><rect x="773.6" y="662" width="92.39999999999998" height="26" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="4"/><text x="819.8" y="679" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">step 3 reads it</text></g>
+<g><rect x="160.0" y="702" width="39.3" height="26" fill="#efeeea" stroke="none" stroke-width="1" rx="4"/><text x="179.65" y="719" font-size="11.5" fill="#8a8984" text-anchor="middle" font-weight="normal">V<tspan dy="3.5" font-size="0.78em">j−1</tspan></text></g>
+<g><rect x="201.3" y="702" width="210.39999999999998" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="306.5" y="719" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> in flight</tspan></text></g>
+<g><rect x="413.7" y="702" width="322.50000000000006" height="26" fill="#ffffff" stroke="#2a78d6" stroke-width="1" rx="4"/><text x="574.95" y="719" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> (step 6 reads it)</tspan></text></g>
+<g opacity="0.5"><rect x="773.6" y="702" width="92.39999999999998" height="26" fill="#eb6834" stroke="none" stroke-width="1" rx="4"/><text x="819.8" y="719" font-size="11.5" fill="#ffffff" text-anchor="middle" font-weight="normal">V<tspan dy="3.5" font-size="0.78em">j+1</tspan><tspan dy="-3.5"> in flight</tspan></text></g>
+<line x1="200.3" y1="617" x2="200.3" y2="733" stroke="#0b0b0b" stroke-width="2"/>
+<line x1="436.3" y1="617" x2="436.3" y2="733" stroke="#0b0b0b" stroke-width="2"/>
+<line x1="772.6" y1="617" x2="772.6" y2="733" stroke="#0b0b0b" stroke-width="2"/>
+<text x="160" y="754" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Each copy starts as soon as its buffer is free (steps 2 and 5) and is waited for just before the maths that</text>
+<text x="160" y="772" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">reads it (steps 4 and 1). So the copies run during the maths, and the waits are short.</text>
+<line x1="20" y1="792" x2="880" y2="792" stroke="#d6d5d0" stroke-width="1"/>
+<text x="20" y="829" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">v3: the warp runs</text>
+<g><rect x="160.0" y="812" width="204.5" height="26" fill="#fbe0d5" stroke="none" stroke-width="1" rx="4"/><text x="262.25" y="829" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">copy K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> and </tspan>V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> (the warp waits)</tspan></text></g>
+<g><rect x="366.5" y="812" width="175.0" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/><text x="454.0" y="829" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">S = Q K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5">ᵀ</tspan></text></g>
+<g><rect x="543.5" y="812" width="287.1" height="26" fill="#d4e4f7" stroke="none" stroke-width="1" rx="4"/><text x="687.05" y="829" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="normal">mask, softmax, O += P V<tspan dy="3.5" font-size="0.78em">j</tspan></text></g>
+<line x1="161.065" y1="807" x2="161.065" y2="843" stroke="#0b0b0b" stroke-width="2"/>
+<line x1="365.5" y1="807" x2="365.5" y2="843" stroke="#0b0b0b" stroke-width="2"/>
+<line x1="831.6" y1="807" x2="831.6" y2="843" stroke="#0b0b0b" stroke-width="2"/>
+<text x="160" y="864" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">v3 copies K<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> and </tspan>V<tspan dy="3.5" font-size="0.78em">j</tspan><tspan dy="-3.5"> through registers, so the warp itself waits for every value, and no maths starts until</tspan></text>
+<text x="160" y="882" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">both have landed. A barrier before the copy (no warp still reads the old tiles) and one after it (all copies landed).</text>
 </svg>
