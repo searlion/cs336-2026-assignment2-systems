@@ -11,7 +11,7 @@
 #   images/warp_shuffle.svg    a quad's row maximum through shared memory against two warp shuffles
 #   images/shuffle_args.svg    each argument of shuffle_sync_bfly, then both lines of quad_reduce traced on quad 0
 #   images/warp_split.svg      where row 0 of S lives under (4, 1, 1) and (2, 2, 1), and its maximum's cost
-#   images/tiled_copy.svg      the layout of a tiled copy: each make_layout line on a 64 x 64 tile of K
+#   images/tiled_copy.svg      every line of the copy of K into shared memory, followed for thread 19
 #   images/copy_atoms.svg      the atom of a tiled copy: plain copies against cp.async and ldmatrix
 #   images/memory_hierarchy.svg registers, L1 / shared memory, L2 and global memory, fastest to slowest
 #   images/block_grid.svg      how 2,048 blocks cover 32 (sequence, head) problems of 4,096 query rows
@@ -1429,54 +1429,324 @@ def warp_split():
 
 
 def tiled_copy():
-    """The layout half of a tiled copy: each make_layout line, and what it means on a 64 x 64 tile of K."""
-    b = []
-    GREY_L = "#f6f6f4"
-    b.append(text(20, 30, "The layout of a tiled copy: which thread copies which 16 bytes of a 64 × 64 tile of K", 15, weight="600"))
+    """Every line of the copy of K into shared memory, followed for thread 19, one section per line."""
+    # Checked on the GPU with CuTe DSL (bf16, D = 64, 128 threads, 256 keys):
+    #   g2s tiler (16, 64)   gK (64,64,4):(64,1,4096)
+    #   tKgK ((8,1),4,1,4):((1,0),1024,0,4096)   tKsK ((8,1),4,1):((1,0),1024,0)
+    #   thread 19, step m: row 2 + 16 m of the tile, values 24-31
+    import textwrap
+    W, TX, TW = 1040, 640, 58
+    FAINT, HL, DIM = "#f6f6f4", "#fdf1d4", "#b9b8b2"
+    TR, TC = 2, 3                                    # thread 19's row and column in the 16 x 8 grid
+    G2S = ["g2s = cute.make_tiled_copy_tv(",
+           "    cute.make_copy_atom(cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=128),  # the atom",
+           "    cute.make_layout((self.threads // tpr, tpr), stride=(tpr, 1)),  # threads: (16, 8):(8, 1)",
+           "    cute.make_layout((1, vec)))                                     # values:  (1, 8)"]
+    b = [f'<defs><marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Copying a tile of K into shared memory, line by line", 17, weight="600"),
+         text(20, 52, "A tile is a 64 × 64 block of K: 64 keys × 64 values. 128 threads, numbered 0 to 127, copy it "
+                      "together. They all run the same", 12.5, INK2),
+         text(20, 70, "lines, but each copies a different part. The figure follows one of them, thread 19, and draws "
+                      "its part in orange.", 12.5, INK2),
+         text(20, 88, "19 is just an example; every thread works the same way. Thread 0 would hide the arithmetic, "
+                      "since its numbers are all zero.", 12.5, INK2)]
 
-    # code line 1 and the 16 x 8 thread grid it describes
-    b.append(text(20, 64, "make_layout((16, 8), stride=(8, 1))", 13, BLUE, weight="600", family=MONO))
-    b.append(text(20, 84, "The block's 128 threads (4 warps × 32 threads) as a 16 × 8 grid: thread = 8 · row + 1 · column", 12, INK2))
-    x0, y0, cw, ch = 74, 124, 40, 18
+    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, ln, size, fill))
+            y += lh
+        return y + 8
+
+    def header(y, n, title, code, hl=None):
+        # hl: indices of the lines this section explains; the other lines are greyed out
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        h = 21 * len(code) + 12
+        b.append(rect(20, y, W - 40, h, FAINT, GRID, rx=4))
+        for i, c in enumerate(code):
+            yy = y + 21 + 21 * i
+            on = hl is None or i in hl
+            if hl is not None and on:
+                b.append(rect(21, yy - 15, W - 42, 21, HL))
+            k = c.find("#")
+            code_part = c if k < 0 else c[:k].rstrip()
+            ind = len(code_part) - len(code_part.lstrip(" "))
+            b.append(text(34 + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK if on else DIM, family=MONO))
+            if k >= 0:
+                b.append(text(34 + 7.53 * k, yy, c[k:], 12.5, MUTED if on else DIM, family=MONO))
+        return y + h + 34
+
+    def arrow(x1, y1, x2, y2, label=None, dy=-7):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-end="url(#ahc)"/>')
+        if label:
+            b.append(text((x1 + x2) / 2, (y1 + y2) / 2 + dy, label, 11.5, INK, "middle", "600"))
+
+    def piece(x, y, cs, ch, fill=ORANGE_L, stroke=ORANGE, labels=None):
+        # one piece: 8 values side by side
+        for v in range(8):
+            b.append(rect(x + v * cs, y, cs, ch, fill, stroke, 0.8))
+            if labels:
+                b.append(text(x + v * cs + cs / 2, y + ch / 2 + 4, labels[v], 10.5, INK, "middle"))
+
+    def tile(x0, y0, px, owner_rows=(2, 18, 34, 50), band=None, lines=True):
+        # a 64 x 64 tile; thread 19's pieces in orange; band = rows covered by one step, in light blue
+        b.append(rect(x0, y0, 64 * px, 64 * px, FAINT, GRID))
+        if band is not None:
+            b.append(rect(x0, y0 + band * 16 * px, 64 * px, 16 * px, BLUE_L))
+        if lines:
+            for c in range(8, 64, 8):
+                b.append(line(x0 + c * px, y0, x0 + c * px, y0 + 64 * px, "#dcdbd5", 0.6))
+            for r in range(16, 64, 16):
+                b.append(line(x0, y0 + r * px, x0 + 64 * px, y0 + r * px, INK2, 1))
+        for r in owner_rows:
+            b.append(rect(x0 + 8 * TC * px, y0 + r * px, 8 * px, max(px, 3), ORANGE))
+
+    def chips(x, y, steps, cs, ch, pitch):
+        # thread 19's pieces as a tensor: one piece per step, stacked
+        for m in range(steps):
+            piece(x, y + m * pitch, cs, ch)
+
+    # ---- 1: vec and tpr ------------------------------------------------------------------------
+    y = header(134, 1, "How big is one piece?",
+               ["vec = 128 // dtype.width                   # 8 bf16 values = 16 bytes per thread per step",
+                "tpr = D // vec                             # 64 // 8 = 8 threads per row of the tile"])
+    x0, cw, gap, ry = 56, 7, 6, y + 30
+    b.append(text(x0, ry - 12, "One row of K: D = 64 values", 12, INK, weight="600"))
+    for v in range(64):
+        p = v // 8
+        b.append(rect(x0 + v * cw + p * gap, ry, cw, 18, ORANGE_L if p == 0 else FAINT, GRID, 0.6))
+    for p in range(8):
+        px0 = x0 + p * (8 * cw + gap)
+        b.append(text(px0 + 4 * cw, ry + 34, f"piece {p}", 10.5, INK, "middle"))
+        b.append(text(px0 + 4 * cw, ry + 48, f"{8 * p}–{8 * p + 7}", 10, MUTED, "middle"))
+    zy = ry + 92
+    b.append(line(x0, ry + 54, x0, zy, ORANGE, 1, "3 3"))
+    b.append(line(x0 + 8 * cw, ry + 54, x0 + 8 * 44, zy, ORANGE, 1, "3 3"))
+    piece(x0, zy, 44, 24, labels=["2 bytes"] * 8)
+    b.append(text(x0, zy + 46, "piece 0, zoomed in: 8 values × 2 bytes = 16 bytes = 128 bits", 12, INK, weight="600"))
+    b.append(text(x0, zy + 66, "8 pieces per row, so 8 threads share each row: tpr = 8", 12, INK, weight="600"))
+    pic_bottom = zy + 66
+    ty = para(y, "dtype.width is the size of one value in bits. K is stored in bf16, a number format that "
+                 "uses 16 bits (2 bytes) per value. So vec = 128 // 16 = 8 values.")
+    ty = para(ty, "Why 128? It is the most one thread can move with a single copy instruction: 128 bits, "
+                  "16 bytes. Below, the 8 values one thread copies at a time are called a piece.")
+    ty = para(ty, "D is the head dimension: the length of one row of K, 64 values. A row holds 64 // 8 = 8 "
+                  "pieces, so tpr = 8 threads share each row.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 2: the atom ---------------------------------------------------------------------------
+    y = header(y, 2, "The atom: the one instruction that moves a piece", G2S, hl={1})
+    by, bw, bh = y + 20, 140, 104
+    boxes = [(56, "global memory", "the GPU's main memory:", "big, slow", "#fdf3d8"),
+             (256, "registers", "thread 19's own storage:", "tiny, fastest", BLUE_L),
+             (456, "shared memory", "on-chip memory that all", "128 threads of a block see", AQUA_L)]
+    for bx, name, s1, s2, fill in boxes:
+        b.append(rect(bx, by, bw, bh, fill, GRID, 1, 8))
+        b.append(text(bx + bw / 2, by + 22, name, 12.5, INK, "middle", "600"))
+        b.append(text(bx + bw / 2, by + 40, s1, 10.5, INK2, "middle"))
+        b.append(text(bx + bw / 2, by + 54, s2, 10.5, INK2, "middle"))
+        piece(bx + 14, by + 70, 14, 16)
+    arrow(56 + bw + 4, by + 78, 256 - 6, by + 78, "1 load")
+    arrow(256 + bw + 4, by + 78, 456 - 6, by + 78, "1 store")
+    b.append(text(56, by + bh + 26, "CopyUniversalOp: a plain load into registers, then a plain store.", 12, INK,
+                  weight="600"))
+    b.append(text(56, by + bh + 44, "Each moves 128 bits = 16 bytes = one piece.", 12, INK2))
+    pic_bottom = by + bh + 44
+    ty = para(y, "An atom is the one instruction a thread runs to move one piece. make_copy_atom builds it from "
+                 "three choices:")
+    ty = para(ty, "CopyUniversalOp: the plain kind of copy. The thread loads its piece from global memory into "
+                  "its registers, then stores it into shared memory.")
+    ty = para(ty, "dtype: the values are bf16. num_bits_per_copy=128: one instruction moves 128 bits, a whole "
+                  "piece.")
+    ty = para(ty, "Change only this line and the instruction changes, and with it the speed. The next figure "
+                  "compares atoms.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 3: the thread layout ------------------------------------------------------------------
+    y = header(y, 3, "The thread layout: where each thread sits", G2S, hl={2})
+    x0, gy, cw, ch = 104, y + 50, 40, 17
+    b.append(text(x0 + 4 * cw, gy - 36, "the 64 values of a row of K", 11, INK2, "middle"))
     for c in range(8):
-        b.append(text(x0 + c * cw + cw / 2, y0 - 6, f"col {c}", 10.5, MUTED, "middle"))
+        b.append(text(x0 + c * cw + cw / 2, gy - 20, f"col {c}", 10.5, INK if c == TC else MUTED, "middle"))
+        b.append(text(x0 + c * cw + cw / 2, gy - 6, f"{8 * c}–{8 * c + 7}", 9.5, MUTED, "middle"))
     for r in range(16):
-        b.append(text(x0 - 6, y0 + r * ch + 13, f"row {r}", 10.5, MUTED, "end"))
+        b.append(text(x0 - 6, gy + r * ch + 12, f"row {r}", 10.5, INK if r == TR else MUTED, "end"))
         for c in range(8):
-            hi = (r, c) == (2, 3)
-            base = GREY_L if (r // 4) % 2 == 0 else "#eef4fc"
-            b.append(rect(x0 + c * cw, y0 + r * ch, cw, ch, ORANGE_L if hi else base, ORANGE if hi else GRID, 2 if hi else 1))
-            b.append(text(x0 + c * cw + cw / 2, y0 + r * ch + 13, f"t{8 * r + c}", 9.5, INK, "middle"))
-    gx, gy = x0 + 8 * cw, y0 + 16 * ch
+            hi = (r, c) == (TR, TC)
+            base = FAINT if (r // 4) % 2 == 0 else "#eef4fc"
+            b.append(rect(x0 + c * cw, gy + r * ch, cw, ch, ORANGE_L if hi else base, ORANGE if hi else GRID,
+                          2 if hi else 1))
+            b.append(text(x0 + c * cw + cw / 2, gy + r * ch + 12, f"t{8 * r + c}", 9.5, INK, "middle",
+                          "700" if hi else "normal"))
+    gx = x0 + 8 * cw
     for w in range(4):
-        wy = y0 + 4 * w * ch
-        b.append(line(gx + 6, wy + 2, gx + 6, wy + 4 * ch - 2, INK2, 1.5))
-        b.append(text(gx + 12, wy + 2 * ch + 4, f"warp {w}", 11, INK2))
-    b.append(text(x0, gy + 22, "Each grid row covers one row of K: 64 values in 8 pieces, one piece per thread.", 11.5, INK2))
+        wy = gy + 4 * w * ch
+        b.append(line(gx + 8, wy + 2, gx + 8, wy + 4 * ch - 2, INK2, 1.5))
+        b.append(text(gx + 14, wy + 2 * ch + 4, f"warp {w}", 11, INK2))
+    b.append(text(x0, gy + 16 * ch + 22, "thread = 8 × row + column:  t19 = 8 × 2 + 3", 12, ORANGE, weight="600"))
+    pic_bottom = gy + 16 * ch + 22
+    ty = para(y, "self.threads is 128: the block's 4 warps (groups of 32 threads that run together) × 32. "
+                 "128 // tpr = 16, so the layout puts the threads in a grid of 16 rows × 8 columns.")
+    ty = para(ty, "stride=(tpr, 1) = (8, 1) numbers the spots. A stride is how much the number grows per step "
+                  "in one direction: one row down adds 8, one column right adds 1. So thread = 8 × row + "
+                  "column, and thread 19 sits at row 2, column 3.")
+    ty = para(ty, "Lay the grid over the top 16 rows of the tile: grid row r copies row r of K, and column c "
+                  "copies piece c, values 8c to 8c + 7.")
+    y = max(pic_bottom, ty) + 52
 
-    # callout for thread 19
-    X = 490
-    cy = y0 + 2 * ch + ch / 2
-    b.append(text(X, cy - 4, "row 2, column 3  →  8 · 2 + 3 = thread 19", 12.5, ORANGE, weight="600"))
-    b.append(text(X, cy + 14, "so thread 19 copies the 4th piece of row 2", 12, INK2))
+    # ---- 4: the value layout, and the tiled copy as a whole ------------------------------------
+    y = header(y, 4, "The value layout, and the whole plan", G2S, hl={0, 3})
+    x0, gy, px = 136, y + 40, 5
+    b.append(text(x0, gy - 12, "the 64 × 64 tile of K", 12, INK, weight="600"))
+    tile(x0, gy, px, band=0)
+    for m in range(4):
+        b.append(text(x0 - 8, gy + (16 * m + 7) * px, f"step {m}", 11, INK, "end", "600"))
+        b.append(text(x0 - 8, gy + (16 * m + 7) * px + 14, f"rows {16 * m}–{16 * m + 15}", 10, MUTED, "end"))
+        b.append(text(x0 + 64 * px + 8, gy + (16 * m + TR) * px + 4, f"row {16 * m + TR}", 10.5, ORANGE, weight="600"))
+    lx = x0
+    ly = gy + 64 * px + 26
+    b.append(rect(lx, ly - 10, 12, 12, BLUE_L, GRID))
+    b.append(text(lx + 18, ly, "one step: 16 × 8 threads, 1 piece each = 16 rows × 64 values", 11.5, INK2))
+    b.append(rect(lx, ly + 8, 12, 4, ORANGE))
+    b.append(text(lx + 18, ly + 14, "thread 19's piece in each step: values 24–31", 11.5, INK2))
+    pic_bottom = ly + 14
+    ty = para(y, "make_layout((1, vec)) is the value layout: what each thread copies per step, 1 row × 8 "
+                 "values. That is one piece, exactly what one atom moves.")
+    ty = para(ty, "make_tiled_copy_tv (tv: thread and value) joins the atom and the two layouts into g2s "
+                  "(global to shared): the plan for the whole copy.")
+    ty = para(ty, "A step is one round in which every thread copies one piece. One step covers 16 rows × 64 values, a quarter of the tile. CuTe repeats the step 4 "
+                  "times, 16 rows lower each time, so thread 19 copies values 24–31 of rows 2, 18, 34 and 50.")
+    y = max(pic_bottom, ty) + 52
 
-    # code line 2 and the 8 values of one piece
-    y2 = 218
-    b.append(text(X, y2, "make_layout((1, 8))", 13, BLUE, weight="600", family=MONO))
-    b.append(text(X, y2 + 20, "each thread's piece: 1 row × 8 values", 12, INK2))
-    for v in range(8):
-        b.append(rect(X + v * 46, y2 + 34, 46, 26, ORANGE_L, ORANGE if v in (0, 7) else GRID, 1))
-        b.append(text(X + v * 46 + 23, y2 + 51, f"{24 + v}", 11, INK, "middle"))
-    b.append(text(X, y2 + 78, "thread 19's piece: values 24–31 of row 2", 12, INK2))
-    b.append(text(X, y2 + 94, "8 bf16 values × 2 bytes = 16 bytes, one copy instruction", 12, INK2))
+    # ---- 5: get_slice --------------------------------------------------------------------------
+    y = header(y, 5, "Pick a thread: its share of the plan",
+               ["thr_g2s = g2s.get_slice(tidx)              # this thread's share, e.g. thread 19"])
+    tx0, tyy = 56, y + 20
+    cols = [(0, "tidx"), (70, "grid spot"), (190, "rows of the tile"), (340, "values")]
+    for dx, h in cols:
+        b.append(text(tx0 + dx, tyy, h, 11.5, INK2, weight="600"))
+    b.append(line(tx0, tyy + 8, tx0 + 440, tyy + 8, GRID))
+    for i, (t, r, c) in enumerate([(0, 0, 0), (19, 2, 3), (127, 15, 7)]):
+        ry_ = tyy + 30 + 26 * i
+        if t == 19:
+            b.append(rect(tx0 - 6, ry_ - 17, 452, 25, ORANGE_L, rx=3))
+        vals = [str(t), f"row {r}, col {c}", ", ".join(str(r + 16 * m) for m in range(4)), f"{8 * c}–{8 * c + 7}"]
+        for (dx, _), v in zip(cols, vals):
+            b.append(text(tx0 + dx, ry_, v, 12, INK, weight="600" if t == 19 else "normal"))
+    b.append(text(tx0, tyy + 30 + 26 * 3 + 4, "3 of the 128 threads shown. Each gets 4 pieces, one per step.",
+                  11.5, INK2))
+    pic_bottom = tyy + 30 + 26 * 3 + 4
+    ty = para(y, "tidx is this thread's number in the block, 0 to 127. Every thread runs this same line with "
+                 "its own tidx.")
+    ty = para(ty, "get_slice keeps only this thread's part of the plan: its spot in the grid, and so its 4 "
+                  "pieces of any tile. It is a rule. Nothing is copied yet.")
+    y = max(pic_bottom, ty) + 52
 
-    # together
-    y3 = 352
-    b.append(text(X, y3, "Together", 13, INK, weight="600"))
-    b.append(text(X, y3 + 20, "One step: 16 rows × (8 threads × 8 values) = 16 rows × 64 values.", 12, INK2))
-    b.append(text(X, y3 + 38, "The tile has 64 rows, so CuTe repeats the step 4 times:", 12, INK2))
-    b.append(text(X, y3 + 56, "thread 19 also copies values 24–31 of rows 18, 34 and 50.", 12, INK2))
-    return svg(900, gy + 40, b)
+    # ---- 6: partition_S ------------------------------------------------------------------------
+    y = header(y, 6, "Its pieces at the source: K in global memory",
+               ["tKgK = thr_g2s.partition_S(gK)             # its pieces of K in global memory (S: source)"])
+    x0, gy, px, pitch = 56, y + 40, 2, 142
+    b.append(text(x0, gy - 24, "gK: all of K, cut into key blocks of 64 keys × 64 values", 12, INK, weight="600"))
+    for j in range(4):
+        tx = x0 + j * pitch
+        b.append(text(tx, gy - 6, f"block {j}: keys {64 * j}–{64 * j + 63}", 10, INK2))
+        tile(tx, gy, px)
+    ay = gy + 64 * px + 6
+    for j in range(4):
+        arrow(x0 + j * pitch + 64, ay, x0 + j * pitch + 64, ay + 24)
+    cy0 = ay + 46
+    b.append(text(x0, cy0 - 8, "tKgK", 12.5, INK, weight="600", family=MONO))
+    b.append(text(x0 + 42, cy0 - 8, "thread 19's pieces in each block", 11.5, INK2))
+    for j in range(4):
+        chips(x0 + j * pitch + 24, cy0 + 4, 4, 10, 8, 14)
+    sy = cy0 + 4 + 4 * 14 + 20
+    b.append(text(x0, sy, "shape ((8, 1), 4, 1, n_blocks)", 12.5, INK, weight="600"))
+    rows = [("(8, 1)", "one piece: 8 values in 1 row", ORANGE),
+            ("4", "steps down the tile", INK),
+            ("1", "piece across: one step already spans all 64 values", INK),
+            ("n_blocks", "key blocks: N keys ÷ 64 (4 drawn)", INK)]
+    for i, (num, what, col) in enumerate(rows):
+        b.append(text(x0 + 70, sy + 21 + 19 * i, num, 12.5, col, "end", "700"))
+        b.append(text(x0 + 80, sy + 21 + 19 * i, what, 12, INK2))
+    pic_bottom = sy + 21 + 19 * 3
+    ty = para(y, "gK is K in global memory, cut into key blocks of 64 keys × 64 values. Its shape is (64, 64, "
+                 "n_blocks): for a sequence of N keys, n_blocks = N ÷ 64.")
+    ty = para(ty, "partition_S applies thread 19's rule to every key block and keeps its pieces. S stands for "
+                  "source: the side the copy reads from.")
+    ty = para(ty, "tKgK only records where those pieces sit in global memory. Nothing is copied yet.")
+    ty = para(ty, "Read its shape from the left: what one piece holds, how many steps, how many pieces "
+                  "across, how many key blocks.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 7: partition_D ------------------------------------------------------------------------
+    y = header(y, 7, "The same pieces at the destination: shared memory",
+               ["tKsK = thr_g2s.partition_D(sK)             # the same pieces in shared memory (D: destination)"])
+    x0, gy, px = 56, y + 40, 4
+    b.append(text(x0, gy - 10, "sK: room for one key block in shared memory", 12, INK, weight="600"))
+    tile(x0, gy, px)
+    for m in range(4):
+        b.append(text(x0 + 64 * px + 8, gy + (16 * m + TR) * px + 4, f"row {16 * m + TR}", 10.5, ORANGE,
+                      weight="600"))
+    cx = 420
+    arrow(x0 + 64 * px + 56, gy + 40, cx - 10, gy + 40)
+    b.append(text(cx, gy + 10, "tKsK", 12.5, INK, weight="600", family=MONO))
+    chips(cx, gy + 24, 4, 12, 10, 16)
+    b.append(text(cx, gy + 24 + 4 * 16 + 18, "shape ((8, 1), 4, 1)", 12.5, INK, weight="600"))
+    b.append(text(cx, gy + 24 + 4 * 16 + 36, "no n_blocks: one block", 11.5, INK2))
+    b.append(text(cx, gy + 24 + 4 * 16 + 52, "at a time lives here", 11.5, INK2))
+    pic_bottom = gy + 64 * px
+    ty = para(y, "sK is a 64 × 64 space in shared memory. It holds one key block at a time, stored row by "
+                 "row like the tile in global memory.")
+    ty = para(ty, "partition_D picks thread 19's spots in sK. D stands for destination: the side the copy "
+                  "writes to. They are the same rows and values as in step 6: rows 2, 18, 34, 50, values 24–31.")
+    ty = para(ty, "So tKsK has the shape of tKgK without its last part.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 8: the copy ---------------------------------------------------------------------------
+    y = header(y, 8, "The copy: key block j, 4 pieces per thread",
+               ["cute.copy(g2s, tKgK[None, None, None, j], tKsK)   # copy key block j: 4 steps of 16 bytes"])
+    x0, gy, pitch, mp = 56, y + 54, 52, 22
+    b.append(text(x0, gy - 34, "tKgK", 12.5, INK, weight="600", family=MONO))
+    b.append(text(x0 + 42, gy - 34, "global memory", 11.5, INK2))
+    for j in range(4):
+        for m in range(4):
+            if j == 1:
+                piece(x0 + j * pitch, gy + m * mp, 5, 8)
+            else:
+                piece(x0 + j * pitch, gy + m * mp, 5, 8, FAINT, GRID)
+        b.append(text(x0 + j * pitch + 20, gy + 3 * mp + 24, f"j = {j}", 10.5,
+                      ORANGE if j == 1 else MUTED, "middle", "600" if j == 1 else "normal"))
+    b.append(rect(x0 + pitch - 4, gy - 4, 48, 3 * mp + 16, "none", ORANGE, 1.6, rx=2))
+    b.append(text(x0, gy + 3 * mp + 44, "orange frame: tKgK[None, None, None, 1], key block 1", 11.5, ORANGE,
+                  weight="600"))
+    cx = 440
+    b.append(text(cx, gy - 34, "tKsK", 12.5, INK, weight="600", family=MONO))
+    b.append(text(cx + 42, gy - 34, "shared memory", 11.5, INK2))
+    ax = x0 + 4 * pitch + 6
+    for m in range(4):
+        yy = gy + m * mp
+        arrow(ax, yy + 4, cx - 8, yy + 4)
+        b.append(text(ax + 4, yy, f"step {m}: key {64 + TR + 16 * m}", 9.5, INK2))
+        piece(cx, yy, 12, 8)
+        b.append(text(cx + 104, yy + 8, f"row {TR + 16 * m}", 10, INK2))
+    b.append(text(ax, gy - 16, "each step: load 16 bytes, store 16 bytes", 11.5, INK, weight="600"))
+    sy = gy + 3 * mp + 76
+    b.append(text(x0, sy, "All 128 threads at once: 128 × 4 pieces × 16 bytes = 8,192 bytes", 12, INK, weight="600"))
+    b.append(text(x0, sy + 18, "= 64 × 64 values × 2 bytes: the whole tile.", 12, INK2))
+    pic_bottom = sy + 18
+    ty = para(y, "tKgK[None, None, None, j] picks key block j. None keeps a whole part of the shape, like : "
+                 "in NumPy, so only the last part is fixed, to j.")
+    ty = para(ty, "cute.copy then runs the atom of step 2 once per piece: 4 times. Each time thread 19 loads "
+                  "16 bytes from global memory into its registers and stores them at the same row and values "
+                  "in sK.")
+    ty = para(ty, "The kernel runs this line once per key block: j = 0, 1, 2, and so on.")
+    y = max(pic_bottom, ty) + 20
+    return svg(W, y, b)
 
 
 def copy_atoms():
