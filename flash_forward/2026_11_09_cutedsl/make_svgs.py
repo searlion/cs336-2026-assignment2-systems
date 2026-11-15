@@ -1961,8 +1961,8 @@ def cp_async():
     # 1. one copy's path
     y = 162
     heading(y, 1, "One copy: cp.async goes straight to shared memory",
-            ["The K tile is 8,192 bytes = 512 pieces of 16 bytes. Each of the block's 128 threads copies 4 pieces of K,",
-             "and 4 of V, with one cp.async per piece."])
+            ["The K tile is 64 keys × 64 dims × 2 bytes (bf16) = 8,192 bytes. One cp.async copies at most 16 bytes (8 values),",
+             "so the tile is 512 pieces. Split over the block's 128 threads, that is 4 pieces each: cp.async × 4. V is the same size: 4 more."])
     bx = [190, 350, 510]
     for row, (name, skip, note1, note2) in enumerate([
             ("Normal copy", False, "The thread waits for the data,", "then stores it. No maths meanwhile."),
@@ -1990,14 +1990,19 @@ def cp_async():
              "copies started so far into one group. wait_group(n) pauses the thread until at most n of its groups are still moving."])
     cx = [50, 320, 420, 540]
     hy = y + 78
-    for x, h in zip(cx, ["What the thread does", "K group", "V group", "What happens"]):
+    for x, h in zip(cx, ["What the thread does, in order", "K group", "V group", "What happens"]):
         b.append(text(x, hy, h, 11.5, MUTED, weight="600"))
-    # each row is one moment; the K and V columns say where that group's 4 copies are at that moment
+    # one row per instruction of the strip at the top, in the same order; the K and V columns say where that
+    # group's 4 copies are once the row's instruction has run
     rows = [
-        ("start 4 K copies, commit_group", "moving", "not started", False,
-         ["K's 4 copies become group 1.", "The thread does not wait."]),
-        ("start 4 V copies, commit_group", "moving", "moving", False,
-         ["V's 4 copies become group 2. Both groups", "now move at once; still no waiting."]),
+        ("cp.async × 4 (K)", "moving", "not started", False,
+         ["Starts K's 4 copies. They begin to move;", "the thread does not wait for them."]),
+        ("commit_group", "moving", "not started", False,
+         ["Bundles the copies started so far (K's 4)", "into group 1. Later copies go in a new group."]),
+        ("cp.async × 4 (V)", "moving", "moving", False,
+         ["Starts V's 4 copies while K's are still moving.", "Still no waiting."]),
+        ("commit_group", "moving", "moving", False,
+         ["Bundles the copies started since (V's 4)", "into group 2."]),
         ("wait_group(1)", "moving", "moving", True,
          ["2 groups moving: it waits until only 1 is left.", "The THREAD pauses; K and V keep moving."]),
         ("wakes up: wait_group(1) is done", "landed", "moving", False,
@@ -2014,7 +2019,7 @@ def cp_async():
         if paused:
             b.append(rect(32, ry, 6, rh - 4, INK2, rx=2))
         b.append(text(cx[0], ry + 25, does, 12 if len(does) < 34 else 11, MUTED if does.startswith("(") else INK,
-                      family=MONO if does.startswith(("start", "wait")) else None))
+                      family=MONO if does.startswith(("cp.", "commit", "wait")) else None))
         for gx, st in ((cx[1], k_state), (cx[2], v_state)):
             if st == "moving":
                 box(gx, ry + 7, 88, "moving", ORANGE, ORANGE, SURF, h=26, size=11)
@@ -2030,7 +2035,7 @@ def cp_async():
             yk = ry + (25 if len(note) == 1 else 17 + 15 * k)
             b.append(text(cx[3], yk, t, 11.5, INK if paused else INK2, weight="600" if paused and k == 1 else "normal"))
     yy = hy + 10 + len(rows) * rh + 18
-    b.append(text(50, yy, "K and V are the same size, so each moves for 3 steps; V is one step behind because it was started one step later.",
+    b.append(text(50, yy, "K and V are the same size, so their copies take about as long; V lands a little after K because it was started later.",
                   12, INK2))
     yy += 22
     b.append(text(50, yy, "n is how many of the newest groups may still be moving; every older group must be done. "
