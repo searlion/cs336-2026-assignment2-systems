@@ -1,8 +1,10 @@
 # make_svgs.py
-# Writes the eighteen explanatory diagrams of the article as plain SVG (no external fonts):
+# Writes the twenty explanatory diagrams of the article as plain SVG (no external fonts):
 #   images/mma_ownership.svg   thread 0 through the partition code and the k loop, line by line
 #   images/bank_conflicts.svg  what a bank is, a conflict-free read, an 8-way conflict, and its cost
 #   images/swizzle_banks.svg   which banks 8 rows of a tile land in, row-major vs swizzled
+#   images/swizzle_bms.svg     Swizzle<3,3,3> step by step: slot, binary, XOR, why, the code, B/M/S
+#   images/smem_layout.svg     every line of smem_layout: width, plain block, swizzle bits, atom, tiling
 #   images/pipeline.svg        synchronous copies (v3) against the cp.async schedule (v4)
 #   images/gpu_hierarchy.svg   GPU -> SM -> block -> warp -> lane, and where each kind of memory lives
 #   images/layouts.svg         the two example layouts, (64, 64):(64, 1) and ((2, 2), 8):((1, 16), 2)
@@ -19,7 +21,10 @@
 #   images/warp_lanes.svg      block -> 4 warps -> warp 0's lanes and quads, who holds each row of an MMA result
 #   images/ldmatrix_x4.svg     one ldmatrix.x4: a 16 x 16 piece of K, its four 8 x 8 tiles, who receives each value
 #   images/qkv_tiles.svg       the 64 x 64 tiles: Q, K, V in global memory, shared memory, and S / O in registers
+#   images/key_block_v0.svg    one key block of v0, one panel per line, following thread 0
+#   images/a_operand_view.svg as_a_operand line by line: thread 0's accumulator registers re-read as A operands
 #   images/cp_async.svg        cp.async: global -> shared without registers, commit_group / wait_group(n), then a barrier
+#   images/ldsm_copies.svg     Round 2's ldmatrix copies, line by line: the atom, s2r_A / s2r_K / s2r_V, and one copy of Q
 # The results chart is drawn by plot_results_svg.py from the benchmark files.
 import pathlib
 
@@ -501,6 +506,486 @@ def swizzle_banks():
            "Rows stay intact; only the 16-byte chunks move."])
     b.append(text(20, 405, "cN = the N-th 16-byte chunk (8 bf16 values) of a row, as the program sees it. Blue: the chunk that one MMA operand load reads from each row.", 12, MUTED))
     return svg(960, 420, b)
+
+
+# ---------------------------------------------------------------------------------------------
+def swizzle_bms():
+    """Swizzle<3, 3, 3> from scratch, following one value (row 3, column 8 -> slot 200 -> 208)."""
+    W = 900
+    FAINT, GREY = "#f6f6f4", "#e4e3de"
+    b = [f'<defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Swizzle&lt;3,3,3&gt; step by step, following one value", 17, weight="600"),
+         text(20, 52, "The tile: 8 rows × 64 columns of bf16 values (2 bytes each) in shared memory. "
+                      "The value we follow: row 3, column 8.", 12.5, INK2)]
+
+    def header(y, n, title):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        return y + 24
+
+    def para(y, lines, x=50, size=12.5, fill=INK2, lh=18):
+        for s in lines:
+            b.append(text(x, y, s, size, fill))
+            y += lh
+        return y
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.3" '
+                 f'marker-end="url(#ahb)"/>')
+
+    def bitrow(x, y, digits, fills, bw=30, bh=28, gap=12):
+        """9 bits in 3 groups of 3; digits like '011001000', fills: 9 colours."""
+        for k in range(9):
+            g, i = divmod(k, 3)
+            bx = x + g * (3 * bw + gap) + i * bw
+            b.append(rect(bx, y, bw, bh, fills[k], SURF, 2))
+            b.append(text(bx + bw / 2, y + 19, digits[k], 14, INK, "middle", "700", MONO))
+        return x + 3 * (3 * bw + gap) - gap                      # right edge
+
+    def gcx(x, g, bw=30, gap=12):                                # centre of group g
+        return x + g * (3 * bw + gap) + 1.5 * bw
+
+    R, C, P = AQUA_L, BLUE_L, GREY                               # row bits, chunk bits, position bits
+
+    # ---- 1: slots ---------------------------------------------------------------------------------
+    y = header(100, 1, "Slot: where a value sits in shared memory")
+    y = para(y, ["Shared memory is one long line of numbered places, and the tile is stored in it row after row:",
+                 "row 0 fills places 0–63, row 1 fills 64–127, and so on. A value's place in that line is its slot:",
+                 "slot = row × 64 + column. Row 3, column 8 is slot 3 × 64 + 8 = 200."])
+    y = para(y + 6, ["Each row is cut into 8 chunks of 8 values. 8 bf16 values are 16 bytes, the amount one thread loads",
+                     "at a time, and the swizzle moves whole chunks. Column 8 is chunk 1, position 0 (its first value)."])
+    x0, gy, cw, ch = 110, y + 30, 64, 24
+    for c in range(8):
+        b.append(text(x0 + c * cw + cw / 2, gy - 22, f"chunk {c}", 11, INK, "middle", "600"))
+        b.append(text(x0 + c * cw + cw / 2, gy - 8, f"cols {8 * c}–{8 * c + 7}", 9.5, MUTED, "middle"))
+    for r in range(8):
+        yy = gy + r * ch
+        b.append(text(x0 - 10, yy + 16, f"row {r}", 11, INK2, "end"))
+        for c in range(8):
+            hit = (r, c) == (3, 1)
+            b.append(rect(x0 + c * cw, yy, cw, ch, BLUE_L if hit else FAINT, SURF, 2))
+        b.append(text(x0 + 8 * cw + 12, yy + 16, f"slots {64 * r}–{64 * r + 63}", 11, MUTED))
+    hx, hy = x0 + cw, gy + 3 * ch                                 # chunk 1 of row 3: show its 8 values
+    for i in range(8):
+        b.append(rect(hx + 2 + i * 7.5, hy + 5, 6, ch - 10, BLUE if i == 0 else SURF, BLUE, 0.8))
+    b.append(text(x0, gy + 8 * ch + 22, "Light blue: chunk 1 of row 3, its 8 values. Dark blue: its first value, "
+                                        "row 3, column 8 = slot 200.", 12, INK, weight="600"))
+    y = gy + 8 * ch + 70
+
+    # ---- 2: binary ---------------------------------------------------------------------------------
+    y = header(y, 2, "Write the slot in binary: it splits into row, chunk and position")
+    y = para(y, ["In binary each digit (bit) is worth twice the one to its right: 1, 2, 4, 8, ... Because a row is 64 = 2⁶ values",
+                 "and a chunk 8 = 2³, the 9 bits of a slot fall into three groups of 3 that can be read off directly:"])
+    x0, by = 230, y + 40
+    vals = [256, 128, 64, 32, 16, 8, 4, 2, 1]
+    for k in range(9):
+        g, i = divmod(k, 3)
+        b.append(text(x0 + g * 102 + i * 30 + 15, by - 10, str(vals[k]), 10, MUTED, "middle"))
+    b.append(text(x0 - 14, by - 10, "worth", 10, MUTED, "end"))
+    right = bitrow(x0, by, "011001000", [R] * 3 + [C] * 3 + [P] * 3)
+    b.append(text(x0 - 14, by + 19, "slot 200 =", 13, INK, "end", "600"))
+    b.append(text(right + 16, by + 19, "128 + 64 + 8 = 200", 12, INK2))
+    for g, (name, val, sub) in enumerate([("row", "011 = 3", "counts 64s"), ("chunk", "001 = 1", "counts 8s"),
+                                          ("position", "000 = 0", "counts 1s")]):
+        b.append(text(gcx(x0, g), by + 48, name, 12, INK, "middle", "700"))
+        b.append(text(gcx(x0, g), by + 64, val, 11.5, INK2, "middle", family=MONO))
+        b.append(text(gcx(x0, g), by + 79, sub, 10.5, MUTED, "middle"))
+    b.append(text(right + 16, by + 50, "3 × 64 + 1 × 8 + 0 = 200:", 12, INK2))
+    b.append(text(right + 16, by + 66, "the same sum, by group", 12, INK2))
+    y = para(by + 112, ["Row mod 8: the row group has only 3 bits, enough for rows 0–7. The pattern covers 8 rows and then repeats,",
+                        "so in a taller tile these bits hold the remainder of row ÷ 8, the row mod 8: row 11 reads as 3, row 8 as 0."])
+    y += 38
+
+    # ---- 3: XOR ------------------------------------------------------------------------------------
+    y = header(y, 3, "The swizzle: XOR the row into the chunk")
+    y = para(y, ["XOR compares two bits: the same gives 0, different gives 1. Put the row bits over the chunk bits and",
+                 "XOR each column. Row and position are left as they are; only the chunk number changes."])
+    x0, ty, bw = 230, y + 30, 58
+    rows = [("row 3", "011", R), ("chunk 1", "001", C), ("new chunk", "010", ORANGE_L)]
+    for j, (lab, d, f) in enumerate(rows):
+        yy = ty + j * 36 + (14 if j == 2 else 0)
+        b.append(text(x0 - 14, yy + 20, lab, 12.5, INK, "end", "600"))
+        for i in range(3):
+            b.append(rect(x0 + i * bw, yy, bw, 30, f, SURF, 2))
+            b.append(text(x0 + i * bw + bw / 2, yy + 20, d[i], 14, INK, "middle", "700", MONO))
+    b.append(line(x0 - 4, ty + 73, x0 + 3 * bw + 4, ty + 73, INK, 1.5))
+    b.append(text(x0 + 3 * bw + 10, ty + 77, "XOR", 11, ORANGE, "start", "700"))
+    for i, s in enumerate(["same → 0", "differ → 1", "same → 0"]):
+        b.append(text(x0 + i * bw + bw / 2, ty + 134, s, 10.5, MUTED, "middle"))
+    nx = x0 + 3 * bw + 60
+    para(ty + 14, ["1 XOR 3 = 2: chunk 1 of row 3 is stored at place 2, where",
+                   "chunk 2 would be: slot 3 × 64 + 2 × 8 + 0 = 208, not 200.",
+                   "",
+                   "Row 0 XORs with 000 and never moves. In every other row",
+                   "the chunks swap places in pairs (row 3: 0 ↔ 3, 1 ↔ 2, ...);",
+                   "each row still holds all 8 of its own chunks, in a new order."], x=nx, fill=INK2)
+    y = ty + 132 + 44
+
+    # ---- 4: the whole row -------------------------------------------------------------------------
+    y = header(y, 4, "Do the same for every chunk of row 3")
+    y = para(y, ["Step 3 moved one chunk. The swizzle does the same XOR for all 8 chunks of the row, always with the same",
+                 "row number, 011. Each column below is one chunk of row 3:"])
+    x0, ty, cw, rh = 230, y + 30, 66, 30
+    rws = [("chunk", lambda c: f"c{c}", C), ("in binary", lambda c: f"{c:03b}", C),
+           ("XOR row 3", lambda c: "011", R), ("= place", lambda c: f"{c ^ 3:03b} = {c ^ 3}", ORANGE_L)]
+    for j, (lab, fn, fill) in enumerate(rws):
+        yy = ty + j * rh + (8 if j == 3 else 0)
+        b.append(text(x0 - 14, yy + 18, lab, 12, INK, "end", "600"))
+        for c in range(8):
+            b.append(rect(x0 + c * cw, yy, cw - 4, rh - 4, fill, rx=3))
+            b.append(text(x0 + c * cw + (cw - 4) / 2, yy + 18, fn(c), 12.5, INK, "middle", "700", MONO))
+    b.append(line(x0, ty + 3 * rh + 2, x0 + 8 * cw - 4, ty + 3 * rh + 2, INK, 1.5))
+    b.append(rect(x0 + cw - 3, ty - 3, cw + 2, 4 * rh + 10, "none", ORANGE, 2, 4))
+    b.append(text(x0 + cw + (cw - 4) / 2, ty - 9, "step 3", 11, ORANGE, "middle", "700"))
+    # the row as stored: sorted by place
+    sy = ty + 4 * rh + 66
+    b.append(text(x0, sy - 26, "Now sort by place: row 3 as stored in memory", 12.5, INK, weight="600"))
+    for pl in range(8):
+        b.append(text(x0 + pl * cw + (cw - 4) / 2, sy - 6, f"place {pl}", 10.5, INK2, "middle", "600"))
+        b.append(rect(x0 + pl * cw, sy, cw - 4, rh - 4, BLUE if pl ^ 3 == 1 else ORANGE_L, rx=3))
+        b.append(text(x0 + pl * cw + (cw - 4) / 2, sy + 18, f"c{pl ^ 3}", 12.5, SURF if pl ^ 3 == 1 else INK,
+                      "middle", "700", MONO))
+    b.append(text(x0 - 14, sy + 18, "row 3", 12, INK, "end", "600"))
+    y = para(sy + rh + 22, ["This is row 3 of the right-hand grid in step 5. The chunks swap in pairs: c0 ↔ c3, c1 ↔ c2, "
+                            "c4 ↔ c7, c5 ↔ c6. No two land",
+                            "on the same place, because XOR can be undone: XOR the place with 011 again and you get the chunk back.",
+                            "Doing the same with row 0 (000), row 1 (001), ... row 7 (111) fills the other 7 rows of that grid."])
+    y += 34
+
+    # ---- 4: why ----------------------------------------------------------------------------------
+    y = header(y, 5, "Why: the same chunk of 8 rows now sits in 8 different groups of banks")
+    y = para(y, ["The kernel's loads read the same chunk from 8 rows at the same time, for example chunk 1 of rows 0–7 (blue).",
+                 "Each place across a row is served by its own group of 4 banks, and one group serves one read at a time.",
+                 "Each grid below is the 8 rows as stored in memory; each cell says which chunk is stored at that place."])
+    cw, ch, gy = 44, 24, y + 56
+
+    def grid(x0, swz, title, cap):
+        b.append(text(x0, gy - 46, title, 13, INK, weight="700"))
+        for p in range(8):
+            b.append(text(x0 + p * cw + cw / 2, gy - 22, f"place {p}", 10, INK2, "middle", "600"))
+            b.append(text(x0 + p * cw + cw / 2, gy - 8, f"{4 * p}–{4 * p + 3}", 9.5, MUTED, "middle"))
+        b.append(text(x0 - 8, gy - 8, "banks", 9.5, MUTED, "end"))
+        for r in range(8):
+            b.append(text(x0 - 8, gy + r * ch + 16, f"row {r}", 10.5, INK2, "end"))
+            for p in range(8):
+                c = p ^ r if swz else p
+                hit = c == 1
+                b.append(rect(x0 + p * cw, gy + r * ch, cw, ch, BLUE if hit else FAINT, SURF, 2))
+                b.append(text(x0 + p * cw + cw / 2, gy + r * ch + 16, f"c{c}", 10.5, SURF if hit else INK2,
+                              "middle", family=MONO))
+        for i, s_ in enumerate(cap):
+            b.append(text(x0, gy + 8 * ch + 24 + 17 * i, s_, 12, INK if i == 0 else INK2,
+                          weight="600" if i == 0 else "normal"))
+
+    grid(110, False, "Without the swizzle",
+         ["Chunk 1 is at place 1 in every row.", "All 8 reads need banks 4–7:", "they queue up, 8 passes."])
+    grid(530, True, "With the swizzle: chunk c of row r at place c XOR r",
+         ["Chunk 1 of row r is at place 1 XOR r.", "Row 0 → place 1, row 1 → 0, row 2 → 3, row 3 → 2, ...",
+          "8 reads, 8 different groups of banks: 1 pass.",
+          "Orange: row 3, the value from step 3, now at place 2."])
+    # row 3, the example of step 3: chunk 1 at place 2
+    b.append(rect(530 + 2 * cw - 1, gy + 3 * ch - 1, cw + 2, ch + 2, "none", ORANGE, 2.5))
+    y = gy + 8 * ch + 24 + 17 * 3 + 52
+
+    # ---- 5: code ----------------------------------------------------------------------------------
+    y = header(y, 6, "The same steps as one line of code")
+    b.append(text(50, y, "new = slot ^ ((slot &gt;&gt; S) &amp; (0b111 &lt;&lt; M))", 13.5, INK, weight="700",
+                  family=MONO))
+    b.append(text(445, y, "with S = 3 and M = 3", 12.5, INK2))
+    y = para(y + 22, ["&gt;&gt; 3 slides every bit 3 places to the right; &lt;&lt; 3 slides 3 places to the left; "
+                      "&amp; keeps a bit only where both numbers",
+                      "have a 1; ^ is XOR; 0b111 is binary 111. Colours show where each bit came from:"])
+    x0, ty, rh = 230, y + 14, 38
+    steps = [("slot", "011001000", [R] * 3 + [C] * 3 + [P] * 3, "200", "row 3, chunk 1, position 0"),
+             ("slot &gt;&gt; 3", "000011001", [SURF] * 3 + [R] * 3 + [C] * 3, "25",
+              "the row bits slide down under the chunk"),
+             ("0b111 &lt;&lt; 3", "000111000", [SURF] * 3 + [GREY] * 3 + [SURF] * 3, "56",
+              "a mask: 1s only over the chunk bits"),
+             ("(slot &gt;&gt; 3) &amp; mask", "000011000", [SURF] * 3 + [R] * 3 + [SURF] * 3, "24",
+              "just the row, now in the chunk's place"),
+             ("slot ^ that", "011010000", [R] * 3 + [ORANGE_L] * 3 + [P] * 3, "208",
+              "XOR: chunk 1 → 2; XOR with 0 changes nothing")]
+    for j, (lab, d, f, dec, what) in enumerate(steps):
+        yy = ty + j * rh
+        b.append(text(x0 - 14, yy + 19, lab, 12, INK, "end", "600", MONO))
+        right = bitrow(x0, yy, d, f)
+        for k in range(9):                                       # outline the empty bits
+            g, i = divmod(k, 3)
+            if f[k] == SURF:
+                b.append(rect(x0 + g * 102 + i * 30 + 1, yy + 1, 28, 26, "none", GRID, 1))
+        b.append(text(right + 14, yy + 19, f"= {dec}", 12.5, INK, weight="600", family=MONO))
+        b.append(text(right + 70, yy + 19, what, 12, INK2))
+    y = ty + 5 * rh + 44
+
+    # ---- 6: B, M, S --------------------------------------------------------------------------------
+    y = header(y, 7, "So what the three numbers of Swizzle&lt;B, M, S&gt; count")
+    x0, by = 230, y + 34
+    right = bitrow(x0, by, "011001000", [R] * 3 + [C] * 3 + [P] * 3)
+    b.append(text(x0 - 14, by + 19, "slot 200 =", 13, INK, "end", "600"))
+    sx, tx = gcx(x0, 0), gcx(x0, 1)
+    b.append(f'<path d="M{sx},{by - 4} C{sx},{by - 30} {tx},{by - 30} {tx},{by - 6}" fill="none" '
+             f'stroke="{AQUA}" stroke-width="1.8" marker-end="url(#ahb)"/>')
+    b.append(text((sx + tx) / 2, by - 30, "S = 3 places", 12, AQUA, "middle", "700"))
+    bry = by + 36
+    for g, lab, col in [(1, "B = 3 bits", BLUE), (2, "M = 3 bits", INK2)]:
+        gx0 = x0 + g * 102
+        b.append(f'<path d="M{gx0 + 2},{bry} V{bry + 6} H{gx0 + 88} V{bry}" fill="none" stroke="{col}" '
+                 f'stroke-width="1.5"/>')
+        b.append(text(gx0 + 45, bry + 22, lab, 12, col, "middle", "700"))
+    ky = bry + 58
+    for i, (lab, col, what) in enumerate([
+            ("B = 3", BLUE, "how many bits get changed: the chunk number. 2³ = 8 chunks per row, and the pattern spans 8 rows."),
+            ("M = 3", INK2, "how many low bits are never touched: the position. 2³ = 8 values, so a 16-byte chunk moves whole."),
+            ("S = 3", AQUA, "how far above the chunk bits the row bits start: bit M + S = 6, since a row is 2⁶ = 64 values.")]):
+        b.append(text(50, ky + 21 * i, lab, 12.5, col, weight="700", family=MONO))
+        b.append(text(106, ky + 21 * i, what, 12, INK2))
+    y = ky + 21 * 2 + 26
+    return svg(W, y, b)
+
+
+# ---------------------------------------------------------------------------------------------
+def smem_layout_fig():
+    """Every line of smem_layout (round 1), one section per line, on the 64 x 64 tile of Q."""
+    # Checked with CuTe DSL: smem_layout(64, 64) = S<3,3,3> o 0 o ((8,8),(64,1)):((64,512),(1,0)).
+    # Slot of (r, c) = 64 r + 8 ((c // 8) xor (r % 8)) + c % 8, e.g. (3, 8) -> 208 (plain: 200);
+    # row 8 starts again at 512. smem_layout(64, 128) puts (0, 64) at 4096: rows are filled first.
+    import textwrap
+    W, TX, TW = 1040, 640, 58
+    FAINT, HL, DIM = "#f6f6f4", "#fdf1d4", "#b9b8b2"
+    CODE = ["def smem_layout(rows, cols):",
+            "    width = 64 if cols % 64 == 0 else 32                   # Swizzle<3,3,3> for 128-byte rows",
+            "    atom = cute.make_composed_layout(cute.make_swizzle(3 if width == 64 else 2, 3, 3), 0,",
+            "                                     cute.make_layout((8, width), stride=(width, 1)))",
+            "    return cute.tile_to_shape(atom, (rows, cols), (0, 1))"]
+    b = [f'<defs><marker id="ahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Building the swizzled layout of shared memory, line by line", 17, weight="600"),
+         text(20, 52, "A layout maps a spot (row, column) of a tile to a slot: a position in the buffer, counted "
+                      "in values. Shared memory is cut into", 12.5, INK2),
+         text(20, 70, "32 banks of 4 bytes; a 16-byte chunk of a row covers 4 banks. Blue: chunk c0, the chunk "
+                      "one load reads from 8 rows at once.", 12.5, INK2)]
+
+    def esc(s):
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, esc(ln), size, fill))
+            y += lh
+        return y + 8
+
+    def header(y, n, title, code, hl=None):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        h = 21 * len(code) + 12
+        b.append(rect(20, y, W - 40, h, FAINT, GRID, rx=4))
+        for i, c in enumerate(code):
+            yy = y + 21 + 21 * i
+            on = hl is None or i in hl
+            if hl is not None and on:
+                b.append(rect(21, yy - 15, W - 42, 21, HL))
+            k = c.find("#")
+            code_part = c if k < 0 else c[:k].rstrip()
+            ind = len(code_part) - len(code_part.lstrip(" "))
+            b.append(text(34 + 7.53 * ind, yy, esc(code_part.lstrip(" ")), 12.5, INK if on else DIM, family=MONO))
+            if k >= 0:
+                b.append(text(34 + 7.53 * k, yy, esc(c[k:]), 12.5, MUTED if on else DIM, family=MONO))
+        return y + h + 34
+
+    def arrow(x1, y1, x2, y2, label=None, dy=-7):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-end="url(#ahs)"/>')
+        if label:
+            b.append(text((x1 + x2) / 2, (y1 + y2) / 2 + dy, label, 11.5, INK, "middle", "600"))
+
+    def chunk_grid(x0, y0, swz, cw=46, ch=22, banks=True):
+        # 8 rows x 8 chunk positions; the label in each cell is the chunk stored there
+        if banks:
+            for p in range(8):
+                b.append(text(x0 + p * cw + cw / 2, y0 - 8, f"{4 * p}–{4 * p + 3}", 10, MUTED, "middle"))
+            b.append(text(x0 - 8, y0 - 8, "banks", 10, MUTED, "end"))
+        for r in range(8):
+            b.append(text(x0 - 8, y0 + r * ch + 15, f"row {r}", 10.5, INK2, "end"))
+            for p in range(8):
+                c = p ^ r if swz else p
+                hit = c == 0
+                b.append(rect(x0 + p * cw, y0 + r * ch, cw, ch, BLUE if hit else FAINT, SURF, 2))
+                b.append(text(x0 + p * cw + cw / 2, y0 + r * ch + 15, f"c{c}", 10.5, SURF if hit else INK2,
+                              "middle", family=MONO))
+
+    def box(x, y, w, s, fill=FAINT, mono=True, col=INK):
+        b.append(rect(x, y, w, 28, fill, GRID, 1, 5))
+        b.append(text(x + w / 2, y + 18, s, 12, col, "middle", "600", MONO if mono else None))
+
+    # ---- 1: width ------------------------------------------------------------------------------
+    y = header(134, 1, "How wide is one row of the pattern?", CODE, hl={0, 1})
+    x0, gy = 56, y + 40
+
+    def bar(yy, nchunks, label, sub):
+        b.append(text(x0, yy - 10, label, 12, INK, weight="600"))
+        for p in range(nchunks):
+            b.append(rect(x0 + p * 64, yy, 64, 24, BLUE_L if p == 0 else FAINT, GRID, 1))
+            b.append(text(x0 + p * 64 + 32, yy + 16, f"c{p}", 11, INK, "middle", family=MONO))
+            b.append(text(x0 + p * 64 + 32, yy + 38, f"banks {4 * p}–{4 * p + 3}", 9.5, MUTED, "middle"))
+        b.append(text(x0, yy + 58, sub, 11.5, INK2))
+
+    bar(gy, 8, "width = 64: one row of the tile", "64 values × 2 bytes = 128 bytes: all 32 banks, 8 chunks")
+    bar(gy + 104, 4, "width = 32: a narrower tile", "32 values × 2 bytes = 64 bytes: half the banks, 4 chunks")
+    pic_bottom = gy + 104 + 58
+    ty = para(y, "rows and cols are the size of the tile to lay out. For Q that is bM × D = 64 × 64.")
+    ty = para(ty, "width is how many values one row of the pattern holds. If cols is a multiple of 64, it is 64 "
+                  "values. In bf16 (2 bytes per value) that is 128 bytes: exactly one sweep across all 32 banks.")
+    ty = para(ty, "Otherwise it is 32 values, 64 bytes: for a tile only 32 wide, such as P when a block takes 32 "
+                  "keys at a time.")
+    ty = para(ty, "The swizzle moves whole chunks: 8 values, 16 bytes, 4 banks. A 64-wide row has 8 chunks, "
+                  "c0 to c7.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 2: the plain 8-row block --------------------------------------------------------------
+    y = header(y, 2, "Start from a plain block of 8 rows", CODE, hl={3})
+    x0, gy = 96, y + 46
+    chunk_grid(x0, gy, False)
+    b.append(text(x0, gy + 8 * 22 + 24, "c0 of all 8 rows is in banks 0–3:", 12, INK, weight="600"))
+    b.append(text(x0, gy + 8 * 22 + 42, "reading it takes 8 passes (an 8-way bank conflict).", 12, INK2))
+    pic_bottom = gy + 8 * 22 + 42
+    ty = para(y, "make_layout((8, width), stride=(width, 1)) is a plain block of 8 rows, stored one after "
+                 "another (row-major). Value (r, c) goes to slot 64 r + c.")
+    ty = para(ty, "This is v0's layout. Every row is exactly 128 bytes, so chunk c0 lands in banks 0–3 in "
+                  "every row, c1 in banks 4–7, and so on.")
+    ty = para(ty, "The loads that feed the multiply read the same chunk of 8 rows at once. Here all 8 are in "
+                  "the same banks, so a bank serves them one at a time: 8 passes (rounds of reading) instead of 1.")
+    ty = para(ty, "Why 8 rows? 8 chunks per row are just enough to give each of those 8 rows its own banks.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 3: make_swizzle -----------------------------------------------------------------------
+    y = header(y, 3, "The swizzle: which bits of the slot to mix", CODE, hl={2})
+    x0, gy, bw = 96, y + 66, 30
+    groups = [("row mod 8", "bits 6–8", "011", INK), ("chunk", "bits 3–5", "001", BLUE),
+              ("value in chunk", "bits 0–2", "000", MUTED)]
+    b.append(text(x0, gy - 40, "Slot of row 3, value 8 (chunk c1): 200 = 011 001 000 in binary", 12, INK,
+                  weight="600"))
+
+    def bits(yy, digits, cols):
+        for g, (name, where, _, col) in enumerate(groups):
+            gx = x0 + g * (3 * bw + 18)
+            for i in range(3):
+                b.append(rect(gx + i * bw, yy, bw, 28, FAINT if cols[g] is None else cols[g], GRID, 1))
+                b.append(text(gx + i * bw + bw / 2, yy + 19, digits[g][i], 13, INK, "middle", "700", MONO))
+
+    bits(gy, [g[2] for g in groups], [None, BLUE_L, None])
+    for g, (name, where, _, col) in enumerate(groups):
+        gx = x0 + g * (3 * bw + 18)
+        b.append(text(gx + 1.5 * bw, gy + 44, name, 11, INK, "middle", "600"))
+        b.append(text(gx + 1.5 * bw, gy + 58, where, 10, MUTED, "middle"))
+    # XOR arrow from the row bits onto the chunk bits
+    rx, cx = x0 + 1.5 * bw, x0 + (3 * bw + 18) + 1.5 * bw
+    b.append(f'<path d="M{rx},{gy - 2} C{rx},{gy - 18} {cx},{gy - 18} {cx},{gy - 4}" fill="none" '
+             f'stroke="{ORANGE}" stroke-width="1.6" marker-end="url(#ahs)"/>')
+    b.append(text((rx + cx) / 2, gy - 22, "XOR", 11, ORANGE, "middle", "700"))
+    gy2 = gy + 96
+    b.append(text(x0, gy2 - 12, "chunk 001 XOR row 011 = 010: chunk c1 of row 3 moves to position 2", 12, INK,
+                  weight="600"))
+    bits(gy2, ["011", "010", "000"], [None, ORANGE_L, None])
+    b.append(text(x0 + 3 * (3 * bw + 18) + 4, gy2 + 19, "= slot 208", 13, INK, weight="600"))
+    ky = gy2 + 62
+    b.append(text(x0, ky, "make_swizzle(3, 3, 3): the three numbers", 12, INK, weight="600"))
+    for i, (num, what) in enumerate([("3", "mix 3 bits: the chunk number, 0 to 7"),
+                                      ("3", "leave the lowest 3 bits alone: a chunk's 8 values stay together"),
+                                      ("3", "take the bits to mix in from 3 places higher: row mod 8")]):
+        b.append(text(x0 + 10, ky + 20 + 18 * i, num, 12.5, ORANGE, "end", "700"))
+        b.append(text(x0 + 20, ky + 20 + 18 * i, what, 11.5, INK2))
+    pic_bottom = ky + 20 + 18 * 2
+    ty = para(y, "make_swizzle(3, 3, 3) builds the rule called Swizzle<3,3,3>. It works on the slot number "
+                 "written in binary.")
+    ty = para(ty, "In a 64-wide row, a slot's bits split in three: the lowest 3 are the value inside its chunk, "
+                  "the next 3 the chunk number, and the 3 above those the row mod 8 (a row is 64 = 2⁶ values).")
+    ty = para(ty, "XOR (exclusive or) compares two bits: the same gives 0, different gives 1. The rule XORs the "
+                  "row bits into the chunk bits, so each row reorders its chunks in its own way.")
+    ty = para(ty, "For 32-wide rows the first number is 2: 2 bits, for 4 chunks.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 4: make_composed_layout ---------------------------------------------------------------
+    y = header(y, 4, "Join them: the atom, 8 swizzled rows", CODE, hl={2, 3})
+    x0, fy = 56, y + 20
+    box(x0, fy, 66, "(3, 8)")
+    arrow(x0 + 70, fy + 14, x0 + 116, fy + 14)
+    box(x0 + 120, fy, 92, "plain", BLUE_L, False)
+    arrow(x0 + 216, fy + 14, x0 + 262, fy + 14)
+    box(x0 + 266, fy, 46, "200")
+    arrow(x0 + 316, fy + 14, x0 + 346, fy + 14, "+ 0")
+    arrow(x0 + 350, fy + 14, x0 + 380, fy + 14)
+    box(x0 + 384, fy, 80, "swizzle", ORANGE_L, False)
+    arrow(x0 + 468, fy + 14, x0 + 498, fy + 14)
+    box(x0 + 502, fy, 46, "208")
+    gx, gy = 96, fy + 84
+    chunk_grid(gx, gy, True)
+    b.append(text(gx, gy + 8 * 22 + 24, "c0 of the 8 rows is now in 8 different groups of banks:", 12, INK,
+                  weight="600"))
+    b.append(text(gx, gy + 8 * 22 + 42, "the same read takes 1 pass.", 12, INK2))
+    pic_bottom = gy + 8 * 22 + 42
+    ty = para(y, "make_composed_layout(swizzle, 0, layout) chains three steps: the plain layout turns (row, "
+                 "column) into a slot, 0 is added (an extra shift, unused here), and the swizzle moves the chunk.")
+    ty = para(ty, "The result, atom, is the smallest piece of the pattern: 8 rows × 64 values.")
+    ty = para(ty, "Each row keeps its own 8 chunks, only in a new order. Row 0 does not move: XOR with 0 "
+                  "changes nothing.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 5: tile_to_shape ----------------------------------------------------------------------
+    y = header(y, 5, "Repeat the atom to fill the tile", CODE, hl={4})
+    x0, gy, sw, sh = 96, y + 30, 8 * 30, 30
+    b.append(text(x0, gy - 10, "the 64 × 64 tile of Q", 12, INK, weight="600"))
+    for a in range(8):
+        ay = gy + a * (sh + 4)
+        b.append(rect(x0, ay, sw, sh, FAINT, GRID, 1))
+        for r in range(8):
+            b.append(rect(x0 + r * 30 + 1, ay + r * sh / 8 + 0.5, 28, sh / 8 - 1, BLUE))   # c0 sits at position r
+        b.append(text(x0 + sw + 12, ay + 13, f"atom {a}: rows {8 * a}–{8 * a + 7}", 11.5, INK, weight="600"))
+        b.append(text(x0 + sw + 12, ay + 26, f"slots {512 * a}–{512 * a + 511}", 10.5, MUTED))
+    if True:
+        b.append(f'<path d="M{x0 - 14},{gy + 4} V{gy + 8 * (sh + 4) - 8}" stroke="{ORANGE}" stroke-width="1.6" '
+                 f'marker-end="url(#ahs)"/>')
+        b.append(text(x0 - 20, gy + 4 * (sh + 4), "fill", 11, ORANGE, "end", "600"))
+        b.append(text(x0 - 20, gy + 4 * (sh + 4) + 14, "down", 11, ORANGE, "end", "600"))
+    pic_bottom = gy + 8 * (sh + 4)
+    ty = para(y, "tile_to_shape copies the 8 × 64 atom until it covers rows × cols. The 64 × 64 tile of Q "
+                 "takes 8 copies, stacked down.")
+    ty = para(ty, "(0, 1) is the fill order, by dimension: dimension 0 (down the rows) first, then dimension 1 "
+                  "(across the columns). A 64 × 128 tile would fill every row of its left half first, so its right half "
+                  "starts at slot 4096.")
+    ty = para(ty, "Each atom is 512 values, 1 KB, and repeats the same pattern. In blue, c0 of each row: one "
+                  "per position, in every atom.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 6: get_tensor -------------------------------------------------------------------------
+    y = header(y, 6, "Use it for Q's buffer",
+               ["sQ = storage.sQ.get_tensor(smem_layout(bM, D))             # was cute.make_layout((bM, D), "
+                "stride=(D, 1))"])
+    x0, fy = 56, y + 30
+    for i, (lab, layout, slot, fill) in enumerate([("v0", "plain (bM, D):(D, 1)", "slot 200", BLUE_L),
+                                                    ("v1", "smem_layout(bM, D)", "slot 208", ORANGE_L)]):
+        yy = fy + i * 52
+        b.append(text(x0, yy + 18, lab, 12.5, INK, weight="700"))
+        box(x0 + 30, yy, 86, "sQ[3, 8]")
+        arrow(x0 + 120, yy + 14, x0 + 156, yy + 14)
+        box(x0 + 160, yy, 190, layout, fill)
+        arrow(x0 + 354, yy + 14, x0 + 390, yy + 14)
+        box(x0 + 394, yy, 90, slot)
+    b.append(text(x0, fy + 52 + 56, "Same code, same value; only where it sits in shared memory changes.", 12, INK,
+                  weight="600"))
+    pic_bottom = fy + 52 + 56
+    ty = para(y, "get_tensor views Q's buffer in shared memory through the new layout. The comment shows the "
+                 "old one: plain row-major, (bM, D):(D, 1).")
+    ty = para(ty, "The rest of the kernel does not change: it still asks for sQ[r, c], row r, column c. Only the "
+                  "slot that request reaches changes.")
+    ty = para(ty, "v1 does the same for K, V and P.")
+    y = max(pic_bottom, ty) + 20
+    return svg(W, y, b)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -2560,11 +3045,1024 @@ def cp_async():
     return svg(920, ty + 4 * sh + 98, b)
 
 
+def key_block_v0():
+    """One key block of v0, line by line: one panel per line of the abridged loop body, following thread 0."""
+    # Facts used (layouts checked on the GPU with CuTe DSL, see mma_ownership and tiled_copy):
+    #   g2s: thread t copies row t // 8 + 16 m (m = 0..3), values 8 (t % 8) to 8 (t % 8) + 7
+    #   tSsQ ((2,2,2),1,4):((1,512,8),0,16)   tSsK ((2,2),8,4):((1,8),512,16)
+    #   lane L = 4 g + t reads Q rows g, g + 8 and K key g + 8 n, at dims 16 k + {2t, 2t+1, 2t+8, 2t+9}
+    #   SASS per key block per thread, unmasked loop (results/sass_counts.txt):
+    #     LDG 8, STS 24 (8 K/V + 16 P), BAR 2, LDS 224 (96 x 32-bit: Q 16, K 64, P 16; 128 x 16-bit: V),
+    #     HMMA 64 (32 for S, 32 for O), SHFL.BFLY 4, MUFU.EX2 34
+    import textwrap
+    W, TX, TW = 1040, 640, 58
+    FAINT, HL, NEUT = "#f6f6f4", "#fdf1d4", "#e9e7e1"
+    GLOB, SHR = "#fdf3d8", AQUA_L
+    WARPC = ["#fdf3d8", AQUA_L, ORANGE_L, "#e7e2f6"]
+    CODE = ["cute.arch.sync_threads()                                   # everyone is done with the old K, V",
+            "cute.copy(g2s, tKgK[None, None, None, j], tKsK)            # LDG, then STS, for K and V",
+            "cute.copy(g2s, tVgV[None, None, None, j], tVsV)",
+            "cute.arch.sync_threads()                                   # K, V are in shared memory",
+            "for k in cutlass.range_constexpr(cute.size(tSsQ, mode=[2])):",
+            "    cute.autovec_copy(tSsQ[None, None, k], tSrQ[None, None, k])     # plain loads",
+            "    cute.autovec_copy(tSsK[None, None, k], tSrK[None, None, k])",
+            "    cute.gemm(tiled_mma, acc_S, tSrQ[None, None, k], tSrK[None, None, k], acc_S)",
+            "# ... mask, online softmax with quad shuffles, P -> shared memory -> registers, O += P V"]
+    b = [f'<defs><marker id="ahk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "One key block in v0, line by line", 17, weight="600"),
+         text(20, 52, "The block's 128 threads (4 warps) run these lines once per key block j: 64 keys of K and "
+                      "their 64 rows of V. Each panel takes one line.", 12.5, INK2),
+         text(20, 70, "Blue: thread 0 (lane 0 of warp 0) and its values. Inside the k loop the figure shows "
+                      "k = 1, head dims 16–31.", 12.5, INK2)]
+
+    def code_line(x, yy, c, on=True):
+        k = c.find("#")
+        code_part = c if k < 0 else c[:k].rstrip()
+        ind = len(code_part) - len(code_part.lstrip(" "))
+        if code_part.strip():
+            b.append(text(x + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK if on else MUTED, family=MONO))
+        if k >= 0:
+            b.append(text(x + 7.53 * k, yy, c[k:], 12.5, MUTED, family=MONO))
+
+    # ---- the whole snippet, each line tagged with its panel ------------------------------------
+    ly = 92
+    b.append(rect(20, ly, W - 40, 21 * (len(CODE) + 1) + 12, FAINT, GRID, rx=4))
+    code_line(60, ly + 21, "# one key block in v0 (abridged)")
+    for i, c in enumerate(CODE):
+        yy = ly + 42 + 21 * i
+        b.append(f'<circle cx="38" cy="{yy - 4.5}" r="9" fill="{INK}"/>')
+        b.append(text(38, yy, str(i + 1), 11, SURF, "middle", "700"))
+        code_line(60, yy, c)
+    # the setup the snippet relies on: run once per thread, before the loop over key blocks
+    ly = ly + 21 * (len(CODE) + 1) + 12 + 16
+    SETUP = [
+            "thr_g2s = g2s.get_slice(tidx)                                                   # idea 4: this thread's share of the copy",
+            "tKgK, tKsK = thr_g2s.partition_S(gK), thr_g2s.partition_D(sK)                   # its pieces of K: global, shared",
+            "tVgV, tVsV = thr_g2s.partition_S(gV), thr_g2s.partition_D(sV)                   # the same for V",
+            "thr_mma = tiled_mma.get_slice(tidx)                                             # idea 3: this thread's share of the MMA",
+            "tSsQ, tSsK = thr_mma.partition_A(sQ), thr_mma.partition_B(sK)                   # its values of Q, K in shared memory",
+            "tSrQ, tSrK = thr_mma.make_fragment_A(tSsQ), thr_mma.make_fragment_B(tSsK)       # registers to hold them",
+            "acc_S = cute.make_rmem_tensor(thr_mma.partition_shape_C((64, 64)), Float32)     # its scores of S",
+    ]
+    b.append(rect(20, ly, W - 40, 21 * (len(SETUP) + 1) + 12, "#fbfbfa", GRID, rx=4))
+    code_line(60, ly + 21, "# made once per thread, before the loop over key blocks (ideas 3 and 4 of the article)")
+    for i, c in enumerate(SETUP):
+        code_line(60, ly + 42 + 21 * i, c)
+    y = ly + 21 * (len(SETUP) + 1) + 12 + 60
+
+    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, ln, size, fill))
+            y += lh
+        return y + 8
+
+    def header(y, n, title, code):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        b.append(rect(20, y, W - 40, 33, HL, GRID, rx=4))
+        code_line(34, y + 21, code.strip())
+        return y + 33 + 34
+
+    def arrow(x1, y1, x2, y2, label=None, dy=-7, size=11.5):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-end="url(#ahk)"/>')
+        if label:
+            b.append(text((x1 + x2) / 2, (y1 + y2) / 2 + dy, label, size, INK, "middle", "600"))
+
+    def tile(x0, y0, px, fill, rows=(), cols=(0, 8), mark=BLUE, frame=None):
+        # a 64 x 64 tile; rows: rows whose columns cols[0]..cols[1]-1 are marked
+        b.append(rect(x0, y0, 64 * px, 64 * px, fill, GRID))
+        for r in rows:
+            b.append(rect(x0 + cols[0] * px, y0 + r * px, (cols[1] - cols[0]) * px, max(px, 2.5), mark))
+        if frame:
+            r0, r1, c0, c1 = frame
+            b.append(rect(x0 + c0 * px - 1.5, y0 + r0 * px - 1.5, (c1 - c0) * px + 3, (r1 - r0) * px + 3,
+                          "none", ORANGE, 1.6))
+
+    def cell(x, y, cs, fill, label=None, fg=INK, stroke=GRID):
+        b.append(rect(x, y, cs, cs, fill, stroke, 0.6))
+        if label is not None:
+            b.append(text(x + cs / 2, y + cs / 2 + 3.5, label, 9, fg, "middle", "600"))
+
+    def legend(x, yy, fill, s, stroke=GRID):
+        b.append(rect(x, yy - 10, 12, 12, fill, stroke))
+        b.append(text(x + 18, yy, s, 11.5, INK2))
+
+    # ---- 1: the first barrier -------------------------------------------------------------------
+    y = header(y, 1, "Wait until every warp is done with the old K and V", CODE[0])
+    x0, BX, bh, pitch = 116, 470, 22, 30
+    ends = [372, 404, 330, 452]
+    ty0 = y + 30
+    b.append(text(BX, ty0 - 12, "barrier", 11.5, INK, "middle", "600"))
+    for w in range(4):
+        wy = ty0 + w * pitch
+        b.append(text(x0 - 10, wy + 15, f"warp {w}", 11.5, INK2, "end"))
+        b.append(rect(x0, wy, ends[w] - x0, bh, NEUT, GRID, rx=3))
+        b.append(text(x0 + 8, wy + 15, "block j − 1: S, softmax, O += P V", 10.5, INK))
+        if BX - ends[w] > 8:
+            b.append(rect(ends[w] + 2, wy + 3, BX - ends[w] - 6, bh - 6, "none", MUTED, 1, rx=2)
+                     .replace("/>", ' stroke-dasharray="3 3"/>'))
+        if BX - ends[w] > 44:
+            b.append(text((ends[w] + BX) / 2, wy + 15, "waits", 10.5, MUTED, "middle"))
+        b.append(rect(BX + 6, wy, 120, bh, SHR, GRID, rx=3))
+        b.append(text(BX + 14, wy + 15, "copy block j", 10.5, INK))
+    b.append(line(BX, ty0 - 6, BX, ty0 + 4 * pitch, INK, 2.5))
+    hy = ty0 + 4 * pitch + 16
+    b.append(line(ends[2], hy, ends[3], hy, ORANGE, 2))
+    b.append(line(ends[2], hy - 4, ends[2], hy + 4, ORANGE, 2))
+    b.append(line(ends[3], hy - 4, ends[3], hy + 4, ORANGE, 2))
+    b.append(text(x0, hy + 22, "Without the barrier, warp 2 would start overwriting sK and sV here,", 11.5, ORANGE,
+                  weight="600"))
+    b.append(text(x0, hy + 39, "while warp 3 is still reading block j − 1's V for O += P V.", 11.5, ORANGE,
+                  weight="600"))
+    pic_bottom = hy + 39
+    ty = para(y, "Shared memory has room for one key block of K (sK) and one of V (sV). Every key block "
+                 "reuses the same spots, so block j can only be written once nobody needs block j − 1.")
+    ty = para(ty, "The 4 warps reach this line at different times. sync_threads holds each of the 128 threads "
+                  "here until all have arrived: one BAR.SYNC instruction.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 2: copy K ------------------------------------------------------------------------------
+    y = header(y, 2, "Copy key block j of K into shared memory, through registers", CODE[1])
+    px, gx, rx, sx = 2, 56, 262, 452
+    gy = y + 52
+    T0 = (0, 16, 32, 48)
+    b.append(text(gx, gy - 34, "K in global memory", 12, INK, weight="600"))
+    b.append(rect(gx, gy - 20, 64 * px, 14, FAINT, GRID))
+    b.append(text(gx + 32 * px, gy - 9, "block j − 1", 9.5, MUTED, "middle"))
+    tile(gx, gy, px, GLOB, T0)
+    b.append(rect(gx, gy + 64 * px, 64 * px, 14, FAINT, GRID))
+    b.append(text(gx + 32 * px, gy + 64 * px + 11, "block j + 1", 9.5, MUTED, "middle"))
+    b.append(text(gx + 32 * px, gy + 32 * px + 4, "key block j", 11, INK, "middle", "600"))
+    # thread 0's registers
+    b.append(text(rx, gy - 34, "thread 0's registers", 12, INK, weight="600"))
+    b.append(rect(rx, gy - 8, 130, 144, BLUE_L, GRID, rx=6))
+    for m in range(4):
+        for v in range(8):
+            b.append(rect(rx + 17 + v * 12, gy + 6 + m * 32, 12, 14, BLUE, SURF, 0.8))
+        b.append(text(rx + 65, gy + 32 + m * 32, f"row {16 * m}, values 0–7", 9.5, INK2, "middle"))
+    b.append(text(sx, gy - 34, "sK in shared memory", 12, INK, weight="600"))
+    tile(sx, gy, px, SHR, T0)
+    arrow(gx + 64 * px + 8, gy + 64, rx - 6, gy + 64, "LDG × 4")
+    arrow(rx + 136, gy + 64, sx - 6, gy + 64, "STS × 4")
+    cy = gy + 64 * px + 40
+    b.append(text(gx, cy, "Blue: thread 0's 4 pieces, 16 bytes each: rows 0, 16, 32, 48, values 0–7.", 11.5, INK2))
+    b.append(text(gx, cy + 18, "All 128 threads at once: 512 pieces × 16 bytes = 8 KB, the whole tile.", 11.5, INK,
+                  weight="600"))
+    pic_bottom = cy + 18
+    ty = para(y, "tKgK[None, None, None, j] picks key block j; g2s gives each thread 4 pieces of it (the "
+                 "copy figure in idea 4 takes this line apart).")
+    ty = para(ty, "Its atom, CopyUniversalOp, is a plain copy, so each piece makes "
+                  "two trips: a global load (LDG) into the thread's registers, then a shared store (STS).")
+    ty = para(ty, "The store waits for its load, a trip to global memory of hundreds of cycles, and ④ then "
+                  "waits for every store. Round 4's cp.async skips the registers and lets the copy run "
+                  "behind other work.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 3: copy V ------------------------------------------------------------------------------
+    y = header(y, 3, "The same copy for V: the values of the same 64 keys", CODE[2])
+    px, kx, vx = 1.75, 96, 270
+    gy = y + 46
+    for xx, name in ((kx, "K block j"), (vx, "V block j")):
+        b.append(text(xx + 32 * px, gy - 10, name, 12, INK, "middle", "600"))
+        tile(xx, gy, px, GLOB, T0)
+    b.append(line(kx - 10, gy, kx - 10, gy + 64 * px, INK2, 1.2))
+    b.append(text(kx - 16, gy + 32 * px - 4, "keys", 10.5, INK2, "end"))
+    b.append(text(kx - 16, gy + 32 * px + 10, "64j to", 10.5, INK2, "end"))
+    b.append(text(kx - 16, gy + 32 * px + 24, "64j + 63", 10.5, INK2, "end"))
+    ry = gy + 22 * px
+    b.append(line(kx, ry, vx + 64 * px, ry, ORANGE, 1.4, "4 3"))
+    b.append(text((kx + 64 * px + vx) / 2, ry - 5, "same key", 10, ORANGE, "middle", "600"))
+    sy = gy + 64 * px + 40
+    for xx, name in ((kx, "sK"), (vx, "sV")):
+        arrow(xx + 32 * px, gy + 64 * px + 6, xx + 32 * px, sy - 6)
+        tile(xx, sy, px, SHR, T0)
+        b.append(text(xx + 32 * px, sy + 64 * px + 18, name, 12, INK, "middle", "600", MONO))
+    b.append(text((kx + 64 * px + vx) / 2, gy + 64 * px + 26, "same g2s,", 10.5, INK2, "middle"))
+    b.append(text((kx + 64 * px + vx) / 2, gy + 64 * px + 40, "same spots", 10.5, INK2, "middle"))
+    # shared memory map
+    mx, my = 420, gy + 10
+    b.append(text(mx, my - 6, "Shared memory of one block", 12, INK, weight="600"))
+    smem = [("sQ", "Q tile, loaded once before the loop", FAINT),
+            ("sK", "key block j of K (②)", SHR),
+            ("sV", "key block j of V (③)", SHR),
+            ("sP", "P, used after the loop (⑨)", FAINT)]
+    for i, (name, what, fill) in enumerate(smem):
+        yy = my + 6 + i * 44
+        b.append(rect(mx, yy, 196, 36, fill, GRID, rx=3))
+        b.append(text(mx + 10, yy + 16, name, 12, INK, weight="600", family=MONO))
+        b.append(text(mx + 40, yy + 16, "8 KB", 11, INK2))
+        b.append(text(mx + 10, yy + 30, what, 10.5, INK2))
+    b.append(text(mx, my + 6 + 4 * 44 + 10, "32 KB in all", 11.5, INK, weight="600"))
+    pic_bottom = sy + 64 * px + 18
+    ty = para(y, "tVgV and tVsV come from the same g2s, so thread 0 copies the same spots of V: rows 0, 16, "
+                 "32, 48, values 0–7. Another 4 loads and 4 stores.")
+    ty = para(ty, "Row r of V belongs to the same key as row r of K. S = Q Kᵀ scores the 64 keys of block j; "
+                  "O += P V then mixes their 64 rows of V. Both have to sit in shared memory together.")
+    ty = para(ty, "The real kernel interleaves the two copies, one step of K then one of V. Nothing reads "
+                  "either until ④, so the order does not matter.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 4: the second barrier ------------------------------------------------------------------
+    y = header(y, 4, "Wait until all of K and V has landed", CODE[3])
+    px, x0 = 3, 100
+    gy = y + 34
+    b.append(text(x0, gy - 12, "sK: who wrote each row, and what thread 0 reads", 12, INK, weight="600"))
+    for r in range(64):
+        b.append(rect(x0, gy + r * px, 64 * px, px, WARPC[(r % 16) // 4]))
+    b.append(rect(x0, gy, 64 * px, 64 * px, "none", GRID))
+    for r in range(0, 64, 8):
+        for k in range(4):
+            for d in (0, 1, 8, 9):
+                b.append(rect(x0 + (16 * k + d) * px, gy + r * px, px, px, BLUE))
+        b.append(text(x0 - 6, gy + r * px + 4, f"key {r}", 9.5, INK2, "end"))
+    for k in range(4):
+        b.append(text(x0 + (16 * k + 8) * px, gy + 64 * px + 14, f"k = {k}", 9.5, MUTED, "middle"))
+    lx = x0 + 64 * px + 30
+    b.append(text(lx, gy + 4, "Rows written in ② by:", 11.5, INK, weight="600"))
+    for w in range(4):
+        legend(lx, gy + 26 + 20 * w, WARPC[w], f"warp {w} (threads {32 * w}–{32 * w + 31})")
+    legend(lx, gy + 26 + 20 * 4 + 6, BLUE, "read by thread 0 in the k loop")
+    b.append(text(lx, gy + 140, "keys 0, 16, 32, 48: written by warp 0", 11.5, INK2))
+    b.append(text(lx, gy + 158, "keys 8, 24, 40, 56: written by warp 2", 11.5, ORANGE, weight="600"))
+    pic_bottom = gy + 64 * px + 14
+    ty = para(y, "In ② and ③ each thread wrote 8 small pieces. The k loop reads sK in a different pattern, "
+                 "the tiled MMA's: thread 0 reads keys 0, 8, 16, …, 56, at head dims 16k + 0, 1, 8, 9.")
+    ty = para(ty, "Half of those rows were written by warp 2 (threads 64–71), which may still be copying. The "
+                  "same holds for V in O += P V. So every thread waits here until all 128 have finished ② "
+                  "and ③: a second BAR.SYNC, two per key block.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 5: the k loop --------------------------------------------------------------------------
+    y = header(y, 5, "The k loop: what tSsQ's shape ((2, 2, 2), 1, 4) means, and why k = 0, 1, 2, 3", CODE[4])
+
+    def sub(yy, s):
+        b.append(text(56, yy, s, 13, INK, weight="600"))
+        return yy + 30
+
+    # 5a: partition_A cuts the Q tile into mma pieces
+    y = sub(y, "5a. Where tSsQ and its shape come from")
+    b.append(rect(56, y - 4, 560, 62, FAINT, GRID, rx=4))
+    code_line(68, y + 14, "tSsQ = thr_mma.partition_A(sQ)    # setup, before the loop")
+    code_line(68, y + 34, "print(tSsQ.layout)")
+    b.append(text(68, y + 52, "# prints ((2,2,2),1,4):((1,512,8),0,16)", 12.5, ORANGE, weight="600", family=MONO))
+    y += 84
+    px, x0 = 3.5, 120
+    gy = y + 34
+    for r in range(64):
+        b.append(rect(x0, gy + r * px, 64 * px, px, BLUE_L if r < 16 else FAINT))
+    b.append(rect(x0, gy, 64 * px, 64 * px, "none", GRID))
+    for c in (16, 32, 48):
+        b.append(line(x0 + c * px, gy, x0 + c * px, gy + 64 * px, INK2, 1))
+    for r in (16, 32, 48):
+        b.append(line(x0, gy + r * px, x0 + 64 * px, gy + r * px, INK2, 1))
+    for k in range(4):
+        for r in (0, 8):
+            for d in (0, 1, 8, 9):
+                b.append(rect(x0 + (16 * k + d) * px, gy + r * px, px, px, BLUE))
+        b.append(text(x0 + (16 * k + 8) * px, gy - 20, f"k = {k}", 10.5, ORANGE if k == 1 else INK, "middle",
+                      "600"))
+        b.append(text(x0 + (16 * k + 8) * px, gy - 6, f"dims {16 * k}–{16 * k + 15}", 9, MUTED, "middle"))
+    for w in range(4):
+        b.append(text(x0 - 6, gy + (16 * w + 8) * px + 4, f"warp {w}", 10.5, INK if w == 0 else MUTED, "end",
+                      "600" if w == 0 else "normal"))
+    b.append(rect(x0 + 16 * px - 1.5, gy - 1.5, 16 * px + 3, 16 * px + 3, "none", ORANGE, 1.8))
+    b.append(text(x0, gy + 64 * px + 18, "sQ: 64 rows × 64 head dims,", 10.5, INK2))
+    b.append(text(x0, gy + 64 * px + 33, "cut into 4 × 4 pieces of 16 × 16", 10.5, INK2))
+    # zoom: the piece at warp 0, k = 1, thread 0's values numbered in mode-0 order
+    zx, cs = 392, 13
+    b.append(line(x0 + 32 * px + 2, gy, zx - 4, gy, ORANGE, 1, "3 3"))
+    b.append(line(x0 + 32 * px + 2, gy + 16 * px, zx - 4, gy + 16 * cs, ORANGE, 1, "3 3"))
+    num = {(0, 0): 0, (0, 1): 1, (8, 0): 2, (8, 1): 3, (0, 8): 4, (0, 9): 5, (8, 8): 6, (8, 9): 7}
+    for r in range(16):
+        for d in range(16):
+            if (r, d) in num:
+                cell(zx + d * cs, gy + r * cs, cs, BLUE, str(num[(r, d)]), SURF)
+            else:
+                cell(zx + d * cs, gy + r * cs, cs, BLUE_L, stroke=SURF)
+    for r in (0, 8):
+        b.append(text(zx - 5, gy + r * cs + 10, f"row {r}", 9.5, INK2, "end"))
+    for d in (0, 8, 15):
+        b.append(text(zx + d * cs + cs / 2, gy - 6, str(16 + d), 9, MUTED, "middle"))
+    b.append(text(zx, gy - 20, "one piece: warp 0, k = 1", 10.5, ORANGE, weight="600"))
+    zy = gy + 16 * cs + 18
+    for i, s in enumerate(("0 → 1: next dim, offset + 1", "0 → 2: 8 rows down, offset + 512",
+                           "0 → 4: 8 dims across, offset + 8")):
+        b.append(text(zx, zy + 16 * i, s, 10.5, INK2))
+    pic_bottom = max(gy + 64 * px + 33, zy + 32)
+    ty = para(y - 84, "tSsQ is not made in the snippet: the setup line above makes it once, before any key "
+                      "block. Printing its layout from CuTe, as print_partition_shapes.py does, gives the shape "
+                      "and strides shown. Shape and stride are known when compiling, so print runs then.")
+    ty = para(max(ty, y), "partition_A(sQ) lays the tiled MMA over the 64 × 64 Q tile. Each mma.m16n8k16 instruction "
+                 "reads a 16 × 16 piece of Q, so the tile splits into 4 × 4 pieces: 4 warps down (the "
+                 "(4, 1, 1) of make_tiled_mma), 4 steps of 16 head dims across.")
+    ty = para(ty, "Thread 0 is in warp 0, so only the top row of pieces concerns it, and in each piece it holds "
+                  "8 values (blue). The result, tSsQ, lists those values and nothing else.")
+    ty = para(ty, "Each top-level entry of ((2, 2, 2), 1, 4) is a mode: one direction you can step through "
+                  "thread 0's values in. 5b reads them one by one.")
+    y = max(pic_bottom, ty) + 40
+
+    # 5b: the three modes, as a table across the full width
+    y = sub(y, "5b. The three modes of tSsQ = ((2, 2, 2), 1, 4) : ((1, 512, 8), 0, 16)")
+    cols = [34, 96, 286, 530, 780]
+    heads = ["mode", "size : stride", "what it counts", "why that size", "what [None, None, k] does"]
+    rows = [("0", "(2, 2, 2) : (1, 512, 8)",
+             ["thread 0's 8 values inside one", "piece, numbered 0–7 in 5a"],
+             ["mma.m16n8k16 gives each of the", "32 lanes 8 of a piece's 256 values"],
+             ["None: kept whole. All 8 values", "go into each mma of the step"], FAINT),
+            ("1", "1 : 0",
+             ["pieces down the rows,", "within thread 0's warp"],
+             ["64 rows ÷ (16 rows per piece", "× 4 warps) = 1"],
+             ["None: kept whole. There is", "only one"], FAINT),
+            ("2", "4 : 16",
+             ["pieces across the head dims"],
+             ["64 dims ÷ 16 dims per piece = 4"],
+             ["k: picks one piece per step,", "so the loop runs 4 times"], ORANGE_L)]
+    hy = y + 4
+    for x, h in zip(cols, heads):
+        b.append(text(x, hy, h, 11.5, INK2, weight="600"))
+    b.append(line(20, hy + 9, W - 20, hy + 9, GRID))
+    ry = hy + 18
+    for m, ss, c1, c2, c3, fill in rows:
+        b.append(rect(20, ry, W - 40, 44, fill, rx=3))
+        b.append(text(cols[0] + 12, ry + 18, m, 13, ORANGE if m == "2" else INK, "middle", "700"))
+        b.append(text(cols[1], ry + 18, ss, 12, INK, weight="600", family=MONO))
+        for x, ls in zip(cols[2:], (c1, c2, c3)):
+            for i, s in enumerate(ls):
+                b.append(text(x, ry + 18 + 16 * i, s, 11.5, INK))
+        ry += 50
+    b.append(text(34, ry + 12, "Strides are distances in sQ, in values. A row holds 64 values, so 8 rows down is "
+                  "512; the next piece across starts 16 values later. A mode of size 1 never steps, so its "
+                  "stride is 0.", 11.5, INK2))
+    b.append(text(34, ry + 30, "K gets the same treatment: tSsK = partition_B(sK) prints ((2, 2), 8, 4). Its mode 1 is "
+                  "8, one piece per mma (panel 7); its mode 2 is also 4, the same 4 steps.", 11.5, INK2))
+    y = ry + 30 + 46
+
+    # 5c: why the head dims come in 4 steps
+    y = sub(y, "5c. Why k = 0, 1, 2, 3: one instruction covers only 16 head dims")
+    x0, cw, gp = 120, 7, 16
+    gy = y + 20
+
+    def dims_row(yy, label):
+        b.append(text(x0 - 8, yy + 12, label, 10.5, INK2, "end"))
+        for k in range(4):
+            sx0 = x0 + k * (16 * cw + gp)
+            b.append(rect(sx0, yy, 16 * cw, 16, ORANGE_L if k == 1 else FAINT, ORANGE if k == 1 else GRID))
+            b.append(text(sx0 + 8 * cw, yy + 12, f"dims {16 * k}–{16 * k + 15}", 9.5, INK, "middle"))
+
+    dims_row(gy, "Q row 0")
+    dims_row(gy + 38, "K key 0")
+    py = gy + 82
+    b.append(text(x0 - 8, py + 14, "S[0, 0] =", 11, INK, "end", "600"))
+    for k in range(4):
+        sx0 = x0 + k * (16 * cw + gp)
+        b.append(rect(sx0, py, 16 * cw, 20, ORANGE if k == 1 else ORANGE_L, ORANGE, rx=3))
+        b.append(text(sx0 + 8 * cw, py + 14, f"part k = {k}", 10, SURF if k == 1 else INK, "middle", "600"))
+        if k:
+            b.append(text(sx0 - gp / 2, py + 15, "+", 12, INK, "middle", "700"))
+    pic_bottom = py + 20
+    ty = para(y, "A score is a dot product over all 64 head dims. The tensor-core instruction is "
+                 "m16n8k16: 16 rows × 8 keys, and only 16 head dims (the k16). The hardware fixes these sizes.")
+    ty = para(ty, "So each score is built in 4 parts, one per 16 dims. Step k computes part k and adds it into "
+                  "acc_S (panel 8). Both k's count head dims; neither is the key matrix K.")
+    y = max(pic_bottom, ty) + 40
+
+    # 5d: range_constexpr writes the 4 steps out
+    y = sub(y, "5d. range_constexpr: the 4 steps are written out when compiling")
+    x0 = 56
+    uy = y
+    for k in range(4):
+        bx = x0 + k * 140
+        b.append(rect(bx, uy + 10, 130, 62, ORANGE_L if k == 1 else FAINT, ORANGE if k == 1 else GRID, 1, rx=4))
+        for i, s in enumerate((f"copy Q piece {k}", f"copy K pieces, k = {k}", f"gemm, k = {k}")):
+            b.append(text(bx + 10, uy + 28 + 17 * i, s, 10.5, INK))
+    b.append(text(x0, uy + 92, "What gets compiled: the body 4 times, k a fixed number in each", 11, INK2))
+    pic_bottom = uy + 92
+    ty = para(y, "cute.size(tSsQ, mode=[2]) is 4, the size of mode 2. range_constexpr runs the loop in "
+                 "Python while compiling and writes the body out 4 times, with no loop counter at run time.")
+    ty = para(ty, "This matters because tSrQ and tSrK are registers, which have no addresses: "
+                  "tSrQ[None, None, k] must name exact registers when compiling. A k known only at run time "
+                  "would push the arrays out to slow local memory.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 6: Q into registers --------------------------------------------------------------------
+    y = header(y, 6, "Q: 8 values into registers, 2 per load", CODE[5])
+    px, x0 = 2, 56
+    gy = y + 40
+    b.append(text(x0, gy - 12, "sQ", 12, INK, weight="600", family=MONO))
+    tile(x0, gy, px, SHR, frame=(0, 16, 16, 32))
+    for r in (0, 8):
+        for d in (16, 17, 24, 25):
+            b.append(rect(x0 + d * px, gy + r * px, px, px, BLUE))
+    b.append(text(x0, gy + 64 * px + 18, "orange: warp 0's", 10.5, ORANGE, weight="600"))
+    b.append(text(x0, gy + 64 * px + 32, "Q piece at k = 1:", 10.5, ORANGE, weight="600"))
+    b.append(text(x0, gy + 64 * px + 46, "rows 0–15, dims 16–31", 10.5, INK2))
+    zx, cs = 250, 11
+    b.append(line(x0 + 32 * px + 2, gy, zx - 4, gy, ORANGE, 1, "3 3"))
+    b.append(line(x0 + 32 * px + 2, gy + 16 * px, zx - 4, gy + 16 * cs, ORANGE, 1, "3 3"))
+    for r in range(16):
+        for d in range(16):
+            on = r in (0, 8) and d in (0, 1, 8, 9)
+            cell(zx + d * cs, gy + r * cs, cs, BLUE if on else SHR, stroke=SURF if not on else GRID)
+    for r in (0, 8):
+        b.append(text(zx - 5, gy + r * cs + 9, f"row {r}", 9.5, INK2, "end"))
+        for d in (0, 8):
+            b.append(rect(zx + d * cs - 1.5, gy + r * cs - 1.5, 2 * cs + 3, cs + 3, "none", ORANGE, 1.6))
+    for d in (0, 8, 15):
+        b.append(text(zx + d * cs + cs / 2, gy - 4, str(16 + d), 9, MUTED, "middle"))
+    b.append(text(zx + 8 * cs, gy + 16 * cs + 16, "orange frame: one load, 2 values", 10.5, ORANGE, "middle", "600"))
+    rgx = 488
+    arrow(zx + 16 * cs + 8, gy + 50, rgx - 8, gy + 50, "4 loads")
+    b.append(text(rgx, gy - 4, "tSrQ[None, None, 1]", 11, INK, weight="600", family=MONO))
+    for i, (r, d) in enumerate(((0, 16), (8, 16), (0, 24), (8, 24))):
+        yy = gy + 12 + 26 * i
+        for v in range(2):
+            cell(rgx + v * cs, yy, cs, BLUE, stroke=SURF)
+        b.append(text(rgx + 2 * cs + 6, yy + 9, f"row {r}, dims {d}–{d + 1}", 9.5, INK2))
+    b.append(text(rgx, gy + 12 + 26 * 4 + 6, "4 registers", 10.5, INK2))
+    pic_bottom = gy + 16 * cs + 16
+    ty = para(y, "tSsQ[None, None, 1] is thread 0's share of Q piece 1: rows 0 and 8, head dims 16, 17, 24, "
+                 "25. That is 8 bf16 values, 16 bytes.")
+    ty = para(ty, "autovec_copy uses plain shared-memory loads (LDS), each as wide as the values allow. Only "
+                  "neighbouring pairs sit next to each other in sQ, so one load moves 2 values, 4 bytes: 4 "
+                  "loads per k, 16 per key block.")
+    ty = para(ty, "Q never changes, yet the loop re-reads it for every key block. Round 2 replaces these "
+                  "loads with ldmatrix.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 7: K into registers --------------------------------------------------------------------
+    y = header(y, 7, "K: 32 values into registers, and an 8-way bank conflict", CODE[6])
+    x0, cs = 104, 11
+    gy = y + 40
+    b.append(text(x0 - 48, gy - 22, "sK at k = 1: the 8 keys thread 0 reads, dims 16–31", 12, INK, weight="600"))
+    for i in range(8):
+        yy = gy + i * 15
+        for d in range(16):
+            on = d in (0, 1, 8, 9)
+            cell(x0 + d * cs, yy, cs, BLUE if on else SHR, stroke=SURF if not on else GRID)
+        for d in (0, 8):
+            b.append(rect(x0 + d * cs - 1.5, yy - 1.5, 2 * cs + 3, cs + 3, "none", ORANGE, 1.4))
+        b.append(text(x0 - 6, yy + 9, f"key {8 * i}", 9.5, INK2, "end"))
+    for d in (0, 8, 15):
+        b.append(text(x0 + d * cs + cs / 2, gy - 4, str(16 + d), 9, MUTED, "middle"))
+    rgx = 424
+    arrow(x0 + 16 * cs + 8, gy + 56, rgx - 8, gy + 56, "16 loads")
+    b.append(text(rgx, gy - 8, "tSrK[None, None, 1]", 11, INK, weight="600", family=MONO))
+    for i in range(8):
+        yy = gy + i * 15
+        for v in range(4):
+            cell(rgx + v * cs + (4 if v >= 2 else 0), yy, cs, BLUE, stroke=SURF)
+        b.append(text(rgx + 4 * cs + 12, yy + 9, f"for mma {i}", 9.5, INK2))
+    # one load across warp 0: lane 4g + t reads key g, dims 16 + 2t and 17 + 2t, in bank 8 + t
+    by, bx, bc = gy + 8 * 15 + 52, 104, 14
+    b.append(text(x0 - 48, by - 26, "One of those loads, by all 32 lanes of warp 0 at once (mma 0, dims 16 + 2t, 17 + 2t)",
+                  12, INK, weight="600"))
+    for bk in range(32):
+        if bk % 4 == 0 or bk == 31:
+            b.append(text(bx + bk * bc + bc / 2, by - 6, str(bk), 9, MUTED, "middle"))
+    b.append(text(bx - 6, by - 6, "bank", 9.5, INK2, "end"))
+    for g in range(8):
+        yy = by + g * bc
+        b.append(text(bx - 6, yy + 10, f"key {g}", 9.5, INK2, "end"))
+        for bk in range(32):
+            t = bk - 8
+            if 0 <= t < 4:
+                lane = 4 * g + t
+                cell(bx + bk * bc, yy, bc, BLUE if lane == 0 else BLUE_L, str(lane), SURF if lane == 0 else INK)
+            else:
+                cell(bx + bk * bc, yy, bc, FAINT, stroke=SURF)
+    b.append(rect(bx + 8 * bc - 1.5, by - 1.5, 4 * bc + 3, 8 * bc + 3, "none", ORANGE, 1.8))
+    b.append(text(bx + 12 * bc + 10, by + 4 * bc + 4, "8 lanes per bank, 8 different words:", 11.5, ORANGE,
+                  weight="600"))
+    b.append(text(bx + 12 * bc + 10, by + 4 * bc + 21, "served one after another, 8 passes", 11.5, ORANGE,
+                  weight="600"))
+    pic_bottom = by + 8 * bc
+    ty = para(y, "tSsK[None, None, 1]: for each of the 8 mmas, one key (0, 8, 16, …, 56) at head dims 16, 17, "
+                 "24, 25. That is 32 values, again in pairs: 16 loads per k, 64 per key block.")
+    ty = para(ty, "Shared memory serves a warp's load from 32 banks, 4 bytes wide. A row of K is 64 × 2 = 128 "
+                  "bytes, exactly one sweep of the 32 banks, so a given head dim sits in the same bank in "
+                  "every row.")
+    ty = para(ty, "In one load, lanes 4g + t read key g, so 8 lanes need 8 different rows of the same bank: "
+                  "an 8-way bank conflict. Q's loads in ⑥ have the same problem. Round 1's swizzle removes "
+                  "it.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 8: the tensor-core multiply --------------------------------------------------------------
+    y = header(y, 8, "8 tensor-core instructions per warp, added into acc_S", CODE[7])
+    cs, gp = 5, 3
+    sx = 166
+    ky = y + 46
+    sy = ky + 16 * cs + 34
+
+    def kx(c):
+        return sx + c * cs + (c // 8) * gp
+
+    b.append(text(sx, ky - 22, "K pieces 0–7 at k = 1 (Kᵀ: dims 16–31 × keys 0–63)", 11.5, INK, weight="600"))
+    for c in range(64):
+        for d in range(16):
+            on = c % 8 == 0 and d in (0, 1, 8, 9)
+            b.append(rect(kx(c), ky + d * cs, cs, cs, BLUE if on else BLUE_L))
+    for n in range(8):
+        b.append(text(kx(8 * n) + 4 * cs, ky - 5, f"n = {n}", 9, MUTED, "middle"))
+    qx = sx - 16 * cs - 18
+    b.append(text(qx + 8 * cs, sy - 8, "Q piece 1", 10.5, INK, "middle", "600"))
+    for r in range(16):
+        for d in range(16):
+            on = r in (0, 8) and d in (0, 1, 8, 9)
+            b.append(rect(qx + d * cs, sy + r * cs, cs, cs, BLUE if on else BLUE_L))
+    b.append(text(qx + 8 * cs, sy + 16 * cs + 14, "rows 0–15", 9.5, INK2, "middle"))
+    b.append(text(qx + 8 * cs, sy + 16 * cs + 27, "dims 16–31", 9.5, INK2, "middle"))
+    for c in range(64):
+        for r in range(16):
+            on = r in (0, 8) and c % 8 in (0, 1)
+            b.append(rect(kx(c), sy + r * cs, cs, cs, BLUE if on else BLUE_L))
+    for n in range(8):
+        b.append(text(kx(8 * n) + 4 * cs, sy + 16 * cs + 14, f"mma {n}", 9, INK, "middle", "600"))
+    b.append(text(kx(63) + cs + 8, sy + 8 * cs - 4, "acc_S, warp 0:", 10.5, INK, weight="600"))
+    b.append(text(kx(63) + cs + 8, sy + 8 * cs + 10, "rows 0–15 ×", 10, INK2))
+    b.append(text(kx(63) + cs + 8, sy + 8 * cs + 23, "keys 0–63", 10, INK2))
+    b.append(text(qx + 16 * cs + 9, sy + 8 * cs + 4, "×", 12, INK2, "middle"))
+    ay = sy + 16 * cs + 56
+    b.append(text(56, ay, "acc_S over the 4 steps: each step adds 16 more head dims to every score", 11.5, INK,
+                  weight="600"))
+    for k in range(4):
+        fill = ORANGE if k == 1 else ORANGE_L if k < 1 else FAINT
+        b.append(rect(56 + k * 100, ay + 10, 100, 16, fill, GRID, 0.6))
+        b.append(text(56 + k * 100 + 50, ay + 22, f"k = {k}: dims {16 * k}–{16 * k + 15}", 9.5,
+                      SURF if k == 1 else INK, "middle"))
+    pic_bottom = ay + 26
+    ty = para(y, "All three are in registers now. cute.gemm takes step k's pieces. For warp 0: Q piece 1 (rows 0–15, dims 16–31) times each "
+                 "of the 8 K pieces, one mma.m16n8k16 (HMMA) per piece, each adding into its 16 × 8 piece "
+                 "of acc_S.")
+    ty = para(ty, "Each mma runs on the whole warp. Thread 0 brings only its blue values and holds 4 scores of "
+                  "each S piece: rows 0, 8 × keys 8n, 8n + 1.")
+    ty = para(ty, "acc_S is both input and output, so the 4 steps add up: 32 HMMA per warp per key block, and "
+                  "after k = 3 every score covers all 64 head dims. Warps 1–3 do rows 16–63 at the same time.")
+    y = max(pic_bottom, ty) + 52
+
+    # ---- 9: the rest of the key block --------------------------------------------------------------
+    y = header(y, 9, "The rest of the key block, in brief", CODE[8])
+    bw, bh, gap, x0 = 122, 62, 22, 56
+    gy = y + 20
+    row1 = [("acc_S", "32 scores per thread", "", BLUE_L),
+            ("mask", "diagonal blocks only:", "later keys → −1e6", BLUE_L),
+            ("online softmax", "row max, row sum:", "4 SHFL, 34 exp2", BLUE_L),
+            ("P", "exp2 of the scores,", "as bf16", BLUE_L)]
+    row2 = [("sP", "STS × 16:", "registers → shared", SHR),
+            ("P back", "LDS × 16:", "shared → registers", BLUE_L),
+            ("O += P V", "V from sV: 128 LDS", "of 2 bytes; 32 HMMA", BLUE_L)]
+
+    def flow(boxes, yy):
+        for i, (name, l1, l2, fill) in enumerate(boxes):
+            bx = x0 + i * (bw + gap)
+            b.append(rect(bx, yy, bw, bh, fill, GRID, 1, 6))
+            b.append(text(bx + 10, yy + 20, name, 12, INK, weight="600"))
+            b.append(text(bx + 10, yy + 38, l1, 10, INK2))
+            b.append(text(bx + 10, yy + 52, l2, 10, INK2))
+            if i:
+                arrow(bx - gap + 2, yy + bh / 2, bx - 3, yy + bh / 2)
+
+    flow(row1, gy)
+    r2y = gy + bh + 40
+    flow(row2, r2y)
+    ex = x0 + 3 * (bw + gap) + bw / 2
+    b.append(f'<path d="M{ex},{gy + bh} V{gy + bh + 20} H{x0 + bw / 2} V{r2y - 3}" fill="none" stroke="{INK2}" '
+             f'stroke-width="1.4" marker-end="url(#ahk)"/>')
+    ly2 = r2y + bh + 26
+    legend(x0, ly2, BLUE_L, "data in registers")
+    legend(x0 + 160, ly2, SHR, "data in shared memory")
+    pic_bottom = ly2
+    ty = para(y, "The comment stands for the rest of the key block. Counts are per thread, per key block.")
+    ty = para(ty, "The softmax combines each row across its quad with 4 warp shuffles (two per row max). P "
+                  "then makes a round trip through shared memory to become the A operand of O += P V; Round 3 "
+                  "keeps it in registers.")
+    ty = para(ty, "V is read transposed, one 2-byte value per load: the 128 16-bit loads in v0's count. Round 2 "
+                  "reads it with ldmatrix.trans.")
+    y = max(pic_bottom, ty) + 20
+    return svg(W, y, b)
+
+
+def ldsm_copies():
+    """Round 2's five lines, one section each: the ldmatrix atom, the three tiled copies built from the
+    tiled MMA, and one copy of step k of Q. Counts per warp, per key block, from the v2 kernel:
+    Q 4 x 1 + K 4 x 4 + P 4 x 1 + V 4 x 4 = 40 LDSM."""
+    import textwrap
+    W, TX, SX = 1040, 430, 50
+    FAINT, YEL_L, YEL = "#f6f6f4", "#fdf3d8", "#c9a227"
+    WARP = [(BLUE_L, BLUE), (ORANGE_L, ORANGE), (AQUA_L, AQUA), (YEL_L, YEL)]
+    b = [f'<defs><marker id="ahl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "Round 2's ldmatrix copies, line by line", 17, weight="600"),
+         text(20, 52, "Shared memory → registers for the four operands of the two multiplies: Q and K for S = Q Kᵀ, "
+                      "P and V for O = P·V.", 12.5, INK2),
+         text(20, 70, "Q, K and V tiles are 64 × 64 bf16; 4 warps, each owning 16 rows of the block's 64. "
+                      "A step k is 16 head dims of S's sum (or 16 keys of O's).", 12.5, INK2)]
+
+    def arrow(x1, y1, x2, y2):
+        b.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{INK2}" stroke-width="1.4" '
+                 f'marker-end="url(#ahl)"/>')
+
+    def header(y, n, title, code):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        h = 21 * len(code) + 12
+        b.append(rect(20, y, W - 40, h, FAINT, GRID, rx=4))
+        for i, c in enumerate(code):
+            yy = y + 21 + 21 * i
+            k = c.find("#")
+            code_part = c if k < 0 else c[:k].rstrip()
+            ind = len(code_part) - len(code_part.lstrip(" "))
+            b.append(text(34 + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK, family=MONO))
+            if k >= 0:
+                b.append(text(34 + 7.53 * k, yy, c[k:], 12.5, MUTED, family=MONO))
+        return y + h + 30
+
+    def para(y, s, fill=INK2, n=84):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, ln, 12.5, fill))
+            y += 18
+        return y + 8
+
+    def args(y, items, kw=170):
+        # (code, meaning) pairs: the code in blue mono, its meaning in plain English beside it
+        for code, s in items:
+            b.append(text(TX, y, code, 12, BLUE, family=MONO))
+            for ln in textwrap.wrap(s, 62):
+                b.append(text(TX + kw, y, ln, 12.5, INK2))
+                y += 18
+            y += 8
+        return y
+
+    def piece(x, y, s, fill, edge, label=None):
+        # a 16 x 16 piece = four 8 x 8 tiles = one ldmatrix.x4
+        for i in range(2):
+            for j in range(2):
+                b.append(rect(x + j * s, y + i * s, s, s, fill, edge, 1))
+        if label:
+            b.append(text(x + 2 * s + 10, y + s + 4, label, 11.5, INK2))
+
+    # ---- 1: the atom -----------------------------------------------------------------------------
+    y = header(118, 1, "The atom: one ldmatrix instruction",
+               ["def ldsm(transpose):",
+                "    return cute.make_copy_atom(warp.LdMatrix8x8x16bOp(transpose=transpose, num_matrices=4), dtype)"])
+    s = 30
+    for t in range(4):
+        fill, edge = WARP[t]
+        tx, ty = SX + (t % 2) * (s + 4), y + 8 + (t // 2) * (s + 4)
+        b.append(rect(tx, ty, s, s, fill, edge, 1))
+        b.append(text(tx + s / 2, ty + s / 2 + 4, "8×8", 10.5, INK2, "middle"))
+    b.append(text(SX + s + 2, y + 2 * s + 30, "4 tiles, bf16", 11.5, MUTED, "middle"))
+    arrow(SX + 2 * s + 12, y + s + 10, SX + 2 * s + 64, y + s + 10)
+    bx = SX + 2 * s + 70
+    b.append(rect(bx, y + s - 8, 160, 36, BLUE_L, BLUE, 1, 6))
+    b.append(text(bx + 80, y + s + 7, "32 lanes of one warp", 11.5, INK, "middle", "600"))
+    b.append(text(bx + 80, y + s + 21, "8 values each", 11, INK2, "middle"))
+    ty = args(y + 4, [
+        ("LdMatrix8x8x16bOp", "the ldmatrix instruction: it reads 8 × 8 tiles of 16-bit values from shared memory."),
+        ("num_matrices=4", "four tiles per instruction (ldmatrix.x4): 256 values, 8 for each of the 32 lanes."),
+        ("transpose", "False: each tile as stored. True: rows and columns swapped (ldmatrix.trans)."),
+        ("make_copy_atom", "wraps it as an atom, the instruction a copy repeats; dtype is bf16."),
+    ])
+    y = max(y + 2 * s + 40, ty) + 30
+
+    # ---- 2: A operand --------------------------------------------------------------------------
+    y = header(y, 2, "A copy shaped like the multiply's A operand: Q, and later P",
+               ["s2r_A = cute.make_tiled_copy_A(ldsm(False), tiled_mma)     # Q and P"])
+    s = 15
+    b.append(text(SX, y + 4, "Q, one step k: 64 rows × 16 head dims", 11.5, INK, weight="600"))
+    for w in range(4):
+        fill, edge = WARP[w]
+        py = y + 16 + w * (2 * s + 6)
+        b.append(text(SX + 50, py + s + 4, f"rows {16 * w}–{16 * w + 15}", 11, MUTED, "end"))
+        piece(SX + 60, py, s, fill, edge, f"warp {w}: 1 ldmatrix.x4")
+    ty = para(y + 4, "make_tiled_copy_A copies the tiled MMA's A operand layout, so the copy hands each lane exactly "
+                     "the values its multiply reads. No thread layout is written by hand.")
+    ty = para(ty, "With (4, 1, 1), each warp multiplies only its own 16 rows, so on step k it loads only "
+                  "those: 16 rows × 16 head dims, four 8 × 8 tiles, one ldmatrix.x4.")
+    ty = para(ty, "P is the A operand of O = P·V, so the same copy loads it too.")
+    y = max(y + 16 + 4 * (2 * s + 6), ty) + 30
+
+    # ---- 3: B operand, K -------------------------------------------------------------------------
+    y = header(y, 3, "The same for the B operand: K",
+               ["s2r_K = cute.make_tiled_copy_B(ldsm(False), tiled_mma)"])
+    b.append(text(SX, y + 4, "K, one step k: 64 keys × 16 head dims", 11.5, INK, weight="600"))
+    for p in range(4):
+        py = y + 16 + p * (2 * s + 6)
+        b.append(text(SX + 50, py + s + 4, f"keys {16 * p}–{16 * p + 15}", 11, MUTED, "end"))
+        piece(SX + 60, py, s, FAINT, INK2)
+    top, bot = y + 16, y + 16 + 4 * (2 * s + 6) - 6
+    bx = SX + 60 + 2 * s + 10
+    b.append(f'<path d="M{bx},{top} h6 V{bot} h-6" fill="none" stroke="{INK2}" stroke-width="1.2"/>')
+    b.append(text(bx + 14, (top + bot) / 2 - 4, "every warp loads all four:", 11.5, INK2))
+    b.append(text(bx + 14, (top + bot) / 2 + 12, "4 ldmatrix.x4", 11.5, INK, weight="600"))
+    ty = para(y + 4, "make_tiled_copy_B does the same for the B operand. Each warp computes all 64 keys of its "
+                     "rows, so every warp needs the whole step: 64 keys × 16 head dims, four 16 × 16 pieces, "
+                     "one ldmatrix.x4 each.")
+    ty = para(ty, "Pieces are 16 keys wide because of permutation_mnk = (64, 16, 16). With the default 8 keys, "
+                  "each instruction would carry only two tiles, and K would need twice as many instructions.")
+    y = max(y + 16 + 4 * (2 * s + 6), ty) + 30
+
+    # ---- 4: B operand, V, transposed --------------------------------------------------------------
+    y = header(y, 4, "B again, for O = P·V: V, transposed on the way",
+               ["s2r_V = cute.make_tiled_copy_B(ldsm(True), tiled_mma)      # V, transposed on the way"])
+    c = 13
+
+    def grid8(x, yy, cells, col, title):
+        b.append(text(x, yy, title, 11.5, INK, weight="600"))
+        yy += 22
+        b.append(text(x + 4 * c, yy - 4, "head dims →", 10.5, MUTED, "middle"))
+        b.append(f'<text x="{x - 8}" y="{yy + 4 * c}" font-size="10.5" fill="{MUTED}" text-anchor="middle" '
+                 f'transform="rotate(-90 {x - 8} {yy + 4 * c})">← keys</text>')
+        for r in range(8):
+            for q in range(8):
+                on = (r, q) in cells
+                b.append(rect(x + q * c, yy + r * c, c, c, col if on else FAINT, GRID, 0.6))
+        return yy + 8 * c
+
+    g1 = grid8(SX + 12, y + 4, {(0, 0), (0, 1)}, ORANGE, "transpose=False")
+    g2 = grid8(SX + 12 + 8 * c + 60, y + 4, {(0, 0), (1, 0)}, ORANGE, "transpose=True")
+    b.append(text(SX + 12, g1 + 18, "One 8 × 8 tile of V as stored. Orange:", 11, INK2))
+    b.append(text(SX + 12, g1 + 33, "the 2 values lane 0 receives.", 11, INK2))
+    ty = para(y + 4, "In shared memory V is stored like K: one key per row, head dims along the row.")
+    ty = para(ty, "The multiply wants each lane's 2 values to lie along the dimension it sums over. For S = Q Kᵀ "
+                  "that is head dims, along a stored row: the plain load. For O = P·V it is keys, down a "
+                  "stored column.")
+    ty = para(ty, "transpose=True (ldmatrix.trans) swaps each tile's rows and columns as it loads, so V needs no "
+                  "separate transpose. Otherwise the copy is the same as K's: 4 ldmatrix.x4 per step.")
+    y = max(g1 + 40, ty) + 30
+
+    # ---- 5: the copy -----------------------------------------------------------------------------
+    y = header(y, 5, "Run it: copy step k of Q from shared memory into registers",
+               ["cute.copy(s2r_A, ops.sQ[None, None, k], ops.rQ[None, None, k])"])
+    q = 20
+    b.append(text(SX, y + 4, "The Q tile; step k = 1 (head dims 16–31)", 11.5, INK, weight="600"))
+    x0, y0 = SX + 14, y + 22
+    for r in range(4):
+        for cc in range(4):
+            fill, edge = WARP[r] if cc == 1 else (FAINT, GRID)
+            b.append(rect(x0 + cc * q, y0 + r * q, q, q, fill, edge, 1))
+        b.append(text(x0 + 4 * q + 8, y0 + r * q + q / 2 + 4, f"warp {r}", 11, MUTED))
+    b.append(text(x0 + 2 * q, y0 + 4 * q + 16, "shared memory", 11, MUTED, "middle"))
+    arrow(x0 + 4 * q + 56, y0 + 2 * q, x0 + 4 * q + 100, y0 + 2 * q)
+    rx = x0 + 4 * q + 106
+    b.append(rect(rx, y0 + 2 * q - 22, 128, 44, BLUE_L, BLUE, 1, 6))
+    b.append(text(rx + 64, y0 + 2 * q - 4, "registers", 11.5, INK, "middle", "600"))
+    b.append(text(rx + 64, y0 + 2 * q + 12, "8 values per lane", 11, INK2, "middle"))
+    ty = args(y + 4, [
+        ("s2r_A", "the copy from line 2: which lane loads what, with ldmatrix."),
+        ("ops.sQ", "this thread's share of the Q tile in shared memory, set up with partition_S in the lines the snippet skips."),
+        ("ops.rQ", "the registers the multiply reads Q from, viewed in the copy's order (retile)."),
+        ("[None, None, k]", "None keeps a whole mode: all of the thread's values and row pieces. k picks step k: "
+                            "head dims 16k to 16k + 15, for k = 0 to 3."),
+    ], kw=130)
+    ty = para(ty, "Each warp issues one ldmatrix.x4 for its 16 rows. The K, P and V copies are the same line with "
+                  "their own copy and tensors.")
+    y = max(y0 + 4 * q + 30, ty) + 14
+
+    b.append(line(20, y, W - 20, y, GRID))
+    y += 26
+    b.append(text(20, y, "Per key block, each warp issues 40 ldmatrix: Q 4 × 1 + K 4 × 4 + P 4 × 1 + V 4 × 4. "
+                         "Rounds 0–1 used 224 plain loads (LDS) for the same values.", 12.5, INK, weight="600"))
+    return svg(W, y + 22, b)
+
+
+# ---------------------------------------------------------------------------------------------
+def a_operand_view():
+    # as_a_operand line by line, following thread 0 (warp 0, lane 0) of v3.
+    # Checked on the GPU with CuTe DSL (4 warps, permutation (64, 16, 16), 64 x 64 tile):
+    #   acc   ((2,2),1,8):((1,2),0,4)
+    #   pairs ((2,2),1,(2,4)):((1,2),0,(4,8))
+    #   view  (((2,2),2),1,4):(((1,2),4),0,8)     partition_A of the same tile: ((2,2,2),1,4)
+    #   register i holds the same (row, column) of P under partition_C and partition_A, for i = 0..31.
+    import textwrap
+    W, TX, TW = 1040, 640, 58
+    FAINT = "#ecebe6"
+    EVEN, ODD = BLUE_L, ORANGE_L       # tiles n = 0, 2, 4, 6 / n = 1, 3, 5, 7: left / right half of an A tile
+    b = [f'<defs><marker id="aop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" '
+         f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK2}"/></marker></defs>',
+         text(20, 30, "as_a_operand: the same 32 registers, read as an A operand", 17, weight="600"),
+         text(20, 52, "Following thread 0 (warp 0, lane 0). Numbers are register indices. Blue: tiles n = 0, 2, 4, 6. "
+                      "Orange: tiles n = 1, 3, 5, 7.", 12.5, INK2)]
+
+    def reg_pos(i):                    # register i of thread 0 -> (row, column) of P
+        n, r = divmod(i, 4)
+        return (8 if r >= 2 else 0), 8 * n + r % 2
+
+    def para(y, s, size=12.5, fill=INK2, lh=18, n=TW):
+        for ln in textwrap.wrap(s, n):
+            b.append(text(TX, y, ln, size, fill))
+            y += lh
+        return y + 8
+
+    def header(y, n, title, code):
+        b.append(line(20, y - 26, W - 20, y - 26, GRID))
+        b.append(f'<circle cx="31" cy="{y - 5}" r="11" fill="{INK}"/>')
+        b.append(text(31, y, str(n), 12.5, SURF, "middle", "700"))
+        b.append(text(50, y, title, 15, weight="600"))
+        y += 14
+        h = 21 * len(code) + 12
+        b.append(rect(20, y, W - 40, h, "#f6f6f4", GRID, rx=4))
+        for i, c in enumerate(code):
+            code_part, _, comment = c.partition("  #")
+            yy = y + 21 + 21 * i
+            if code_part.strip() == "" and comment:
+                code_part, comment = c[:len(c) - len(c.lstrip())], c.lstrip()[1:]
+            ind = len(code_part) - len(code_part.lstrip(" "))
+            if code_part.strip():
+                b.append(text(34 + 7.53 * ind, yy, code_part.lstrip(" "), 12.5, INK, family=MONO))
+                cx = 34 + 7.53 * (len(code_part) + 2)
+            else:
+                cx = 34 + 7.53 * ind
+            if comment:
+                b.append(text(cx, yy, "#" + comment, 12.5, MUTED, family=MONO))
+        return y + h + 34
+
+    def bracket(x1, x2, y, label, size=10.5, below=True, fill=INK, weight="normal"):
+        d = 4 if below else -4
+        b.append(f'<path d="M{x1 + 1},{y - d} V{y} H{x2 - 1} V{y - d}" fill="none" stroke="{INK2}" stroke-width="1"/>')
+        b.append(text((x1 + x2) / 2, y + (14 if below else -6), label, size, fill, "middle", weight))
+
+    def reg_row(x0, y0, g4, g8):       # the 32 registers in order, with gaps after every 4 and every 8
+        cs, xs = 16, []
+        for i in range(32):
+            x = x0 + i * cs + (i // 4) * g4 + (i // 8) * g8
+            xs.append(x)
+            b.append(rect(x + 1, y0 + 1, cs - 2, cs - 2, EVEN if (i // 4) % 2 == 0 else ODD, rx=2))
+            b.append(text(x + cs / 2, y0 + cs - 4.5, str(i), 9, INK, "middle"))
+        return xs, cs
+
+    # ---- overview: thread 0's values of P, as 16 x 8 accumulator tiles and as 16 x 16 A tiles ----------
+    cs, sx, sy = 14, 92, 150
+    b.append(text(20, 90, "What thread 0 holds of P (64 × 64). Only rows 0 and 8 shown: the other rows belong to "
+                          "other threads.", 12.5, INK, weight="600"))
+    for n in range(8):
+        bracket(sx + 8 * n * cs, sx + 8 * (n + 1) * cs, sy - 8, f"n = {n}", 10.5, below=False)
+    owned = {reg_pos(i): i for i in range(32)}
+    for ri, row in enumerate((0, 8)):
+        y = sy + ri * cs
+        b.append(text(sx - 6, y + cs - 3.5, f"row {row}", 10, INK2, "end"))
+        for c in range(64):
+            x = sx + c * cs
+            if (row, c) in owned:
+                i = owned[(row, c)]
+                b.append(rect(x + 1, y + 1, cs - 2, cs - 2, EVEN if (c // 8) % 2 == 0 else ODD, rx=1.5))
+                b.append(text(x + cs / 2, y + cs - 4, str(i), 7.5, INK, "middle"))
+            else:
+                b.append(rect(x + 1, y + 1, cs - 2, cs - 2, FAINT, rx=1.5))
+    for c in range(0, 65, 8):          # thin line: accumulator tile edge; thick: A tile edge
+        x = sx + c * cs
+        b.append(line(x, sy - 3, x, sy + 2 * cs + 3, INK2 if c % 16 == 0 else MUTED, 2 if c % 16 == 0 else 0.8))
+    for k in range(4):
+        bracket(sx + 16 * k * cs, sx + 16 * (k + 1) * cs, sy + 2 * cs + 10, f"k = {k}", 10.5)
+    b.append(text(sx, sy - 32, "As the accumulator of S = Q Kᵀ: 8 tiles of 16 × 8, 4 values each", 11.5, INK2))
+    b.append(text(sx, sy + 2 * cs + 42, "As the A operand of O += P V: 4 tiles of 16 × 16, 8 values each. "
+                                        "Same registers, same places: only the grouping differs.", 11.5, INK2))
+
+    # ---- 1: the input -------------------------------------------------------------------------------
+    y = header(282, 1, "The input: P in the accumulator layout",
+               ["def as_a_operand(acc):",
+                "    # accumulator ((2,2), MMA_M, MMA_N) -> A operand ((2,2,2), MMA_M, MMA_N/2):",
+                "    # two neighbouring 16x8 accumulator tiles are one 16x16 A tile."])
+    px = 40
+    b.append(text(px, y + 4, "acc.layout = ((2,2), 1, 8) : ((1,2), 0, 4)", 12.5, INK, family=MONO))
+    xs, rcs = reg_row(px, y + 22, 6, 0)
+    for n in range(8):
+        bracket(xs[4 * n], xs[4 * n + 3] + rcs, y + 22 + rcs + 6, f"n = {n}", 10)
+    # decode one tile: registers 0..3
+    dy = y + 92
+    b.append(text(px, dy, "Inside one tile (registers 0–3):", 11.5, INK, weight="600"))
+    for j in range(4):
+        r, c = reg_pos(j)
+        x = px + j * 92
+        b.append(rect(x, dy + 10, 18, 18, EVEN, rx=2))
+        b.append(text(x + 9, dy + 23, str(j), 10, INK, "middle"))
+        b.append(text(x + 24, dy + 23, f"({r}, {c})", 11, INK2, family=MONO))
+    b.append(text(px, dy + 48, "(row, column) of P", 10.5, MUTED))
+    pic = dy + 56
+    ty = para(y, "acc is rP: thread 0's 32 values of P, already converted to bf16, still in the layout the "
+                 "S = Q Kᵀ multiply left them in.")
+    ty = para(ty, "Shape ((2,2), 1, 8): 2 columns × 2 rows per 16 × 8 tile; 1 tile down (warp 0's rows "
+                  "0–15); 8 tiles across the 64 keys.")
+    ty = para(ty, "Stride ((1,2), 0, 4): next column is the next register, row + 8 is 2 registers on, the "
+                  "next tile is 4 registers on.")
+    ty = para(ty, "The two comment lines state the goal: regroup these 8 tiles of 4 into 4 tiles of 8.")
+    y = max(pic, ty) + 46
+
+    # ---- 2: logical_divide ------------------------------------------------------------------------
+    y = header(y, 2, "Split the tile mode into pairs",
+               ["pairs = cute.logical_divide(acc.layout, (None, None, 2))"])
+    b.append(text(px, y + 4, "mode 2:   8 : 4   →   (2, 4) : (4, 8)", 12.5, INK, family=MONO))
+    xs, rcs = reg_row(px, y + 22, 3, 12)
+    for n in range(8):
+        bracket(xs[4 * n], xs[4 * n + 3] + rcs, y + 22 + rcs + 6, f"n = {n}", 9.5)
+    for k in range(4):
+        bracket(xs[8 * k], xs[8 * k + 7] + rcs, y + 22 + rcs + 34, f"pair {k}", 10.5, weight="600")
+    b.append(text(px, y + 118, "inside a pair: + 4 registers (stride 4)", 11, INK2))
+    b.append(text(px, y + 136, "next pair: + 8 registers (stride 8)", 11, INK2))
+    pic = y + 140
+    ty = para(y, "logical_divide cuts a layout into (piece, rest). The second argument has one entry per "
+                 "mode: None leaves modes 0 and 1 alone, 2 cuts mode 2 into pieces of 2 tiles.")
+    ty = para(ty, "So the 8 tiles become 4 pairs of 2: (2, 4) : (4, 8). The inner 2 picks a tile within the "
+                  "pair, the outer 4 picks the pair.")
+    ty = para(ty, "pairs = ((2,2), 1, (2,4)) : ((1,2), 0, (4,8)). Only the layout changes: no register is read "
+                  "or written.")
+    y = max(pic, ty) + 46
+
+    # ---- 3: make_layout + make_tensor -------------------------------------------------------------
+    y = header(y, 3, "Move the pair index into the value mode, on the same registers",
+               ["return cute.make_tensor(acc.iterator, cute.make_layout(",
+                "    ((pairs.shape[0], pairs.shape[2][0]), pairs.shape[1], pairs.shape[2][1]),",
+                "    stride=((pairs.stride[0], pairs.stride[2][0]), pairs.stride[1], pairs.stride[2][1])))"])
+    bh, ry1 = 26, y + 22
+    ry2 = ry1 + 84
+    # pairs' four pieces on top, the new layout's modes below; the orange piece is the one that moves
+    top = [("(2,2) : (1,2)", 40, 124, "[0]", None), ("1 : 0", 192, 56, "[1]", None),
+           ("2 : 4", 276, 56, "[2][0]", ORANGE_L), ("4 : 8", 336, 56, "[2][1]", None)]
+    bot = [("(2,2) : (1,2)", 40, 124, None), ("2 : 4", 168, 56, ORANGE_L), ("1 : 0", 252, 56, None),
+           ("4 : 8", 336, 56, None)]
+    b.append(rect(272, ry1 - 4, 124, bh + 8, "none", MUTED, rx=6))
+    for s_, x, w, lab, fill in top:
+        b.append(rect(x, ry1, w, bh, fill or "#f6f6f4", GRID, rx=4))
+        b.append(text(x + w / 2, ry1 + 17, s_, 11.5, INK, "middle", family=MONO))
+        b.append(text(x + w / 2, ry1 - 10, lab, 10.5, ORANGE if fill else INK2, "middle", family=MONO))
+    b.append(text(410, ry1 + 17, "pairs.shape / .stride", 11, INK2))
+    b.append(rect(36, ry2 - 4, 192, bh + 8, "none", BLUE, rx=6))
+    for s_, x, w, fill in bot:
+        b.append(rect(x, ry2, w, bh, fill or BLUE_L, BLUE, rx=4))
+        b.append(text(x + w / 2, ry2 + 17, s_, 11.5, INK, "middle", family=MONO))
+    for lab, cx in (("mode 0 = ((2,2),2) : ((1,2),4)", 132), ("mode 1", 280), ("mode 2", 364)):
+        b.append(text(cx, ry2 + bh + 18, lab, 10.5, INK2, "middle"))
+    b.append(text(410, ry2 + 17, "new layout", 11, INK2))
+    for x1, x2, col in ((102, 102, INK2), (220, 280, INK2), (304, 196, ORANGE), (364, 364, INK2)):
+        b.append(f'<line x1="{x1}" y1="{ry1 + bh + 3}" x2="{x2}" y2="{ry2 - 6}" stroke="{col}" '
+                 f'stroke-width="{1.8 if col == ORANGE else 1.2}" marker-end="url(#aop)"/>')
+    ry2 += 14
+    xs, rcs = reg_row(px, ry2 + 50, 0, 12)
+    for k in range(4):
+        bracket(xs[8 * k], xs[8 * k + 7] + rcs, ry2 + 50 + rcs + 6, f"k = {k}", 10.5, weight="600")
+    pic = ry2 + 50 + rcs + 26
+    ty = para(y, "make_layout writes the new layout out by hand, shape and stride in the same order. "
+                 "pairs.shape[2][0], the tile within a pair (stride 4), joins mode 0; the pair index "
+                 "pairs.shape[2][1] stays behind as mode 2.")
+    ty = para(ty, "So each k now owns 8 values: 4 from tile 2k and 4 from tile 2k + 1, the shape "
+                  "((2,2,2), 1, 4) that an A operand has.")
+    ty = para(ty, "make_tensor(acc.iterator, …) puts that layout on acc's own registers: iterator is where acc's "
+                  "data starts. Nothing is copied.")
+    y = max(pic, ty) + 46
+
+    # ---- 4: why it is exact -----------------------------------------------------------------------
+    y = header(y, 4, "Why the regrouping is exact: k = 0",
+               ["cute.gemm(tiled_mma, acc_O, tOrP[None, None, k], tOrVt[None, None, k], acc_O)  # in the caller"])
+    tc = 11
+    gy = y + 30
+
+    def tile(x0, rows, cols, cells, label):
+        b.append(text(x0, gy - 10, label, 11.5, INK, weight="600"))
+        for r in range(rows):
+            for c in range(cols):
+                x, yy = x0 + c * tc, gy + r * tc
+                if (r, c) in cells:
+                    i, fill = cells[(r, c)]
+                    b.append(rect(x + 0.5, yy + 0.5, tc - 1, tc - 1, fill, rx=1))
+                    b.append(text(x + tc / 2, yy + tc - 2.5, str(i), 8, INK, "middle", "600"))
+                else:
+                    b.append(rect(x + 0.5, yy + 0.5, tc - 1, tc - 1, FAINT, rx=1))
+        b.append(text(x0 + cols * tc / 2, gy + rows * tc + 15, f"{rows} × {cols}", 10.5, INK2, "middle"))
+
+    t0 = {reg_pos(i): (i, EVEN) for i in range(4)}
+    t1 = {(r, c - 8): (i, ODD) for i in range(4, 8) for r, c in [reg_pos(i)]}
+    ta = {reg_pos(i): (i, EVEN if i < 4 else ODD) for i in range(8)}
+    tile(40, 16, 8, t0, "acc tile n = 0")
+    tile(40 + 8 * tc + 18, 16, 8, t1, "n = 1")
+    eqx = 40 + 16 * tc + 18 + 24
+    b.append(text(eqx, gy + 8 * tc + 6, "=", 22, INK, "middle"))
+    tile(eqx + 24, 16, 16, ta, "A operand, k = 0")
+    pic = gy + 16 * tc + 22
+    ty = para(y, "The mma.m16n8k16 instruction fixes where lane 0's A values sit in the 16 × 16 piece: rows 0 "
+                 "and 8, columns 0, 1, 8, 9. Columns 0, 1 are its spots in tile n = 0, and columns 8, 9 its "
+                 "spots in tile n = 1.")
+    ty = para(ty, "Every lane works the same way (lane 4g + t: rows g, g + 8 × columns 2t, 2t + 1, 2t + 8, "
+                  "2t + 9), so tOrP[None, None, k] is the k-th A operand of O += P V as it stands.")
+    ty = para(ty, "Checked on the GPU: under both layouts, register i holds the same (row, column) of P, for all "
+                  "32 i. v2 instead stored P to shared memory and loaded it back: 16 stores and 4 LDSM per pass.")
+    y = max(pic, ty) + 20
+    return svg(W, y, b)
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     (OUT / "mma_ownership.svg").write_text(mma_ownership())
     (OUT / "bank_conflicts.svg").write_text(bank_conflicts())
     (OUT / "swizzle_banks.svg").write_text(swizzle_banks())
+    (OUT / "swizzle_bms.svg").write_text(swizzle_bms())
+    (OUT / "smem_layout.svg").write_text(smem_layout_fig())
     (OUT / "pipeline.svg").write_text(pipeline())
     (OUT / "gpu_hierarchy.svg").write_text(gpu_hierarchy())
     (OUT / "layouts.svg").write_text(layouts())
@@ -2582,4 +4080,7 @@ if __name__ == "__main__":
     (OUT / "ldmatrix_x4.svg").write_text(ldmatrix_x4())
     (OUT / "qkv_tiles.svg").write_text(qkv_tiles())
     (OUT / "cp_async.svg").write_text(cp_async())
+    (OUT / "ldsm_copies.svg").write_text(ldsm_copies())
+    (OUT / "key_block_v0.svg").write_text(key_block_v0())
+    (OUT / "a_operand_view.svg").write_text(a_operand_view())
     print("wrote", *sorted(p.name for p in OUT.glob("*.svg")))
