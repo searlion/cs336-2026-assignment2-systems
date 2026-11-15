@@ -1644,43 +1644,58 @@ def tiled_copy():
     ty = para(y, "tidx is this thread's number in the block, 0 to 127. Every thread runs this same line with "
                  "its own tidx.")
     ty = para(ty, "get_slice keeps only this thread's part of the plan: its spot in the grid, and so its 4 "
-                  "pieces of any tile. It is a rule. Nothing is copied yet.")
+                  "pieces of a tile.")
+    ty = para(ty, "So far everything is positions: “row 2, values 24–31”. Steps 1–5 drew them on K, but the "
+                  "plan never names a matrix and has not touched any data. The kernel uses the same plan to "
+                  "copy Q and V too.")
     y = max(pic_bottom, ty) + 52
 
     # ---- 6: partition_S ------------------------------------------------------------------------
-    y = header(y, 6, "Its pieces at the source: K in global memory",
+    y = header(y, 6, "Apply the plan to K: find thread 19's values in memory",
                ["tKgK = thr_g2s.partition_S(gK)             # its pieces of K in global memory (S: source)"])
-    x0, gy, px, pitch = 56, y + 40, 2, 142
-    b.append(text(x0, gy - 24, "gK: all of K, cut into key blocks of 64 keys × 64 values", 12, INK, weight="600"))
+    x0, gy, px, pitch = 56, y + 56, 2, 142
+    b.append(text(x0, gy - 40, "gK: all of K, in key blocks of 64 keys, copied one at a time (first 4 drawn)", 12, INK, weight="600"))
     for j in range(4):
         tx = x0 + j * pitch
-        b.append(text(tx, gy - 6, f"block {j}: keys {64 * j}–{64 * j + 63}", 10, INK2))
+        b.append(text(tx, gy - 20, f"key block {j}: keys {64 * j}–{64 * j + 63}", 10, INK2))
+        b.append(text(tx, gy - 6, f"copied in loop turn {j}", 10, MUTED))
         tile(tx, gy, px)
     ay = gy + 64 * px + 6
     for j in range(4):
         arrow(x0 + j * pitch + 64, ay, x0 + j * pitch + 64, ay + 24)
     cy0 = ay + 46
     b.append(text(x0, cy0 - 8, "tKgK", 12.5, INK, weight="600", family=MONO))
-    b.append(text(x0 + 42, cy0 - 8, "thread 19's pieces in each block", 11.5, INK2))
+    b.append(text(x0 + 42, cy0 - 8, "thread 19's pieces in each key block", 11.5, INK2))
     for j in range(4):
         chips(x0 + j * pitch + 24, cy0 + 4, 4, 10, 8, 14)
-    sy = cy0 + 4 + 4 * 14 + 20
+    b.append(text(x0, cy0 + 4 + 4 * 14 + 16, "Same spots in every key block: column 3 (values 24–31) of rows 2, "
+                  "18, 34, 50.", 11.5, ORANGE, weight="600"))
+    b.append(text(x0, cy0 + 4 + 4 * 14 + 33, "Each chip points to 8 real values of K, e.g. key block 1, step 0: "
+                  "key 66, values 24–31.", 11.5, INK2))
+    sy = cy0 + 4 + 4 * 14 + 62
     b.append(text(x0, sy, "shape ((8, 1), 4, 1, n_blocks)", 12.5, INK, weight="600"))
     rows = [("(8, 1)", "one piece: 8 values in 1 row", ORANGE),
             ("4", "steps down the tile", INK),
             ("1", "piece across: one step already spans all 64 values", INK),
-            ("n_blocks", "key blocks: N keys ÷ 64 (4 drawn)", INK)]
+            ("n_blocks", "key blocks: N keys ÷ 64, so 64 for N = 4096", INK)]
     for i, (num, what, col) in enumerate(rows):
         b.append(text(x0 + 70, sy + 21 + 19 * i, num, 12.5, col, "end", "700"))
         b.append(text(x0 + 80, sy + 21 + 19 * i, what, 12, INK2))
     pic_bottom = sy + 21 + 19 * 3
-    ty = para(y, "gK is K in global memory, cut into key blocks of 64 keys × 64 values. Its shape is (64, 64, "
-                 "n_blocks): for a sequence of N keys, n_blocks = N ÷ 64.")
-    ty = para(ty, "partition_S applies thread 19's rule to every key block and keeps its pieces. S stands for "
-                  "source: the side the copy reads from.")
-    ty = para(ty, "tKgK only records where those pieces sit in global memory. Nothing is copied yet.")
-    ty = para(ty, "Read its shape from the left: what one piece holds, how many steps, how many pieces "
-                  "across, how many key blocks.")
+    ty = para(y, "Why partition? To copy, thread 19 needs to know where its values of K actually sit in "
+                 "memory, not just “row 2, values 24–31”. partition_S works that out by laying the plan over "
+                 "real data.")
+    ty = para(ty, "The data is gK: all of K for this sequence, in global memory. K has more keys than one "
+                  "tile holds, so it is cut into key blocks of 64 keys. A key block is a piece of K, not the "
+                  "block of 128 threads. gK's shape is (64, 64, n_blocks), with n_blocks = N ÷ 64 for N keys. N = 4096 gives 64 key "
+                  "blocks; the figure draws the first 4.")
+    ty = para(ty, "Thread 19 still copies only column 3 (values 24–31). The kernel copies the key blocks one "
+                  "after another, one per loop turn (step 8), and in each one thread 19 copies the same spots.")
+    ty = para(ty, "partition_S finds those spots in every key block at once, before the loop. Each loop turn "
+                  "then picks key block j.")
+    ty = para(ty, "The result, tKgK, is a list of places in memory. S stands for source: the side the copy "
+                  "reads from. Nothing is copied yet.")
+    ty = para(ty, "Read its shape from the left: one piece, steps, pieces across, key blocks.")
     y = max(pic_bottom, ty) + 52
 
     # ---- 7: partition_D ------------------------------------------------------------------------
@@ -1744,7 +1759,7 @@ def tiled_copy():
     ty = para(ty, "cute.copy then runs the atom of step 2 once per piece: 4 times. Each time thread 19 loads "
                   "16 bytes from global memory into its registers and stores them at the same row and values "
                   "in sK.")
-    ty = para(ty, "The kernel runs this line once per key block: j = 0, 1, 2, and so on.")
+    ty = para(ty, "The kernel runs this line once per key block: j = 0, 1, 2, …, up to 63 when N = 4096.")
     y = max(pic_bottom, ty) + 20
     return svg(W, y, b)
 

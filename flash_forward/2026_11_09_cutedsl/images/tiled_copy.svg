@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 3522" width="1040" height="3522" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<rect width="1040" height="3522" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 3616" width="1040" height="3616" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="1040" height="3616" fill="#ffffff"/>
 <defs><marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
 <text x="20" y="30" font-size="17" fill="#0b0b0b" text-anchor="start" font-weight="600">Copying a tile of K into shared memory, line by line</text>
 <text x="20" y="52" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">A tile is a 64 × 64 block of K: 64 keys × 64 values. 128 threads, numbered 0 to 127, copy it together. They all run the same</text>
@@ -596,504 +596,524 @@
 <text x="640" y="2083" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">tidx is this thread's number in the block, 0 to 127. Every</text>
 <text x="640" y="2101" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">thread runs this same line with its own tidx.</text>
 <text x="640" y="2127" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">get_slice keeps only this thread's part of the plan: its</text>
-<text x="640" y="2145" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">spot in the grid, and so its 4 pieces of any tile. It is a</text>
-<text x="640" y="2163" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">rule. Nothing is copied yet.</text>
-<line x1="20" y1="2241" x2="1020" y2="2241" stroke="#d6d5d0" stroke-width="1"/>
-<circle cx="31" cy="2262" r="11" fill="#0b0b0b"/>
-<text x="31" y="2267" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
-<text x="50" y="2267" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Its pieces at the source: K in global memory</text>
-<rect x="20" y="2281" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="34.0" y="2302" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK = thr_g2s.partition_S(gK)</text>
-<text x="357.79" y="2302" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># its pieces of K in global memory (S: source)</text>
-<text x="56" y="2364" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">gK: all of K, cut into key blocks of 64 keys × 64 values</text>
-<text x="56" y="2382" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">block 0: keys 0–63</text>
-<rect x="56" y="2388" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="72" y1="2388" x2="72" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="88" y1="2388" x2="88" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="104" y1="2388" x2="104" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="120" y1="2388" x2="120" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="136" y1="2388" x2="136" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="152" y1="2388" x2="152" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="168" y1="2388" x2="168" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="56" y1="2420" x2="184" y2="2420" stroke="#52514e" stroke-width="1"/>
-<line x1="56" y1="2452" x2="184" y2="2452" stroke="#52514e" stroke-width="1"/>
-<line x1="56" y1="2484" x2="184" y2="2484" stroke="#52514e" stroke-width="1"/>
-<rect x="104" y="2392" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="104" y="2424" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="104" y="2456" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="104" y="2488" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<text x="198" y="2382" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">block 1: keys 64–127</text>
-<rect x="198" y="2388" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="214" y1="2388" x2="214" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="230" y1="2388" x2="230" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="246" y1="2388" x2="246" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="262" y1="2388" x2="262" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="278" y1="2388" x2="278" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="294" y1="2388" x2="294" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="310" y1="2388" x2="310" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="198" y1="2420" x2="326" y2="2420" stroke="#52514e" stroke-width="1"/>
-<line x1="198" y1="2452" x2="326" y2="2452" stroke="#52514e" stroke-width="1"/>
-<line x1="198" y1="2484" x2="326" y2="2484" stroke="#52514e" stroke-width="1"/>
-<rect x="246" y="2392" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="246" y="2424" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="246" y="2456" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="246" y="2488" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<text x="340" y="2382" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">block 2: keys 128–191</text>
-<rect x="340" y="2388" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="356" y1="2388" x2="356" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="372" y1="2388" x2="372" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="388" y1="2388" x2="388" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="404" y1="2388" x2="404" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="420" y1="2388" x2="420" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="436" y1="2388" x2="436" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="452" y1="2388" x2="452" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="340" y1="2420" x2="468" y2="2420" stroke="#52514e" stroke-width="1"/>
-<line x1="340" y1="2452" x2="468" y2="2452" stroke="#52514e" stroke-width="1"/>
-<line x1="340" y1="2484" x2="468" y2="2484" stroke="#52514e" stroke-width="1"/>
-<rect x="388" y="2392" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="388" y="2424" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="388" y="2456" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="388" y="2488" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<text x="482" y="2382" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">block 3: keys 192–255</text>
-<rect x="482" y="2388" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="498" y1="2388" x2="498" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="514" y1="2388" x2="514" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="530" y1="2388" x2="530" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="546" y1="2388" x2="546" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="562" y1="2388" x2="562" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="578" y1="2388" x2="578" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="594" y1="2388" x2="594" y2="2516" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="482" y1="2420" x2="610" y2="2420" stroke="#52514e" stroke-width="1"/>
-<line x1="482" y1="2452" x2="610" y2="2452" stroke="#52514e" stroke-width="1"/>
-<line x1="482" y1="2484" x2="610" y2="2484" stroke="#52514e" stroke-width="1"/>
-<rect x="530" y="2392" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="530" y="2424" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="530" y="2456" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="530" y="2488" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<line x1="120" y1="2522" x2="120" y2="2546" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<line x1="262" y1="2522" x2="262" y2="2546" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<line x1="404" y1="2522" x2="404" y2="2546" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<line x1="546" y1="2522" x2="546" y2="2546" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="56" y="2560" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK</text>
-<text x="98" y="2560" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">thread 19's pieces in each block</text>
-<rect x="80" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="90" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="100" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="110" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="120" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="130" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="140" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="150" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="80" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="90" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="100" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="110" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="120" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="130" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="140" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="150" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="80" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="90" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="100" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="110" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="120" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="130" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="140" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="150" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="80" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="90" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="100" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="110" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="120" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="130" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="140" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="150" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="222" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="232" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="242" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="252" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="262" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="272" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="282" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="292" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="222" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="232" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="242" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="252" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="262" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="272" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="282" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="292" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="222" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="232" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="242" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="252" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="262" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="272" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="282" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="292" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="222" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="232" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="242" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="252" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="262" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="272" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="282" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="292" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="364" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="374" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="384" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="394" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="404" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="414" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="424" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="434" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="364" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="374" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="384" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="394" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="404" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="414" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="424" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="434" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="364" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="374" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="384" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="394" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="404" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="414" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="424" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="434" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="364" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="374" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="384" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="394" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="404" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="414" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="424" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="434" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="506" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="516" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="526" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="536" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="546" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="556" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="566" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="576" y="2572" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="506" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="516" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="526" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="536" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="546" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="556" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="566" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="576" y="2586" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="506" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="516" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="526" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="536" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="546" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="556" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="566" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="576" y="2600" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="506" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="516" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="526" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="536" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="546" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="556" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="566" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="576" y="2614" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="56" y="2648" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">shape ((8, 1), 4, 1, n_blocks)</text>
-<text x="126" y="2669" font-size="12.5" fill="#eb6834" text-anchor="end" font-weight="700">(8, 1)</text>
-<text x="136" y="2669" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">one piece: 8 values in 1 row</text>
-<text x="126" y="2688" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">4</text>
-<text x="136" y="2688" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">steps down the tile</text>
-<text x="126" y="2707" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">1</text>
-<text x="136" y="2707" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">piece across: one step already spans all 64 values</text>
-<text x="126" y="2726" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">n_blocks</text>
-<text x="136" y="2726" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">key blocks: N keys ÷ 64 (4 drawn)</text>
-<text x="640" y="2348" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">gK is K in global memory, cut into key blocks of 64 keys ×</text>
-<text x="640" y="2366" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">64 values. Its shape is (64, 64, n_blocks): for a sequence</text>
-<text x="640" y="2384" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">of N keys, n_blocks = N ÷ 64.</text>
-<text x="640" y="2410" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">partition_S applies thread 19's rule to every key block</text>
-<text x="640" y="2428" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and keeps its pieces. S stands for source: the side the</text>
-<text x="640" y="2446" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">copy reads from.</text>
-<text x="640" y="2472" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">tKgK only records where those pieces sit in global memory.</text>
-<text x="640" y="2490" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Nothing is copied yet.</text>
-<text x="640" y="2516" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Read its shape from the left: what one piece holds, how</text>
-<text x="640" y="2534" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">many steps, how many pieces across, how many key blocks.</text>
-<line x1="20" y1="2752" x2="1020" y2="2752" stroke="#d6d5d0" stroke-width="1"/>
-<circle cx="31" cy="2773" r="11" fill="#0b0b0b"/>
-<text x="31" y="2778" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">7</text>
-<text x="50" y="2778" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The same pieces at the destination: shared memory</text>
-<rect x="20" y="2792" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="34.0" y="2813" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK = thr_g2s.partition_D(sK)</text>
-<text x="357.79" y="2813" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the same pieces in shared memory (D: destination)</text>
-<text x="56" y="2889" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">sK: room for one key block in shared memory</text>
-<rect x="56" y="2899" width="256" height="256" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
-<line x1="88" y1="2899" x2="88" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="120" y1="2899" x2="120" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="152" y1="2899" x2="152" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="184" y1="2899" x2="184" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="216" y1="2899" x2="216" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="248" y1="2899" x2="248" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="280" y1="2899" x2="280" y2="3155" stroke="#dcdbd5" stroke-width="0.6"/>
-<line x1="56" y1="2963" x2="312" y2="2963" stroke="#52514e" stroke-width="1"/>
-<line x1="56" y1="3027" x2="312" y2="3027" stroke="#52514e" stroke-width="1"/>
-<line x1="56" y1="3091" x2="312" y2="3091" stroke="#52514e" stroke-width="1"/>
-<rect x="152" y="2907" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="152" y="2971" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="152" y="3035" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<rect x="152" y="3099" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
-<text x="320" y="2911" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 2</text>
-<text x="320" y="2975" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 18</text>
-<text x="320" y="3039" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 34</text>
-<text x="320" y="3103" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 50</text>
-<line x1="368" y1="2939" x2="410" y2="2939" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="420" y="2909" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK</text>
-<rect x="420" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="432" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="444" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="456" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="468" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="480" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="492" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="504" y="2923" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="420" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="432" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="444" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="456" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="468" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="480" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="492" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="504" y="2939" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="420" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="432" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="444" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="456" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="468" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="480" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="492" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="504" y="2955" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="420" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="432" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="444" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="456" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="468" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="480" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="492" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="504" y="2971" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="420" y="3005" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">shape ((8, 1), 4, 1)</text>
-<text x="420" y="3023" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">no n_blocks: one block</text>
-<text x="420" y="3039" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">at a time lives here</text>
-<text x="640" y="2859" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">sK is a 64 × 64 space in shared memory. It holds one key</text>
-<text x="640" y="2877" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">block at a time, stored row by row like the tile in global</text>
-<text x="640" y="2895" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">memory.</text>
-<text x="640" y="2921" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">partition_D picks thread 19's spots in sK. D stands for</text>
-<text x="640" y="2939" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">destination: the side the copy writes to. They are the</text>
-<text x="640" y="2957" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">same rows and values as in step 6: rows 2, 18, 34, 50,</text>
-<text x="640" y="2975" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">values 24–31.</text>
-<text x="640" y="3001" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">So tKsK has the shape of tKgK without its last part.</text>
-<line x1="20" y1="3181" x2="1020" y2="3181" stroke="#d6d5d0" stroke-width="1"/>
-<circle cx="31" cy="3202" r="11" fill="#0b0b0b"/>
-<text x="31" y="3207" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">8</text>
-<text x="50" y="3207" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The copy: key block j, 4 pieces per thread</text>
-<rect x="20" y="3221" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
-<text x="34.0" y="3242" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(g2s, tKgK[None, None, None, j], tKsK)</text>
-<text x="410.5" y="3242" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># copy key block j: 4 steps of 16 bytes</text>
-<text x="56" y="3308" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK</text>
-<text x="98" y="3308" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">global memory</text>
-<rect x="56" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="61" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="66" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="71" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="76" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="81" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="86" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="91" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="56" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="61" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="66" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="71" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="76" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="81" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="86" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="91" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="56" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="61" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="66" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="71" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="76" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="81" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="86" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="91" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="56" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="61" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="66" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="71" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="76" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="81" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="86" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="91" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<text x="76" y="3432" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 0</text>
-<rect x="108" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="113" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="118" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="123" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="128" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="133" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="138" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="143" y="3342" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="108" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="113" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="118" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="123" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="128" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="133" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="138" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="143" y="3364" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="108" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="113" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="118" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="123" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="128" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="133" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="138" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="143" y="3386" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="108" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="113" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="118" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="123" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="128" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="133" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="138" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="143" y="3408" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="128" y="3432" font-size="10.5" fill="#eb6834" text-anchor="middle" font-weight="600">j = 1</text>
-<rect x="160" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="165" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="170" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="175" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="180" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="185" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="190" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="195" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="160" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="165" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="170" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="175" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="180" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="185" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="190" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="195" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="160" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="165" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="170" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="175" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="180" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="185" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="190" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="195" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="160" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="165" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="170" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="175" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="180" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="185" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="190" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="195" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<text x="180" y="3432" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 2</text>
-<rect x="212" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="217" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="222" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="227" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="232" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="237" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="242" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="247" y="3342" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="212" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="217" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="222" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="227" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="232" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="237" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="242" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="247" y="3364" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="212" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="217" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="222" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="227" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="232" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="237" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="242" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="247" y="3386" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="212" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="217" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="222" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="227" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="232" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="237" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="242" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<rect x="247" y="3408" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
-<text x="232" y="3432" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 3</text>
-<rect x="104" y="3338" width="48" height="82" fill="none" stroke="#eb6834" stroke-width="1.6" rx="2"/>
-<text x="56" y="3452" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="600">orange frame: tKgK[None, None, None, 1], key block 1</text>
-<text x="440" y="3308" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK</text>
-<text x="482" y="3308" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">shared memory</text>
-<line x1="270" y1="3346" x2="432" y2="3346" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="274" y="3342" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 0: key 66</text>
-<rect x="440" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="452" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="464" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="476" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="488" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="500" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="512" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="524" y="3342" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="544" y="3350" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 2</text>
-<line x1="270" y1="3368" x2="432" y2="3368" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="274" y="3364" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 1: key 82</text>
-<rect x="440" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="452" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="464" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="476" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="488" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="500" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="512" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="524" y="3364" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="544" y="3372" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 18</text>
-<line x1="270" y1="3390" x2="432" y2="3390" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="274" y="3386" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 2: key 98</text>
-<rect x="440" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="452" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="464" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="476" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="488" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="500" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="512" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="524" y="3386" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="544" y="3394" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 34</text>
-<line x1="270" y1="3412" x2="432" y2="3412" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
-<text x="274" y="3408" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 3: key 114</text>
-<rect x="440" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="452" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="464" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="476" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="488" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="500" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="512" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<rect x="524" y="3408" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
-<text x="544" y="3416" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 50</text>
-<text x="270" y="3326" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600">each step: load 16 bytes, store 16 bytes</text>
-<text x="56" y="3484" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">All 128 threads at once: 128 × 4 pieces × 16 bytes = 8,192 bytes</text>
-<text x="56" y="3502" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">= 64 × 64 values × 2 bytes: the whole tile.</text>
-<text x="640" y="3288" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">tKgK[None, None, None, j] picks key block j. None keeps a</text>
-<text x="640" y="3306" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">whole part of the shape, like : in NumPy, so only the last</text>
-<text x="640" y="3324" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">part is fixed, to j.</text>
-<text x="640" y="3350" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">cute.copy then runs the atom of step 2 once per piece: 4</text>
-<text x="640" y="3368" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">times. Each time thread 19 loads 16 bytes from global</text>
-<text x="640" y="3386" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">memory into its registers and stores them at the same row</text>
-<text x="640" y="3404" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and values in sK.</text>
-<text x="640" y="3430" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The kernel runs this line once per key block: j = 0, 1, 2,</text>
-<text x="640" y="3448" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and so on.</text>
+<text x="640" y="2145" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">spot in the grid, and so its 4 pieces of a tile.</text>
+<text x="640" y="2171" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">So far everything is positions: “row 2, values 24–31”.</text>
+<text x="640" y="2189" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Steps 1–5 drew them on K, but the plan never names a</text>
+<text x="640" y="2207" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">matrix and has not touched any data. The kernel uses the</text>
+<text x="640" y="2225" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">same plan to copy Q and V too.</text>
+<line x1="20" y1="2277" x2="1020" y2="2277" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="2298" r="11" fill="#0b0b0b"/>
+<text x="31" y="2303" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">6</text>
+<text x="50" y="2303" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Apply the plan to K: find thread 19's values in memory</text>
+<rect x="20" y="2317" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="34.0" y="2338" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK = thr_g2s.partition_S(gK)</text>
+<text x="357.79" y="2338" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># its pieces of K in global memory (S: source)</text>
+<text x="56" y="2400" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">gK: all of K, in key blocks of 64 keys, copied one at a time (first 4 drawn)</text>
+<text x="56" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 0: keys 0–63</text>
+<text x="56" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 0</text>
+<rect x="56" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="72" y1="2440" x2="72" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="88" y1="2440" x2="88" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="104" y1="2440" x2="104" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="120" y1="2440" x2="120" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="136" y1="2440" x2="136" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="152" y1="2440" x2="152" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="168" y1="2440" x2="168" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="56" y1="2472" x2="184" y2="2472" stroke="#52514e" stroke-width="1"/>
+<line x1="56" y1="2504" x2="184" y2="2504" stroke="#52514e" stroke-width="1"/>
+<line x1="56" y1="2536" x2="184" y2="2536" stroke="#52514e" stroke-width="1"/>
+<rect x="104" y="2444" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="104" y="2476" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="104" y="2508" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="104" y="2540" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<text x="198" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 1: keys 64–127</text>
+<text x="198" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 1</text>
+<rect x="198" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="214" y1="2440" x2="214" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="230" y1="2440" x2="230" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="246" y1="2440" x2="246" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="262" y1="2440" x2="262" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="278" y1="2440" x2="278" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="294" y1="2440" x2="294" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="310" y1="2440" x2="310" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="198" y1="2472" x2="326" y2="2472" stroke="#52514e" stroke-width="1"/>
+<line x1="198" y1="2504" x2="326" y2="2504" stroke="#52514e" stroke-width="1"/>
+<line x1="198" y1="2536" x2="326" y2="2536" stroke="#52514e" stroke-width="1"/>
+<rect x="246" y="2444" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="246" y="2476" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="246" y="2508" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="246" y="2540" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<text x="340" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 2: keys 128–191</text>
+<text x="340" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 2</text>
+<rect x="340" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="356" y1="2440" x2="356" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="372" y1="2440" x2="372" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="388" y1="2440" x2="388" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="404" y1="2440" x2="404" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="420" y1="2440" x2="420" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="436" y1="2440" x2="436" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="452" y1="2440" x2="452" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="340" y1="2472" x2="468" y2="2472" stroke="#52514e" stroke-width="1"/>
+<line x1="340" y1="2504" x2="468" y2="2504" stroke="#52514e" stroke-width="1"/>
+<line x1="340" y1="2536" x2="468" y2="2536" stroke="#52514e" stroke-width="1"/>
+<rect x="388" y="2444" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="388" y="2476" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="388" y="2508" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="388" y="2540" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<text x="482" y="2420" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">key block 3: keys 192–255</text>
+<text x="482" y="2434" font-size="10" fill="#8a8984" text-anchor="start" font-weight="normal">copied in loop turn 3</text>
+<rect x="482" y="2440" width="128" height="128" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="498" y1="2440" x2="498" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="514" y1="2440" x2="514" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="530" y1="2440" x2="530" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="546" y1="2440" x2="546" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="562" y1="2440" x2="562" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="578" y1="2440" x2="578" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="594" y1="2440" x2="594" y2="2568" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="482" y1="2472" x2="610" y2="2472" stroke="#52514e" stroke-width="1"/>
+<line x1="482" y1="2504" x2="610" y2="2504" stroke="#52514e" stroke-width="1"/>
+<line x1="482" y1="2536" x2="610" y2="2536" stroke="#52514e" stroke-width="1"/>
+<rect x="530" y="2444" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="530" y="2476" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="530" y="2508" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="530" y="2540" width="16" height="3" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<line x1="120" y1="2574" x2="120" y2="2598" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<line x1="262" y1="2574" x2="262" y2="2598" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<line x1="404" y1="2574" x2="404" y2="2598" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<line x1="546" y1="2574" x2="546" y2="2598" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="56" y="2612" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK</text>
+<text x="98" y="2612" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">thread 19's pieces in each key block</text>
+<rect x="80" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="90" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="100" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="110" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="120" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="130" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="140" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="150" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="80" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="90" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="100" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="110" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="120" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="130" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="140" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="150" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="80" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="90" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="100" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="110" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="120" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="130" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="140" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="150" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="80" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="90" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="100" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="110" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="120" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="130" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="140" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="150" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="222" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="232" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="242" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="252" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="262" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="272" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="282" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="292" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="222" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="232" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="242" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="252" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="262" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="272" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="282" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="292" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="222" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="232" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="242" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="252" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="262" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="272" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="282" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="292" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="222" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="232" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="242" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="252" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="262" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="272" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="282" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="292" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="364" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="374" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="384" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="394" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="404" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="414" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="424" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="434" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="364" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="374" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="384" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="394" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="404" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="414" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="424" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="434" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="364" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="374" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="384" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="394" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="404" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="414" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="424" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="434" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="364" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="374" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="384" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="394" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="404" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="414" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="424" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="434" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="506" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="516" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="526" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="536" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="546" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="556" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="566" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="576" y="2624" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="506" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="516" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="526" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="536" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="546" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="556" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="566" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="576" y="2638" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="506" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="516" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="526" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="536" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="546" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="556" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="566" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="576" y="2652" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="506" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="516" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="526" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="536" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="546" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="556" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="566" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="576" y="2666" width="10" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="56" y="2696" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="600">Same spots in every key block: column 3 (values 24–31) of rows 2, 18, 34, 50.</text>
+<text x="56" y="2713" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">Each chip points to 8 real values of K, e.g. key block 1, step 0: key 66, values 24–31.</text>
+<text x="56" y="2742" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">shape ((8, 1), 4, 1, n_blocks)</text>
+<text x="126" y="2763" font-size="12.5" fill="#eb6834" text-anchor="end" font-weight="700">(8, 1)</text>
+<text x="136" y="2763" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">one piece: 8 values in 1 row</text>
+<text x="126" y="2782" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">4</text>
+<text x="136" y="2782" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">steps down the tile</text>
+<text x="126" y="2801" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">1</text>
+<text x="136" y="2801" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">piece across: one step already spans all 64 values</text>
+<text x="126" y="2820" font-size="12.5" fill="#0b0b0b" text-anchor="end" font-weight="700">n_blocks</text>
+<text x="136" y="2820" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">key blocks: N keys ÷ 64, so 64 for N = 4096</text>
+<text x="640" y="2384" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Why partition? To copy, thread 19 needs to know where its</text>
+<text x="640" y="2402" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">values of K actually sit in memory, not just “row 2,</text>
+<text x="640" y="2420" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">values 24–31”. partition_S works that out by laying the</text>
+<text x="640" y="2438" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">plan over real data.</text>
+<text x="640" y="2464" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The data is gK: all of K for this sequence, in global</text>
+<text x="640" y="2482" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">memory. K has more keys than one tile holds, so it is cut</text>
+<text x="640" y="2500" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">into key blocks of 64 keys. A key block is a piece of K,</text>
+<text x="640" y="2518" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">not the block of 128 threads. gK's shape is (64, 64,</text>
+<text x="640" y="2536" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">n_blocks), with n_blocks = N ÷ 64 for N keys. N = 4096</text>
+<text x="640" y="2554" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">gives 64 key blocks; the figure draws the first 4.</text>
+<text x="640" y="2580" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Thread 19 still copies only column 3 (values 24–31). The</text>
+<text x="640" y="2598" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">kernel copies the key blocks one after another, one per</text>
+<text x="640" y="2616" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">loop turn (step 8), and in each one thread 19 copies the</text>
+<text x="640" y="2634" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">same spots.</text>
+<text x="640" y="2660" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">partition_S finds those spots in every key block at once,</text>
+<text x="640" y="2678" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">before the loop. Each loop turn then picks key block j.</text>
+<text x="640" y="2704" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The result, tKgK, is a list of places in memory. S stands</text>
+<text x="640" y="2722" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">for source: the side the copy reads from. Nothing is</text>
+<text x="640" y="2740" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">copied yet.</text>
+<text x="640" y="2766" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">Read its shape from the left: one piece, steps, pieces</text>
+<text x="640" y="2784" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">across, key blocks.</text>
+<line x1="20" y1="2846" x2="1020" y2="2846" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="2867" r="11" fill="#0b0b0b"/>
+<text x="31" y="2872" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">7</text>
+<text x="50" y="2872" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The same pieces at the destination: shared memory</text>
+<rect x="20" y="2886" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="34.0" y="2907" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK = thr_g2s.partition_D(sK)</text>
+<text x="357.79" y="2907" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># the same pieces in shared memory (D: destination)</text>
+<text x="56" y="2983" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">sK: room for one key block in shared memory</text>
+<rect x="56" y="2993" width="256" height="256" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="0"/>
+<line x1="88" y1="2993" x2="88" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="120" y1="2993" x2="120" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="152" y1="2993" x2="152" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="184" y1="2993" x2="184" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="216" y1="2993" x2="216" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="248" y1="2993" x2="248" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="280" y1="2993" x2="280" y2="3249" stroke="#dcdbd5" stroke-width="0.6"/>
+<line x1="56" y1="3057" x2="312" y2="3057" stroke="#52514e" stroke-width="1"/>
+<line x1="56" y1="3121" x2="312" y2="3121" stroke="#52514e" stroke-width="1"/>
+<line x1="56" y1="3185" x2="312" y2="3185" stroke="#52514e" stroke-width="1"/>
+<rect x="152" y="3001" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="152" y="3065" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="152" y="3129" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<rect x="152" y="3193" width="32" height="4" fill="#eb6834" stroke="none" stroke-width="1" rx="0"/>
+<text x="320" y="3005" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 2</text>
+<text x="320" y="3069" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 18</text>
+<text x="320" y="3133" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 34</text>
+<text x="320" y="3197" font-size="10.5" fill="#eb6834" text-anchor="start" font-weight="600">row 50</text>
+<line x1="368" y1="3033" x2="410" y2="3033" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="420" y="3003" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK</text>
+<rect x="420" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="432" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="444" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="456" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="468" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="480" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="492" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="504" y="3017" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="420" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="432" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="444" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="456" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="468" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="480" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="492" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="504" y="3033" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="420" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="432" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="444" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="456" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="468" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="480" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="492" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="504" y="3049" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="420" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="432" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="444" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="456" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="468" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="480" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="492" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="504" y="3065" width="12" height="10" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="420" y="3099" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">shape ((8, 1), 4, 1)</text>
+<text x="420" y="3117" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">no n_blocks: one block</text>
+<text x="420" y="3133" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">at a time lives here</text>
+<text x="640" y="2953" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">sK is a 64 × 64 space in shared memory. It holds one key</text>
+<text x="640" y="2971" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">block at a time, stored row by row like the tile in global</text>
+<text x="640" y="2989" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">memory.</text>
+<text x="640" y="3015" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">partition_D picks thread 19's spots in sK. D stands for</text>
+<text x="640" y="3033" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">destination: the side the copy writes to. They are the</text>
+<text x="640" y="3051" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">same rows and values as in step 6: rows 2, 18, 34, 50,</text>
+<text x="640" y="3069" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">values 24–31.</text>
+<text x="640" y="3095" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">So tKsK has the shape of tKgK without its last part.</text>
+<line x1="20" y1="3275" x2="1020" y2="3275" stroke="#d6d5d0" stroke-width="1"/>
+<circle cx="31" cy="3296" r="11" fill="#0b0b0b"/>
+<text x="31" y="3301" font-size="12.5" fill="#ffffff" text-anchor="middle" font-weight="700">8</text>
+<text x="50" y="3301" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">The copy: key block j, 4 pieces per thread</text>
+<rect x="20" y="3315" width="1000" height="33" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="1" rx="4"/>
+<text x="34.0" y="3336" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">cute.copy(g2s, tKgK[None, None, None, j], tKsK)</text>
+<text x="410.5" y="3336" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace"># copy key block j: 4 steps of 16 bytes</text>
+<text x="56" y="3402" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKgK</text>
+<text x="98" y="3402" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">global memory</text>
+<rect x="56" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="61" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="66" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="71" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="76" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="81" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="86" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="91" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="56" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="61" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="66" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="71" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="76" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="81" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="86" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="91" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="56" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="61" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="66" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="71" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="76" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="81" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="86" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="91" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="56" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="61" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="66" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="71" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="76" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="81" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="86" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="91" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<text x="76" y="3526" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 0</text>
+<rect x="108" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="113" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="118" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="123" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="128" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="133" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="138" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="143" y="3436" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="108" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="113" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="118" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="123" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="128" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="133" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="138" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="143" y="3458" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="108" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="113" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="118" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="123" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="128" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="133" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="138" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="143" y="3480" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="108" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="113" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="118" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="123" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="128" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="133" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="138" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="143" y="3502" width="5" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="128" y="3526" font-size="10.5" fill="#eb6834" text-anchor="middle" font-weight="600">j = 1</text>
+<rect x="160" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="165" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="170" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="175" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="180" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="185" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="190" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="195" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="160" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="165" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="170" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="175" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="180" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="185" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="190" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="195" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="160" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="165" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="170" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="175" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="180" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="185" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="190" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="195" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="160" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="165" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="170" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="175" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="180" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="185" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="190" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="195" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<text x="180" y="3526" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 2</text>
+<rect x="212" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="217" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="222" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="227" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="232" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="237" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="242" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="247" y="3436" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="212" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="217" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="222" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="227" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="232" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="237" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="242" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="247" y="3458" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="212" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="217" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="222" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="227" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="232" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="237" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="242" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="247" y="3480" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="212" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="217" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="222" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="227" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="232" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="237" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="242" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<rect x="247" y="3502" width="5" height="8" fill="#f6f6f4" stroke="#d6d5d0" stroke-width="0.8" rx="0"/>
+<text x="232" y="3526" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal">j = 3</text>
+<rect x="104" y="3432" width="48" height="82" fill="none" stroke="#eb6834" stroke-width="1.6" rx="2"/>
+<text x="56" y="3546" font-size="11.5" fill="#eb6834" text-anchor="start" font-weight="600">orange frame: tKgK[None, None, None, 1], key block 1</text>
+<text x="440" y="3402" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">tKsK</text>
+<text x="482" y="3402" font-size="11.5" fill="#52514e" text-anchor="start" font-weight="normal">shared memory</text>
+<line x1="270" y1="3440" x2="432" y2="3440" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="274" y="3436" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 0: key 66</text>
+<rect x="440" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="452" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="464" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="476" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="488" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="500" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="512" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="524" y="3436" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="544" y="3444" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 2</text>
+<line x1="270" y1="3462" x2="432" y2="3462" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="274" y="3458" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 1: key 82</text>
+<rect x="440" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="452" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="464" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="476" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="488" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="500" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="512" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="524" y="3458" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="544" y="3466" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 18</text>
+<line x1="270" y1="3484" x2="432" y2="3484" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="274" y="3480" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 2: key 98</text>
+<rect x="440" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="452" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="464" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="476" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="488" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="500" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="512" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="524" y="3480" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="544" y="3488" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 34</text>
+<line x1="270" y1="3506" x2="432" y2="3506" stroke="#52514e" stroke-width="1.4" marker-end="url(#ahc)"/>
+<text x="274" y="3502" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">step 3: key 114</text>
+<rect x="440" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="452" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="464" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="476" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="488" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="500" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="512" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<rect x="524" y="3502" width="12" height="8" fill="#fbe0d5" stroke="#eb6834" stroke-width="0.8" rx="0"/>
+<text x="544" y="3510" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal">row 50</text>
+<text x="270" y="3420" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="600">each step: load 16 bytes, store 16 bytes</text>
+<text x="56" y="3578" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">All 128 threads at once: 128 × 4 pieces × 16 bytes = 8,192 bytes</text>
+<text x="56" y="3596" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal">= 64 × 64 values × 2 bytes: the whole tile.</text>
+<text x="640" y="3382" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">tKgK[None, None, None, j] picks key block j. None keeps a</text>
+<text x="640" y="3400" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">whole part of the shape, like : in NumPy, so only the last</text>
+<text x="640" y="3418" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">part is fixed, to j.</text>
+<text x="640" y="3444" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">cute.copy then runs the atom of step 2 once per piece: 4</text>
+<text x="640" y="3462" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">times. Each time thread 19 loads 16 bytes from global</text>
+<text x="640" y="3480" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">memory into its registers and stores them at the same row</text>
+<text x="640" y="3498" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">and values in sK.</text>
+<text x="640" y="3524" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">The kernel runs this line once per key block: j = 0, 1, 2,</text>
+<text x="640" y="3542" font-size="12.5" fill="#52514e" text-anchor="start" font-weight="normal">…, up to 63 when N = 4096.</text>
 </svg>
